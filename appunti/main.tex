@@ -1,0 +1,81 @@
+\documentclass[a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{marginnote}
+\usepackage[top=3cm, bottom=3cm, heightrounded, marginparwidth=2.5cm, marginparsep=1.5cm]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage[nottoc]{tocbibind}	% to generate Bibliography entry in toc
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\usepackage{hyperref}	% enable hyperlinks to referenced elements
+\hypersetup{
+	colorlinks=true,
+	linkcolor=cyan,
+	citecolor=cyan,
+	linkcolor=cyan
+}
+
+%%   CUSTOM THEOREM/DEF  %%
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definizione}[section]
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Teorema}[section]
+
+%%         END           %%
+
+\title{Appunti di Algoritmi per l'Ingengeria}
+\author{lezioni tenute da\\ Geppino Pucci \\ trascritte da \\ Pietro}
+% a sto punto se fai un libro crea una pagina di titolo decente
+\date{\today}
+
+% magia
+\pagestyle{fancy}
+\fancyhead{}
+\makeatletter 
+\fancyhead[LE,RO]{\@title}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,RE]{Chapter \thechapter}
+\fancyfoot[CO,CE]{\@author}
+\makeatother 
+
+
+\begin{document}
+
+\pagestyle{plain}
+\pagenumbering{gobble}
+
+% \input{titlepage}
+\maketitle
+% titolo piu` serio in thesis-example
+
+\cleardoublepage
+
+\frontmatter % non esiste perche` e` un articolo e non un libro
+
+\chapter*{Ringraziamenti}
+\addcontentsline{toc}{chapter}{Ringraziamenti}
+I want to thank \lipsum[5-6]
+
+
+\tableofcontents
+
+\mainmatter
+
+\pagestyle{fancy}
+
+
+\chapter{Introduzione agli algoritmi}
+\input{chapters/intro-alg}
+
+\chapter{Paradigma Divide and Conquer}
+\input{chapters/divide-conquer}
+
+\end{document}
+
+
+%% ci sono cose interessanti su fancyfoot in thesis-example
