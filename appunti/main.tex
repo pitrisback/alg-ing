@@ -1,4 +1,4 @@
-\documentclass[a4paper]{book}
+\documentclass[a4paper,oneside]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
@@ -8,6 +8,7 @@
 \graphicspath{ {images/} }
 \usepackage[nottoc]{tocbibind}	% to generate Bibliography entry in toc
 \usepackage{lipsum}
+\usepackage{bm}
 \usepackage{fancyhdr}
 \usepackage{hyperref}	% enable hyperlinks to referenced elements
 \hypersetup{
@@ -16,6 +17,7 @@
 	citecolor=cyan,
 	linkcolor=cyan
 }
+\usepackage{enumitem} % more control over lists: stackoverflow.com/a/4974583
 
 %%   CUSTOM THEOREM/DEF  %%
 
@@ -43,6 +45,11 @@
 \fancyfoot[CO,CE]{\@author}
 \makeatother 
 
+%%   COMANDI    %%
+\newcommand{\bpi}{\bm{\Pi}}
+\newcommand{\bi}{I}
+\newcommand{\bs}{S}
+%% FINE COMANDI %%
 
 \begin{document}
 

@@ -1,11 +1,84 @@
 \section{Introduzione}
 
-Si vogliono progettare ed analizzare algoritmi efficienti.
+Il corso vuole insegnare a progettare ed analizzare algoritmi efficienti.
 
-\subsection{Problema computazionale}
-Specifica astratta di un problema computazionale
+\begin{description}
+    \item{\textbf{Progetto}} ideare una strategia di risoluzione secondo paradigmi generali:
+        \begin{itemize}
+            \item divide and conquer
+            \item dynamic programming
+            \item greedy
+        \end{itemize}
+    \item{\textbf{Analisi}} si valuta la correttezza e la complessità degli algoritmi con prove matematiche
+    \item{\textbf{Algoritmi}} si vedranno applicazioni notevoli, negli ambiti del calcolo matematico e la manipolazione di stringhe
+    \item{\textbf{Efficienti}} la complessità degli algoritmi è legata alla teoria riguardante la NP-completezza dei problemi
+\end{description}
 
-\subsection{Analisi - taglia}
-Definizione di complessita` e taglia di un'istanza
+\section{Problema computazionale}
+
+\begin{definition}[Algoritmo]\label{def:alg}
+    Un algoritmo è una procedura computazionale finita (terminante) e deterministica, specificata come una sequenza di passi elementari (istruzioni) estratte da un insieme standard associato a un modello computazionale (astrazione di un computer) che trasforma in maniera univoca un ingresso in un uscita.
+\end{definition}
 
 
+\begin{definition}[Problema computazionale]\label{def:probcomp}
+    Un problema computazionale $\bpi{}$ è una relazione tra un insieme di istanze $\bi{}$ e un insieme di soluzioni $\bs{}$: $\bpi{} \subseteq \bi{} \times \bs{}$
+    \\
+    Un problema computazionale definisce la specifica astratta. % ma de che?
+\end{definition}
+
+Note:
+% \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+\begin{itemize}[noitemsep,parsep=0pt,partopsep=0pt]
+    \item[--] le seguenti notazioni sono usate in maniera equivalente: $i_1 \bpi{} s_1 \iff (i_1 , s_1 ) \in \bpi{}$
+    \item[--] la relazione non è univoca, ad un'istanza possono essere associate più soluzioni
+    \item[--] nella specifica astratta si assume esistano le soluzioni per ogni istanza: $\forall i \in \bi{},\exists s \in \bs{} | i \bpi{} s$
+\end{itemize}
+
+Un algoritmo $A_{\bpi{}}$ è un algoritmo per $\bpi{}$, ossia risolve $\bpi{}$ se, quando i suoi ingressi sono elementi di $\bi{}$, le sue uscite sono gli elementi di $\bs{}$ in relazione all'ingresso, formalmente:
+
+$$ A: \bi{} \to \bs{} \quad \textrm{e} \quad A(i)=s \iff i \, \bpi{} \, s $$
+
+L'algoritmo realizza in modo procedurale la relazione specificata in modo astratto dal problema computazionale, ossia risolve istanze di un problema computazionale. Più precisamente, un algoritmo è scritto per un modello di computazione, non lavora con istanze astratte ma con le loro codifiche.
+
+\section{Analisi di correttezza e complessità}
+
+\subsection{Analisi di correttezza}
+
+Occorre provare il teorema di correttezza:
+$$ \forall i \in \bi{} \: : \: i \, \bpi{} \, A(i) $$
+
+\subsection{Analisi di complessità}
+
+\subsubsection{Modello di costo}
+Ad ogni istruzione elementare viene associato un costo. Scegliendo $c \in \mathbb{R} \cup \{ 0 \} $ l'analisi risulta eccessivamente complessa. I possibili costi vengono quindi limitati a $c \in \{ 0,1 \} $, assegnando $1$ solo alle operazioni che determinano effettivamente la complessità. Chiaramente vanno compiute scelte ragionevoli.
+
+La complessità di eseguire l'algoritmo $A_{\bpi{}}$ su $i \in \bi{}$ si definisce come
+$$t_{A_{\bpi{},i}}=\;somma\;dei\;costi\;associati\;alle\;istruzioni\;eseguite\;per\;ottenere\;A_{\bpi{}}(i)\;$$
+
+\subsubsection{Taglia di un'istanza}
+Calcolare la complessità per ogni singola istanza risulta nuovamente troppo complesso. L'insieme delle instanze viene quindi partizionato raggruppando tutte le istanze di taglia uguale.
+
+\begin{definition}[Taglia di un'istanza]\label{def:taglia}
+    La taglia di un'istanza è una misura intera, non negativa, ragionevole, della lunghezza associata a una qualche codifica ragionevole di una data istanza.\\
+    $$|\cdot|:\bi{}\to \mathbb{N} \cup \{0\}$$
+\end{definition}
+
+Le istanze di taglia uguale vengono raccolte, partizionando l'insieme $\bi{}$
+$$ \bi{}_{n} = \left\{ i \in \bi{} : |i|=n \right\} \quad n \geq 0$$ 
+
+Si definisce una metrica sintetica, la funzione di complessità, che è associata alla taglia delle istanze.
+$$ T_{A_{\bpi{}}} : \mathbb{N} \cup \{0\} \to \mathbb{R}^{+} \cup \{0\}$$
+
+\textbf{Nota bene:} l'ingresso della funzione complessità deve essere intero.
+
+\begin{description}
+    \item{\textbf{Caso peggiore}} $$ T_{A_{\bpi{}}}^{WORST} (n) = \sup_{i \in \bi{}_{n}} \{t_{A_{\bpi{},i}} \} $$
+    \item{\textbf{Caso migliore}} $$ T_{A_{\bpi{}}}^{BEST} (n) = \inf_{i \in \bi{}_{n}} \{t_{A_{\bpi{},i}} \} $$
+    \item{\textbf{Caso medio}} $$ T_{A_{\bpi{}}}^{AVE} (n) = \mathbb{E} \{t_{A_{\bpi{},i}} \} $$
+\end{description}
+\subsubsection{autocomplete}
+
+àg
+èg
+ùg
