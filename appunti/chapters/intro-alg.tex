@@ -72,13 +72,11 @@ $$ T_{A_{\bpi{}}} : \mathbb{N} \cup \{0\} \to \mathbb{R}^{+} \cup \{0\}$$
 
 \textbf{Nota bene:} l'ingresso della funzione complessità deve essere intero.
 
-\begin{description}
-    \item{\textbf{Caso peggiore}} $$ T_{A_{\bpi{}}}^{WORST} (n) = \sup_{i \in \bi{}_{n}} \{t_{A_{\bpi{},i}} \} $$
-    \item{\textbf{Caso migliore}} $$ T_{A_{\bpi{}}}^{BEST} (n) = \inf_{i \in \bi{}_{n}} \{t_{A_{\bpi{},i}} \} $$
-    \item{\textbf{Caso medio}} $$ T_{A_{\bpi{}}}^{AVE} (n) = \mathbb{E} \{t_{A_{\bpi{},i}} \} $$
-\end{description}
-\subsubsection{autocomplete}
+Si possono definire diverse funzioni complessità:
 
-àg
-èg
-ùg
+\begin{align*}
+\textrm{\textbf{Caso peggiore:}} &\quad T_{A_{\bpi{}}}^{WORST} (n) = \sup_{i \in \bi{}_{n}} \{t_{A_{\bpi{},i}} \} \\
+\textrm{\textbf{Caso migliore:}} &\quad T_{A_{\bpi{}}}^{BEST} (n) = \inf_{i \in \bi{}_{n}} \{t_{A_{\bpi{},i}} \} \\
+\textrm{\textbf{Caso medio:}} &\quad T_{A_{\bpi{}}}^{AVE} (n) = \mathbb{E} \left[t_{A_{\bpi{},i}} \right]
+\end{align*}
+
