@@ -1,8 +1,14 @@
 \section{Paradigma divide and conquer}
 
-Cerco soluzione su istanze piu` piccole
+Seguendo il paradigma \textit{Divide and Conquer}, si cerca una soluzione ad una data istanza in funzione delle soluzioni a determinate istanze \textbf{più piccole}, dette sottoistanze.
 
-\subsection{Proprieta` di sottostruttura}
+\subsection{Stella di Kleene}
+\begin{definition}[Stella di Kleene]\label{def:kleene}
+    La stella di Kleene viene definita come l'insieme di tutte le sequenze finite di elementi di $A$.
+    $$ A^* = \left\{ < a_1, a_2, \dots, a_k > \: : k \geq 0, \: a_i \in A, \: 1 \leq i \leq k \right\}$$
+    La sequenza vuota viene indicata con $ < \; > \: = \epsilon $
+\end{definition}
+\subsection{Proprietà di sottostruttura}
 
 Definizione di sottostruttura
 
@@ -10,10 +16,35 @@ Funzioni di Divide e di Conquer
 
 Albero delle chiamate
 
+Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \ref{alg:mergeline}, quindi guarda a \algref{alg:mergesort}{alg:mergeline} per saperne di più.
+
+\begin{algorithm}[h]
+\caption{MergeSort}\label{alg:mergesort}
+\begin{algorithmic}[1]
+    \Procedure{MergeSort}{$A,p,r$}
+    \If{$p<r$}
+        \State $ q \gets \left\lfloor \frac{p+r}{2} \right\rfloor $ 
+        \State \Call{MergeSort}{$A,p,q$} \Comment{Ordina prima}
+        \State \Call{MergeSort}{$A,q+1,r$} \Comment{Ordina dopo}
+        \State
+            \Call{Merge}{$A,p,q,r$}
+            \label{alg:mergeline}
+            \Comment{Merge in $\Theta(n)$}
+    \EndIf
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Correttezza del DnC}
 
 Induzione e magia
 
 Relazione di ricorrenza
 
-\subsection{Analisi della complessita`}
+\subsection{Analisi della complessità}
+
+\subsubsection{autocomplete}
+
+àg
+èg
+ùg
