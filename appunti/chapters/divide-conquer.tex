@@ -10,11 +10,67 @@ Seguendo il paradigma \textit{Divide and Conquer}, si cerca una soluzione ad una
 \end{definition}
 \subsection{Proprietà di sottostruttura}
 
-Definizione di sottostruttura
+La proprietà di sottostruttura è una proprietà del problema $\bpi{} \subseteq \bi{} \times \bs{} $ che permette di definire il divide and conquer. Devono esistere due funzioni per avere la proprietà di sottostruttura:
 
-Funzioni di Divide e di Conquer
+\begin{description}
+    \item{Funzione di \textbf{Divisione}} $ D : \bi{} \to \bi{}^*$
+    \item{Funzione di \textbf{Ricombinazione}} $ C : \bs{}^* \to \bs{}$
+\end{description}
 
-Albero delle chiamate
+E devono valere le due seguenti proprietà:
+\begin{itemize}
+    \item $\exists n_0 \in \mathbb{N} \cup \{0\} : \forall i \in \bi{}, |i| > n_0 $
+        \begin{itemize}
+            \item[--] $ D(i)=<i_1, i_2, \dots, i_k>:|i_j|<|i|, 1 \leq j \leq k$ \\
+                (le sottoistanze sono strettamente più piccole dell'istanza originale)
+            \item[--] data $ <s_1, s_2, \dots, s_k> \in \bs{}^* $ con $i_j \bpi{} s_j,  1 \leq j \leq k \Rightarrow i \bpi{} C(<s_1, s_2, \dots, s_k>)$ \\
+                (la ricombinazione delle soluzioni alle sottoistanze è in relazione con l'istanza originale)
+        \end{itemize}
+    \item è possibile la risoluzione diretta delle istanze $ i \in \bi{} : |i| \leq n_0 $
+\end{itemize}
+
+Note:
+% \begin{itemize}
+\begin{itemize}[noitemsep,parsep=0pt,partopsep=0pt]
+    \item[--] il numero di sottoistanze può variare, in base all'istanza considerata
+    \item[--] gli algoritmi che implementano (con sequenze di istruzioni elementari) le funzioni, sono, formalmente, oggetti matematici diversi \\
+        $ A_D : i \mapsto <i_1, i_2, \dots, i_k> \sim D(i)$ e $ A_C : <s_1, s_2, \dots, s_k> \mapsto s \sim C(<s_1, s_2, \dots, s_k>) $
+\end{itemize}
+
+TODO pagina 8, definizione del sorting di interi
+
+\subsection{Paradigma Divide and Conquer}
+
+\begin{algorithm}[H]
+\caption{Divide and Conquer}\label{alg:dnc}
+\begin{algorithmic}[1]
+    \Procedure{D\&C}{$i$}
+        \If{$|i| \leq n_0$}                     \Comment{BASE}
+            \State *risolvo direttamente*
+        \EndIf
+        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$ \Comment{DIVIDE}
+        \For{$j \gets 1 $ to $ k $ }                    \Comment{RECURSE}
+            \State $s_j \gets $ \Call{D\&C}{$i_j$}
+        \EndFor
+        \State $s \gets A_C(<s_1, s_2, \dots, s_k>)$    \Comment{CONQUER}
+        \State return $s$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+TODO pagina 4, albero delle chiamate
+
+TODO pagina 4, esempio algoritmo sorting di interi 
+
+\subsection{Correttezza del DnC}
+
+Induzione e magia
+
+Relazione di ricorrenza
+
+\subsection{Analisi della complessità}
+
+\subsubsection{autocomplete}
 
 Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \ref{alg:mergeline}, quindi guarda a \algref{alg:mergesort}{alg:mergeline} per saperne di più.
 
@@ -35,16 +91,7 @@ Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Correttezza del DnC}
-
-Induzione e magia
-
-Relazione di ricorrenza
-
-\subsection{Analisi della complessità}
-
-\subsubsection{autocomplete}
-
 àg
 èg
+òg
 ùg
