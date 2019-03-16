@@ -48,7 +48,7 @@ Introduciamo il problema dell'ordinamento di una sequenza di numeri interi, che 
 
 Come insiemi definiamo $\bi{} = \mathbb{Z}^* $ e $\bs{} = \mathbb{Z}^* $. Non tutti gli elementi di $\bs{}$ saranno associati ad un'istanza.
 
-Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, deve esistere una corrispondenza biunivoca fra gli indici per cui
+Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, deve esistere una corrispondenza biunivoca (permutazione) $\phi$ fra gli indici per cui
 \begin{itemize}[noitemsep,parsep=0pt,partopsep=0pt]
     \item[--] $i = <i_1, i_2, \dots, i_k> $ e $ s = <s_1, s_2, \dots, s_k> $ con $k \geq 1$
     \item[--] $ \exists \;\phi:\{1, \dots, n\} \leftrightarrow \{1, \dots, n\} \;|\; s_i = i_{\phi(i)}$
@@ -148,15 +148,15 @@ Per prima cosa va identificata la taglia di una generica sottoistanza in funzion
                     k&= \left\lfloor \frac{i+j}{2}\right\rfloor & |i_1| &= k-i+1  & |i_2| &= j-(k+i)+1 = j-k
                 \end{align*}
                 si possono scrivere maggiorazioni e minorazioni su $k$, sfruttando $i \leq j-1$
-                    \begin{gather*}
-                        k= \left\lfloor \frac{i+j}{2}\right\rfloor \leq
-                        \left\lfloor \frac{(j-1)+j}{2}\right\rfloor = 
-                        \left\lfloor \frac{2j-1}{2}\right\rfloor \leq j-1 \\
-                        i= \left\lfloor \frac{2i+1}{2}\right\rfloor
-                        = \left\lfloor \frac{i+(i+1)}{2}\right\rfloor 
-                        \leq \left\lfloor \frac{i+j}{2}\right\rfloor 
-                        \leq k
-                    \end{gather*}
+                \begin{gather*}
+                    k= \left\lfloor \frac{i+j}{2}\right\rfloor \leq
+                    \left\lfloor \frac{(j-1)+j}{2}\right\rfloor = 
+                    \left\lfloor \frac{2j-1}{2}\right\rfloor \leq j-1 \\
+                    i= \left\lfloor \frac{2i+1}{2}\right\rfloor
+                    = \left\lfloor \frac{i+(i+1)}{2}\right\rfloor 
+                    \leq \left\lfloor \frac{i+j}{2}\right\rfloor 
+                    \leq k
+                \end{gather*}
                 da cui 
                 \begin{equation*}
                     \begin{split}
@@ -166,37 +166,276 @@ Per prima cosa va identificata la taglia di una generica sottoistanza in funzion
                     0 < &|i_1| < n
                     \end{split}
                 \end{equation*}
+                in maniera analoga si dimostra $ 0 < j-k < n $ % ESERCIZIO
             \item 
                 $m_1 = MAX(A,i,k) = max(\{A(x):i \leq x \leq k \}) $ \\
                 $m_2 = MAX(A,k+1,j) = max(\{A(x):k+1 \leq x \leq j \}) $ \\
                 considerati corretti per l'ipotesi induttiva
             \item sfruttando la proprietà $ A = A_1 \cup A_2 \Rightarrow max\{A\} = max\{max\{A_1\}, max\{A_2\}\}$,
-                basta verificare che le due sottoistanze coprano tutto A, e lo fanno: $(i,k)(k+1,j)$
+                basta verificare che le due sottoistanze coprano tutto $A$: $A[i..j] = A[i..k] + A[k+1..j] $ %$(i,k)(k+1,j)$
         \end{enumerate}
 \end{description}
 
-% \subsection{Analisi della complessità}
-\section{Analisi della complessità}
+\section{Analisi della complessità - Relazione di ricorrenza}
+La relazione, o equazione, di ricorrenza è una relazione \textbf{implicita} su $T(n)$, che esprime $T(n)$ in funzione dei suoi valori assunti su valori del parametro più piccoli
+\[
+    T(n) = 
+    \begin{cases} 
+        T_0      &  n \leq n_0 \\
+        T_D + T_R + T_C & n > n_0
+    \end{cases}
+\]
+\begin{description}
+    \item{$\bm{T_0}\:$} costo massimo istanze di base $i$, $|i| \leq n_0$
+    \item{$\bm{T_D}$} costo associato alla fase di \textit{Divide}
+    \item{$\bm{T_R}$} costo della ricorsione: $T_R = T(|i_1|) + \dots + T(|i_k|)$
+    \item{$\bm{T_C}$} costo associato alla fase di \textit{Conquer}
+\end{description}
+Nota: $T(n)$ ha dominio sui naturali: $T : \mathbb{N} \rightarrow \mathbb{R}^{+} \cup \{0\}$
 
-Relazione di ricorrenza, pag 6
+\subsection{Esempio: Relazione di ricorrenza per MAX}
+Le uniche istruzioni elementari che vengono considerate nell'analisi sono i confronti tra chiavi. Tutte le altre istruzioni (assegnazioni, chiamate\ldots) hanno costo nullo. L'equazione di ricorrenza allora risulta
+\[
+    T_{MAX}(n) = 
+    \begin{cases} 
+        \overbracket[0.5pt]{
+            \vphantom{\frac{n}{2}}
+            \;0\: 
+        }^\text{$T_0$}
+        &  n = 1 \\
+        \underbracket[0.5pt]{
+            \vphantom{\frac{n}{2}}
+            \:0\:
+        }_\text{$T_D$}
+        + 
+        \underbracket[0.5pt]{
+            T_{MAX} \left( \left\lfloor \frac{n}{2} \right\rfloor \right) 
+            + T_{MAX} \left( \left\lceil \frac{n}{2} \right\rceil \right)
+        }_\text{$T_R$}
+        + 
+        \underbracket[0.5pt]{
+            \vphantom{\frac{n}{2}}
+            \:1\:
+        }_\text{$T_D$} 
+        & n > 1
+    \end{cases}
+\]
+Parti alte e basse introducono un'asimmetria che si amplifica sempre di più, si possono imporre delle condizioni sul valore iniziale per rimuoverle da \textit{tutti} i passi successivi.
+\[
+    T_{MAX}(n) = 
+    \begin{cases} 
+        0      &  n = 1 \\
+        2 T_{MAX} \left( \frac{n}{2} \right) + 1 & n > 1, \exists k : n=2^k
+    \end{cases}
+\]
+Risolvere l'equazione di ricorrenza in forma chiusa (definita esplicitamente fino alle costanti) è molto spesso estremamente difficile. In questi casi si cercano delle maggiorazioni o minorazioni che descrivano il comportamento asintotico nel modo più stretto possibile.\\
+Nelle sezioni successive sono presentate tre tecniche per risolvere le relazioni di ricorrenza.
 
-Induzione parametrica - guess, pag 7.5
+\subsection{Soluzione per \textit{unfolding}}
+\begin{equation*}
+    \begin{split}
+        T_{MAX} &=
+        2 T_{MAX} \left( \frac{n}{2} \right) + 1
+        = 2 \left( 2 T_{MAX} \left( \frac{n}{4} \right) + 1 \right) + 1 \\
+        &= 2^2 \:T_{MAX} \left( \frac{n}{2^2} \right) +2 +1
+        = 2^2 \left( 2 T_{MAX} \left( \frac{n}{2^3} \right) + 1 \right) +2+1 \\
+        &= 2^3 \:T_{MAX} \left( \frac{n}{2^3} \right) +2^2 +2 +1 = \cdots \\ 
+        \intertext{passo di generalizzazione}
+        \cdots &=2^i \:T_{MAX} \left( \frac{n}{2^i} \right) +2^i + \cdots +2^2 +2 +1 \\
+        &= 2^i \:T_{MAX} \left( \frac{n}{2^i} \right) + \sum_{j=0}^{i-1} 2^j \\
+        \intertext{elimino la dipendenza implicita quando il parametro è un valore base: $n / 2^i=1 \rightarrow i=\log_2 n$}
+        &= 2^{\log_2 n} \cancel{ T_{MAX} \left( \cancel{\frac{n}{2^{\log_2 n}} } \right) } 
+        + \sum_{j=0}^{\log_2 n-1} 2^j \\
+        &= \frac{2^{\log_2 n}-1}{2-1} = n-1
+    \end{split}
+\end{equation*}
 
-Esempio guess MAX, pag 9.5
+\subsection{Verifica per induzione}
+Si può verificare per induzione la correttezza della soluzione trovata 
 
-Esempio guess errata, pag 10
+\begin{description}
+    \item{\textbf{Base:}} $T(n)\left. \right|_{n=n_0} \meq T_0 \rightarrow 
+            T(n)=n-1 \left. \right|_{n=1} \meq 0 \rightarrow \text{vero}$
+    \item{\textbf{HP:}} $s < n$, sia vera $T(s) = s-1 \quad \forall s $ potenza di $2$
+    \item{\textbf{TH:}} $T(n) = 2T \left( \frac{n}{2} \right) +1 \overset{\text{HP ind.}}{=} 
+            2 \left( \frac{n-1}{2} \right)+1 = n-1$ che è la formula per $n$
+\end{description}
 
-Esempio guess cn più complessa, pag 10.5
+\subsection{Soluzione per induzione parametrica}
+\begin{enumerate}
+    \item fomulare una \textit{guess} (limitazione superiore/inferiore) a $T(n)$ che sia espressa con costanti parametriche da determinare
+    \item simulare la verifica per induzione della guess in modo da ottenere e raccogliere vincoli sulle costanti parametriche che permettano di completare con successo i passi dell'induzione
+    \item cercare valori dei parametri che verifichino contemporaneamente tutte le condizioni accumulate. Se il sistema generato non ha soluzioni, la \textit{guess} era errata.
+\end{enumerate}
 
-Verifica per induzione correttezza cn, pag 11.5 (esercizio)
+\subsubsection{Esempio: Guess per MAX}
+\textit{Guess}: $T(n) \leq cn+d$
+\begin{description}
+    \item{\textbf{Base:}} $T(1) = 0 \mleq cn+d \left. \right|_{n=1} = c+d \rightarrow
+            c+d\geq 0 $ \circola{1}
+    \item{\textbf{HP:}} $T(k) \leq ck+d \quad \forall k<n $ generico
+    \item{\textbf{TH:}} 
+        \begin{equation*}
+            \begin{split}
+                T(n) &=
+                T \left( \left\lfloor \frac{n}{2} \right\rfloor \right) 
+                + T \left( \left\lceil \frac{n}{2} \right\rceil \right) + 1 \\
+                &\leq c \left\lfloor \frac{n}{2} \right\rfloor +d + c \left\lceil \frac{n}{2} \right\rceil +d + 1 \\
+                &= c \left( \left\lfloor \frac{n}{2} \right\rfloor + \left\lceil \frac{n}{2} \right\rceil \right) +2d + 1 \\
+                &= cn + 2d + 1 \mleq cn+d \\
+                \rightarrow d &\leq -1 \quad \circola{2}
+            \end{split}
+        \end{equation*}
+\end{description}
+Combinando i vincoli \circola{1} e \circola{2} risultano possibili molte coppie di parametri. Si sceglie quella più restrittiva, che nel caso di una maggiorazione risulta essere il valore minimo della $c$, parametro della $n$ con esponente massimo.
+% TODO grafico a pag 9.9
+I valori trovati sono $c=1, d=-1$, ossia $T(n) \leq n-1$
 
-In versione cn+d, pag 11.5 (esercizio)
+\subsubsection{Esempio: Guess errata}
+\textit{Guess}: $T(n) \leq cn$
+\begin{description}
+    \item{\textbf{Base:}} $T(1) = 0 \mleq cn \left. \right|_{n=1} = c \rightarrow c \geq 0 $ \circola{1}
+    \item{\textbf{HP:}} $T(k) \leq ck \quad \forall k<n $
+    \item{\textbf{TH:}} 
+        \begin{equation*}
+            \begin{split}
+                T(n) &=
+                T \left( \left\lfloor \frac{n}{2} \right\rfloor \right) 
+                + T \left( \left\lceil \frac{n}{2} \right\rceil \right) + 1 \\
+                &\leq c \left\lfloor \frac{n}{2} \right\rfloor + c \left\lceil \frac{n}{2} \right\rceil + 1 \\
+                &= c \left( \left\lfloor \frac{n}{2} \right\rfloor + \left\lceil \frac{n}{2} \right\rceil \right) + 1 \\
+                &= cn + 1 \mleq cn \\
+                \rightarrow  1 &\leq 0 \quad \text{impossibile}
+            \end{split}
+        \end{equation*}
+\end{description}
 
+\subsubsection{Esempio: Guess search}
+\[
+    T(n) = 
+    \begin{cases} 
+        20      &  n \leq 10 \\
+        T \left( \left\lceil \frac{n}{5} \right\rceil \right) + 
+        T \left( \left\lfloor \frac{7n}{10} \right\rfloor \right) + 3n & n > 10
+    \end{cases}
+\]
+\textit{Guess}: $T(n) \leq cn$
+\begin{description}
+    \item{\textbf{Base:}}
+        $ T(n) = 20 \mleq cn \left. \right|_{1 \leq n \leq 10} $
+        \begin{align*}
+            20& \leq cn& \rightarrow c& \geq \frac{20}{n} \quad n=1,\cdots,10 \\
+              &        & \rightarrow c& \geq 20 \quad \text{per} \quad n=1 \quad \circola{1} 
+              % fa proprio schifo
+        \end{align*}
+    \item{\textbf{HP:}} $T(k) \leq ck \quad \forall k<n $ con $ n \geq 11 $
+    \item{\textbf{TH:}} 
+        \begin{equation*}
+            \begin{split}
+                T(n) &=
+                T \left( \left\lceil \frac{n}{5} \right\rceil \right) + 
+                T \left( \left\lfloor \frac{7n}{10} \right\rfloor \right) + 3n \\
+                &\leq c \left\lceil \frac{n}{5} \right\rceil  + 
+                c \left\lfloor \frac{7n}{10} \right\rfloor  + 3n \\
+                & \leq c \left( \frac{n}{5}+1 \right) + c \frac{7n}{10} + 3n \\
+                & \overset{\circola{A}}{=} c \left( \frac{n}{5} + \frac{7n}{10} \right) + c + 3n \\
+                &= c \frac{9n}{10} + c + 3n \mleq cn\\
+                \rightarrow 3n & \mleq \frac{c}{10}n -c \\
+            \end{split}
+        \end{equation*}
+        % TODO grafico a pag 11.1
+        risolvendo, si ottiene il vincolo $c \geq 330$ \\
+        mettendo a sistema le due condizioni ottenute, si ottiene $T(n) \leq 330n$.\\
+        Prima di \circola{A}, è il $+1$ che introduce problemi, maggioriamolo con $n \geq 11 \rightarrow 1 \leq n/11$
+        \begin{equation*}
+            \begin{split}
+                \hphantom{T(n)} &
+                \overset{\circola{A}}{\leq} c \left( \frac{n}{5}+\frac{n}{11} \right) + c \frac{7n}{10} + 3n \\
+                &=c \left( \frac{22+10+77}{110}n \right) + 3n \\
+                &= c \frac{109}{110} \cancel{n}+  3\cancel{n} \mleq c\cancel{n}\\
+                \rightarrow 3 & \leq \frac{c}{110} \\
+                \rightarrow c & \geq 330 \\
+            \end{split}
+        \end{equation*}
+\end{description}
+
+Verifica per induzione correttezza cn, pag 11.5 (ESERCIZIO)
+
+In versione cn+d, pag 11.5 (ESERCIZIO)
+
+\subsection{Soluzione con l'albero delle ricorrenze}
 Complessità dall'albero delle ricorrenze
 % forse nel prossimo capitolo
 
 % \subsubsection{autocomplete}
 \subsection{autocomplete}
+
+Guarda che gustoso simbolino: $ \mleq{} $
+
+\[
+    a \mgeq{} b \mles{} c \mges{} d \meq{} 
+\]
+
+E tipiche funzioni
+
+\[
+    u(x) = 
+    \begin{cases} 
+        \exp{x} & \text{if } x \geq 0 \\
+        1       & \text{if } x < 0
+    \end{cases}
+\]
+
+Usa dcases se la matematica è alta, dcases* se le condizioni sono testo, serve pacchetto mathtools
+
+Una bella scatola:
+\begin{equation}
+    \boxed{x^2+y^2 = z^2}
+\end{equation}
+
+Grande:
+
+\fbox{
+ \addtolength{\linewidth}{-2\fboxsep}%
+ \addtolength{\linewidth}{-2\fboxrule}%
+ \begin{minipage}{\linewidth}
+  \begin{equation}
+   x^2+y^2=z^2
+  \end{equation}
+ \end{minipage}
+}
+
+Multiriga sotto simbolone:
+
+\begin{equation}
+  \prod_{\substack{
+            1\le i \le n\\
+            1\le j \le m}}
+     M_{i,j}
+\end{equation}
+
+Testo fra lista di equazioni:
+
+\begin{minipage}{3in}
+\begin{align*}
+\intertext{If}
+   A &= \sigma_1+\sigma_2\\
+   B &= \rho_1+\rho_2\\
+\intertext{then}
+C(x) &= e^{Ax^2+\pi}+B
+\end{align*} 
+\end{minipage}
+
+
+Testo fra lista di equazioni, senza minipage:
+
+\begin{align*}
+\intertext{If}
+   A &= \sigma_1+\sigma_2\\
+   B &= \rho_1+\rho_2\\
+\intertext{then}
+C(x) &= e^{Ax^2+\pi}+B
+\end{align*} 
 
 Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \ref{alg:mergeline}, quindi guarda a \algref{alg:mergesort}{alg:mergeline} per saperne di più.
 
@@ -217,8 +456,29 @@ Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \
 \end{algorithmic}
 \end{algorithm}
 
+\begin{description}
+    \item{Funzione di \textbf{Divisione}} $ D : \bi{} \to \bi{}^*$
+    \item{Funzione di \textbf{Ricombinazione}} $ C : \bs{}^* \to \bs{}$
+\end{description}
+
+\begin{itemize}
+    \item $\exists n_0 \in \mathbb{N} \cup \{0\} : \forall i \in \bi{}, |i| > n_0 $
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+            \item[--] $ D(i)=<i_1, i_2, \dots, i_k>:|i_j|<|i|, 1 \leq j \leq k$ \\
+                (le sottoistanze sono strettamente più piccole dell'istanza originale)
+            \item[--] data $ <s_1, s_2, \dots, s_k> \in \bs{}^* $ con $i_j \bpi{} s_j,  1 \leq j \leq k \Rightarrow i \bpi{} C(<s_1, s_2, \dots, s_k>)$ \\
+                (la ricombinazione delle soluzioni alle sottoistanze è in relazione con l'istanza originale)
+        \end{itemize}
+    \item è possibile la risoluzione diretta delle istanze $ i \in \bi{} : |i| \leq n_0 $
+\end{itemize}
+
 àg
 èg
 ìg
 òg
 ùg
+
+ede(scription) eit(emize) eeq(uation) eal(ign)
+% TODO
+% pag 7.1 formula sommatoria geometrica
+% pag 9.1 formule algebra discreta

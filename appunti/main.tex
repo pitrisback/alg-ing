@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools} % dcases
 \usepackage{marginnote}
 \usepackage[top=3cm, bottom=3cm, heightrounded, marginparwidth=2.5cm, marginparsep=1.5cm]{geometry}
 \usepackage{graphicx}
@@ -21,6 +22,8 @@
 \usepackage{indentfirst} % YES indent after section/chapter heading
 \usepackage[Algoritmo]{algorithm}
 \usepackage[noend]{algpseudocode} % algoritmi decenti, senza end
+\usepackage[makeroom]{cancel} % strike math
+\usepackage{nicefrac} % nice inline fractions
 
 %%   CUSTOM THEOREM/DEF  %%
 
@@ -58,6 +61,14 @@
 \newcommand{\bpi}{\bm{\Pi}}
 \newcommand{\bi}{I}
 \newcommand{\bs}{S}
+
+\newcommand{\mleq}{\overset{?}{\leq}}
+\newcommand{\mgeq}{\overset{?}{\geq}}
+\newcommand{\mles}{\overset{?}{<}}
+\newcommand{\mges}{\overset{?}{>}}
+\newcommand{\meq}{\overset{?}{=}}
+
+\newcommand{\circola}[1]{\mbox{\textcircled{\footnotesize #1}}}
 
 % numerazione sana degli algoritmi
 \renewcommand{\thealgorithm}{\arabic{chapter}.\arabic{algorithm}} 
