@@ -8,6 +8,7 @@ Seguendo il paradigma \textit{Divide and Conquer}, si cerca una soluzione ad una
     $$ A^* = \left\{ < a_1, a_2, \dots, a_k > \: : k \geq 0, \: a_i \in A, \: 1 \leq i \leq k \right\}$$
     La sequenza vuota viene indicata con $ < \; > \: = \epsilon $
 \end{definition}
+
 \subsection{Proprietà di sottostruttura}
 
 La proprietà di sottostruttura è una proprietà del problema $\bpi{} \subseteq \bi{} \times \bs{} $ che permette di definire il divide and conquer. Devono esistere due funzioni per avere la proprietà di sottostruttura:
@@ -37,7 +38,18 @@ Note:
         $ A_D : i \mapsto <i_1, i_2, \dots, i_k> \sim D(i)$ e $ A_C : <s_1, s_2, \dots, s_k> \mapsto s \sim C(<s_1, s_2, \dots, s_k>) $
 \end{itemize}
 
-TODO pagina 8, definizione del sorting di interi
+\subsubsection{Problema del Sorting di interi - definizione}
+
+Introduciamo il problema dell'ordinamento di una sequenza di numeri interi, che verrà usato anche in seguito per esemplificare i concetti teorici esposti.
+
+Come insiemi definiamo $\bi{} = \mathbb{Z}^* $ e $\bs{} = \mathbb{Z}^* $. Non tutti gli elementi di $\bs{}$ saranno associati ad un'istanza.
+
+Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, deve esistere una corrispondenza biunivoca fra gli indici per cui
+\begin{itemize}[noitemsep,parsep=0pt,partopsep=0pt]
+    \item[--] $i = <i_1, i_2, \dots, i_k> $ e $ s = <s_1, s_2, \dots, s_k> $ con $k \geq 1$
+    \item[--] $ \exists \;\phi:\{1, \dots, n\} \leftrightarrow \{1, \dots, n\} \;|\; s_i = i_{\phi(i)}$
+    \item[--] $ s_1 \leq s_2 \leq \dots \leq s_k$ 
+\end{itemize}
 
 \subsection{Paradigma Divide and Conquer}
 
@@ -45,10 +57,10 @@ TODO pagina 8, definizione del sorting di interi
 \caption{Divide and Conquer}\label{alg:dnc}
 \begin{algorithmic}[1]
     \Procedure{D\&C}{$i$}
-        \If{$|i| \leq n_0$}                     \Comment{BASE}
+        \If{$|i| \leq n_0$}                             \Comment{BASE}
             \State *risolvo direttamente*
         \EndIf
-        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$ \Comment{DIVIDE}
+        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$    \Comment{DIVIDE}
         \For{$j \gets 1 $ to $ k $ }                    \Comment{RECURSE}
             \State $s_j \gets $ \Call{D\&C}{$i_j$}
         \EndFor
@@ -58,9 +70,37 @@ TODO pagina 8, definizione del sorting di interi
 \end{algorithmic}
 \end{algorithm}
 
-TODO pagina 4, albero delle chiamate
+\subsubsection{Albero delle chiamate}
+Nel corso del D\&C, si alternano chiamate all'algoritmo di Divide, e quindi una fase di espansione, generazione \textit{top-down} delle sottoistanze, e chiamate all'algoritmo di Conquer, associato a fasi di contrazione, risoluzione \textit{bottom-up}. L'albero non viene generato tutto contemporaneamente, ma viene creato (e distrutto) nel corso dell'algoritmo, seguendo il cammino di una visita anticipata (\textit{depth-first search}).
 
-TODO pagina 4, esempio algoritmo sorting di interi 
+Il fatto che nella fase di Conquer venga eliminata la porzione di albero generato per risolvere una sottoistanza, è uno dei difetti principali di questo paradigma. Il non ricordare le soluzioni parziali trovate lo rende un processo computazionale \textit{memoryless}.
+
+TODO pagina 4, albero delle chiamate, disegnini e grafichetti
+
+\subsubsection{Esempio algoritmo D\&C, ricerca del massimo}
+
+Come esempio di algoritmo D\&C, viene presentata una procedura che trova il massimo intero in una sequenza di interi $A[1 \dots n] \in \mathbb{Z}^*$
+
+\begin{algorithm}[H]
+\caption{Massimo}\label{alg:max}
+\begin{algorithmic}[1]
+    \Procedure{MAX}{$A,i,j$}                            
+        \If{$i=j$}                             \Comment{BASE}
+            \State return $A[i]$
+        \EndIf
+        \State $k \gets \left\lfloor \frac{i+j}{2} \right\rfloor$    \Comment{DIVIDE - punto di mezzo discreto}
+        \State $m_1 \gets $ \Call{MAX}{$A,i,k$} \Comment{RECURSE}
+        \State $m_1 \gets $ \Call{MAX}{$A,k+1,j$}
+        \If{$m_1 \geq m_2$}              \Comment{CONQUER}
+            \State return $m_1$
+        \Else
+            \State return $m_2$
+        \EndIf
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Nota: Nella firma della procedura, sono presenti tutti i parametri necessari a identificare la \textit{generica} sottostruttura
 
 \subsection{Correttezza del DnC}
 
