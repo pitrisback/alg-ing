@@ -1,15 +1,18 @@
-\section{Paradigma divide and conquer}
+% \section{Paradigma divide and conquer}
 
 Seguendo il paradigma \textit{Divide and Conquer}, si cerca una soluzione ad una data istanza in funzione delle soluzioni a determinate istanze \textbf{più piccole}, dette sottoistanze.
 
-\subsection{Stella di Kleene}
+% \subsection{Stella di Kleene}
+% FORMATTA potrebbe non essere una sezione
+\section{Stella di Kleene}
 \begin{definition}[Stella di Kleene]\label{def:kleene}
     La stella di Kleene viene definita come l'insieme di tutte le sequenze finite di elementi di $A$.
     $$ A^* = \left\{ < a_1, a_2, \dots, a_k > \: : k \geq 0, \: a_i \in A, \: 1 \leq i \leq k \right\}$$
     La sequenza vuota viene indicata con $ < \; > \: = \epsilon $
 \end{definition}
 
-\subsection{Proprietà di sottostruttura}
+% \subsection{Proprietà di sottostruttura}
+\section{Proprietà di sottostruttura}
 
 La proprietà di sottostruttura è una proprietà del problema $\bpi{} \subseteq \bi{} \times \bs{} $ che permette di definire il divide and conquer. Devono esistere due funzioni per avere la proprietà di sottostruttura:
 
@@ -38,7 +41,8 @@ Note:
         $ A_D : i \mapsto <i_1, i_2, \dots, i_k> \sim D(i)$ e $ A_C : <s_1, s_2, \dots, s_k> \mapsto s \sim C(<s_1, s_2, \dots, s_k>) $
 \end{itemize}
 
-\subsubsection{Problema del Sorting di interi - definizione}
+% \subsubsection{Problema del Sorting di interi - definizione}
+\subsection{Problema del Sorting di interi - definizione}
 
 Introduciamo il problema dell'ordinamento di una sequenza di numeri interi, che verrà usato anche in seguito per esemplificare i concetti teorici esposti.
 
@@ -51,7 +55,8 @@ Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, de
     \item[--] $ s_1 \leq s_2 \leq \dots \leq s_k$ 
 \end{itemize}
 
-\subsection{Paradigma Divide and Conquer}
+% \subsection{Paradigma Divide and Conquer}
+\section{Prototipo Divide and Conquer}
 
 \begin{algorithm}[H]
 \caption{Divide and Conquer}\label{alg:dnc}
@@ -70,14 +75,16 @@ Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, de
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Albero delle chiamate}
+% \subsubsection{Albero delle chiamate}
+\subsection{Albero delle chiamate}
 Nel corso del D\&C, si alternano chiamate all'algoritmo di Divide, e quindi una fase di espansione, generazione \textit{top-down} delle sottoistanze, e chiamate all'algoritmo di Conquer, associato a fasi di contrazione, risoluzione \textit{bottom-up}. L'albero non viene generato tutto contemporaneamente, ma viene creato (e distrutto) nel corso dell'algoritmo, seguendo il cammino di una visita anticipata (\textit{depth-first search}).
 
 Il fatto che nella fase di Conquer venga eliminata la porzione di albero generato per risolvere una sottoistanza, è uno dei difetti principali di questo paradigma. Il non ricordare le soluzioni parziali trovate lo rende un processo computazionale \textit{memoryless}.
 
 TODO pagina 4, albero delle chiamate, disegnini e grafichetti
 
-\subsubsection{Esempio algoritmo D\&C, ricerca del massimo}
+% \subsubsection{Esempio algoritmo D\&C, ricerca del massimo}
+\subsection{Esempio algoritmo D\&C: ricerca del massimo}
 
 Come esempio di algoritmo D\&C, viene presentata una procedura che trova il massimo intero in una sequenza di interi $A[1 \dots n] \in \mathbb{Z}^*$
 
@@ -102,15 +109,94 @@ Come esempio di algoritmo D\&C, viene presentata una procedura che trova il mass
 
 Nota: Nella firma della procedura, sono presenti tutti i parametri necessari a identificare la \textit{generica} sottostruttura
 
-\subsection{Correttezza del DnC}
+% \subsection{Correttezza del DnC}
+\section{Correttezza del DnC}
 
-Induzione e magia
+La correttezza di un algoritmo Divide and Conquer viene provata con un'induzione sulla taglia delle istanze.
 
-Relazione di ricorrenza
+\begin{description}
+    \item{\textbf{Base:}} provare la correttezza della soluzione diretta per $|i| \leq n_0$
+    \item{\textbf{HP:}} formulare l'ipotesi induttiva, assunta come corretta per  $|i| < n$, con $n > n_0$
+    \item{\textbf{TH:}} sfruttando l'ipotesi induttiva, dimostrare che la tesi è valida per $|i| = n$.
+        La dimostrazione si articola in più parti, in cui viene anche provata la proprietà di sottostruttura.
+        \begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+            \item $\forall i, D(i) = <i_1, \dots, i_k> \Rightarrow |i_j| < |i|$ \\
+                verificare che il divide contragga davvero
+            \item date $s_j \Rightarrow i_j \bpi{} s_j, 1 \leq j \leq k$ (vero per l'ipotesi induttiva)
+            \item data $s = A_C (s_1, \dots, s_k) \Rightarrow i \bpi{} s$ \\
+                correttezza del Conquer
+        \end{enumerate}
+\end{description}
 
-\subsection{Analisi della complessità}
+\subsection{Esempio: correttezza dell'algoritmo MAX}
 
-\subsubsection{autocomplete}
+Per prima cosa va identificata la taglia di una generica sottoistanza in funzione dei parametri che la caratterizzano: $n=j-i+1$
+
+
+\begin{description}
+    \item{\textbf{Base:}} $n=1 \rightarrow j-i+1=1 \rightarrow j=i \rightarrow return \: A[i]$: corretto, $max\{a\}=a$
+    \item{\textbf{HP:}} MAX viene considerato corretto per i casi $j-i+1 < n$
+    \item{\textbf{TH:}} $j-i+1 = n$, $n>1$ e quindi anche $i<j$
+        \begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+            \item sottoistanze di taglia minore e non vuote
+                % $k= \left\lfloor \frac{i+j}{2}\right\rfloor$, $|i_1| = k-i+1$, $|i_2| = j-(k+i)+1 = j-k$
+                % \begin{align*}
+                    % k&= \left\lfloor \frac{i+j}{2}\right\rfloor & |i_1| &= k-i+1 \\
+                     % &                                          & |i_2| &= j-(k+i)+1 = j-k
+                % \end{align*}
+                \begin{align*}
+                    k&= \left\lfloor \frac{i+j}{2}\right\rfloor & |i_1| &= k-i+1  & |i_2| &= j-(k+i)+1 = j-k
+                \end{align*}
+                si possono scrivere maggiorazioni e minorazioni su $k$, sfruttando $i \leq j-1$
+                    \begin{gather*}
+                        k= \left\lfloor \frac{i+j}{2}\right\rfloor \leq
+                        \left\lfloor \frac{(j-1)+j}{2}\right\rfloor = 
+                        \left\lfloor \frac{2j-1}{2}\right\rfloor \leq j-1 \\
+                        i= \left\lfloor \frac{2i+1}{2}\right\rfloor
+                        = \left\lfloor \frac{i+(i+1)}{2}\right\rfloor 
+                        \leq \left\lfloor \frac{i+j}{2}\right\rfloor 
+                        \leq k
+                    \end{gather*}
+                da cui 
+                \begin{equation*}
+                    \begin{split}
+                    i \leq &k \leq j-1 \\
+                    i-i+1 \leq &k-i+1 \leq j-1-i+1 \\
+                    0 < 1 \leq &k-i+1 \leq j-i < j-i+1 = n\\
+                    0 < &|i_1| < n
+                    \end{split}
+                \end{equation*}
+            \item 
+                $m_1 = MAX(A,i,k) = max(\{A(x):i \leq x \leq k \}) $ \\
+                $m_2 = MAX(A,k+1,j) = max(\{A(x):k+1 \leq x \leq j \}) $ \\
+                considerati corretti per l'ipotesi induttiva
+            \item sfruttando la proprietà $ A = A_1 \cup A_2 \Rightarrow max\{A\} = max\{max\{A_1\}, max\{A_2\}\}$,
+                basta verificare che le due sottoistanze coprano tutto A, e lo fanno: $(i,k)(k+1,j)$
+        \end{enumerate}
+\end{description}
+
+% \subsection{Analisi della complessità}
+\section{Analisi della complessità}
+
+Relazione di ricorrenza, pag 6
+
+Induzione parametrica - guess, pag 7.5
+
+Esempio guess MAX, pag 9.5
+
+Esempio guess errata, pag 10
+
+Esempio guess cn più complessa, pag 10.5
+
+Verifica per induzione correttezza cn, pag 11.5 (esercizio)
+
+In versione cn+d, pag 11.5 (esercizio)
+
+Complessità dall'albero delle ricorrenze
+% forse nel prossimo capitolo
+
+% \subsubsection{autocomplete}
+\subsection{autocomplete}
 
 Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \ref{alg:mergeline}, quindi guarda a \algref{alg:mergesort}{alg:mergeline} per saperne di più.
 
@@ -133,5 +219,6 @@ Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \
 
 àg
 èg
+ìg
 òg
 ùg
