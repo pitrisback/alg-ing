@@ -217,8 +217,9 @@ Risolvere l'equazione di ricorrenza in forma chiusa (definita esplicitamente fin
 Nelle sezioni successive sono presentate tre tecniche per risolvere le relazioni di ricorrenza.
 
 \subsection{Soluzione per \textit{unfolding}}
-\begin{equation*}
-    \begin{split}
+% \begin{equation*}
+    % \begin{split}
+\begin{align*}
         T_{MAX} &=
         2 T_{MAX} \left( \frac{n}{2} \right) + 1
         = 2 \left( 2 T_{MAX} \left( \frac{n}{4} \right) + 1 \right) + 1 \\
@@ -232,8 +233,9 @@ Nelle sezioni successive sono presentate tre tecniche per risolvere le relazioni
         &= 2^{\log_2 n} \cancel{ T_{MAX} \left( \cancel{\frac{n}{2^{\log_2 n}} } \right) } 
         + \sum_{j=0}^{\log_2 n-1} 2^j \\
         &= \frac{2^{\log_2 n}-1}{2-1} = n-1
-    \end{split}
-\end{equation*}
+\end{align*}
+    % \end{split}
+% \end{equation*}
 
 \subsection{Verifica per induzione}
 Si può verificare per induzione la correttezza della soluzione trovata 
