@@ -1,8 +1,5 @@
-% \section{Paradigma divide and conquer}
-
 Seguendo il paradigma \textit{Divide and Conquer}, si cerca una soluzione ad una data istanza in funzione delle soluzioni a determinate istanze \textbf{più piccole}, dette sottoistanze.
 
-% \subsection{Stella di Kleene}
 % FORMATTA potrebbe non essere una sezione
 \section{Stella di Kleene}
 \begin{definition}[Stella di Kleene]\label{def:kleene}
@@ -11,7 +8,6 @@ Seguendo il paradigma \textit{Divide and Conquer}, si cerca una soluzione ad una
     La sequenza vuota viene indicata con $ < \; > \: = \epsilon $
 \end{definition}
 
-% \subsection{Proprietà di sottostruttura}
 \section{Proprietà di sottostruttura}
 
 La proprietà di sottostruttura è una proprietà del problema $\bpi{} \subseteq \bi{} \times \bs{} $ che permette di definire il divide and conquer. Devono esistere due funzioni per avere la proprietà di sottostruttura:
@@ -34,14 +30,12 @@ E devono valere le due seguenti proprietà:
 \end{itemize}
 
 Note:
-% \begin{itemize}
 \begin{itemize}[noitemsep,parsep=0pt,partopsep=0pt]
     \item[--] il numero di sottoistanze può variare, in base all'istanza considerata
     \item[--] gli algoritmi che implementano (con sequenze di istruzioni elementari) le funzioni, sono, formalmente, oggetti matematici diversi \\
         $ A_D : i \mapsto <i_1, i_2, \dots, i_k> \sim D(i)$ e $ A_C : <s_1, s_2, \dots, s_k> \mapsto s \sim C(<s_1, s_2, \dots, s_k>) $
 \end{itemize}
 
-% \subsubsection{Problema del Sorting di interi - definizione}
 \subsection{Problema del Sorting di interi - definizione}
 
 Introduciamo il problema dell'ordinamento di una sequenza di numeri interi, che verrà usato anche in seguito per esemplificare i concetti teorici esposti.
@@ -55,7 +49,6 @@ Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, de
     \item[--] $ s_1 \leq s_2 \leq \dots \leq s_k$ 
 \end{itemize}
 
-% \subsection{Paradigma Divide and Conquer}
 \section{Prototipo Divide and Conquer}
 
 \begin{algorithm}[H]
@@ -75,7 +68,6 @@ Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, de
 \end{algorithmic}
 \end{algorithm}
 
-% \subsubsection{Albero delle chiamate}
 \subsection{Albero delle chiamate}
 Nel corso del D\&C, si alternano chiamate all'algoritmo di Divide, e quindi una fase di espansione, generazione \textit{top-down} delle sottoistanze, e chiamate all'algoritmo di Conquer, associato a fasi di contrazione, risoluzione \textit{bottom-up}. L'albero non viene generato tutto contemporaneamente, ma viene creato (e distrutto) nel corso dell'algoritmo, seguendo il cammino di una visita anticipata (\textit{depth-first search}).
 
@@ -83,7 +75,6 @@ Il fatto che nella fase di Conquer venga eliminata la porzione di albero generat
 
 TODO pagina 4, albero delle chiamate, disegnini e grafichetti
 
-% \subsubsection{Esempio algoritmo D\&C, ricerca del massimo}
 \subsection{Esempio algoritmo D\&C: ricerca del massimo}
 
 Come esempio di algoritmo D\&C, viene presentata una procedura che trova il massimo intero in una sequenza di interi $A[1 \dots n] \in \mathbb{Z}^*$
@@ -109,7 +100,6 @@ Come esempio di algoritmo D\&C, viene presentata una procedura che trova il mass
 
 Nota: Nella firma della procedura, sono presenti tutti i parametri necessari a identificare la \textit{generica} sottostruttura
 
-% \subsection{Correttezza del DnC}
 \section{Correttezza del DnC}
 
 La correttezza di un algoritmo Divide and Conquer viene provata con un'induzione sulla taglia delle istanze.
@@ -139,11 +129,6 @@ Per prima cosa va identificata la taglia di una generica sottoistanza in funzion
     \item{\textbf{TH:}} $j-i+1 = n$, $n>1$ e quindi anche $i<j$
         \begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
             \item sottoistanze di taglia minore e non vuote
-                % $k= \left\lfloor \frac{i+j}{2}\right\rfloor$, $|i_1| = k-i+1$, $|i_2| = j-(k+i)+1 = j-k$
-                % \begin{align*}
-                    % k&= \left\lfloor \frac{i+j}{2}\right\rfloor & |i_1| &= k-i+1 \\
-                     % &                                          & |i_2| &= j-(k+i)+1 = j-k
-                % \end{align*}
                 \begin{align*}
                     k&= \left\lfloor \frac{i+j}{2}\right\rfloor & |i_1| &= k-i+1  & |i_2| &= j-(k+i)+1 = j-k
                 \end{align*}
@@ -166,13 +151,13 @@ Per prima cosa va identificata la taglia di una generica sottoistanza in funzion
                     0 < &|i_1| < n
                     \end{split}
                 \end{equation*}
-                in maniera analoga si dimostra $ 0 < j-k < n $ % ESERCIZIO
+                in maniera analoga si dimostra $ 0 < j-k < n $ , fallo per ESERCIZIO
             \item 
                 $m_1 = MAX(A,i,k) = max(\{A(x):i \leq x \leq k \}) $ \\
                 $m_2 = MAX(A,k+1,j) = max(\{A(x):k+1 \leq x \leq j \}) $ \\
                 considerati corretti per l'ipotesi induttiva
             \item sfruttando la proprietà $ A = A_1 \cup A_2 \Rightarrow max\{A\} = max\{max\{A_1\}, max\{A_2\}\}$,
-                basta verificare che le due sottoistanze coprano tutto $A$: $A[i..j] = A[i..k] + A[k+1..j] $ %$(i,k)(k+1,j)$
+                basta verificare che le due sottoistanze coprano tutto $A$: $A[i..j] = A[i..k] + A[k+1..j] $ 
         \end{enumerate}
 \end{description}
 
@@ -288,8 +273,8 @@ Si può verificare per induzione la correttezza della soluzione trovata
         \end{equation*}
 \end{description}
 Combinando i vincoli \circola{1} e \circola{2} risultano possibili molte coppie di parametri. Si sceglie quella più restrittiva, che nel caso di una maggiorazione risulta essere il valore minimo della $c$, parametro della $n$ con esponente massimo.
-% TODO grafico a pag 9.9
-I valori trovati sono $c=1, d=-1$, ossia $T(n) \leq n-1$
+I valori trovati sono $c=1, d=-1$, ossia $T(n) \leq n-1$\\
+TODO grafico a pag 9.9
 
 \subsubsection{Esempio: Guess errata}
 \textit{Guess}: $T(n) \leq cn$
@@ -343,7 +328,7 @@ I valori trovati sono $c=1, d=-1$, ossia $T(n) \leq n-1$
                 \rightarrow 3n & \mleq \frac{c}{10}n -c \\
             \end{split}
         \end{equation*}
-        % TODO grafico a pag 11.1
+        TODO grafico a pag 11.1\\
         risolvendo, si ottiene il vincolo $c \geq 330$ \\
         mettendo a sistema le due condizioni ottenute, si ottiene $T(n) \leq 330n$.\\
         Prima di \circola{A}, è il $+1$ che introduce problemi, maggioriamolo con $n \geq 11 \rightarrow 1 \leq n/11$
@@ -364,121 +349,10 @@ Verifica per induzione correttezza cn, pag 11.5 (ESERCIZIO)
 In versione cn+d, pag 11.5 (ESERCIZIO)
 
 \subsection{Soluzione con l'albero delle ricorrenze}
-Complessità dall'albero delle ricorrenze
+Complessità dall'albero delle ricorrenze, pag 12
 % forse nel prossimo capitolo
 
-% \subsubsection{autocomplete}
-\subsection{autocomplete}
-
-Guarda che gustoso simbolino: $ \mleq{} $
-
-\[
-    a \mgeq{} b \mles{} c \mges{} d \meq{} 
-\]
-
-E tipiche funzioni
-
-\[
-    u(x) = 
-    \begin{cases} 
-        \exp{x} & \text{if } x \geq 0 \\
-        1       & \text{if } x < 0
-    \end{cases}
-\]
-
-Usa dcases se la matematica è alta, dcases* se le condizioni sono testo, serve pacchetto mathtools
-
-Una bella scatola:
-\begin{equation}
-    \boxed{x^2+y^2 = z^2}
-\end{equation}
-
-Grande:
-
-\fbox{
- \addtolength{\linewidth}{-2\fboxsep}%
- \addtolength{\linewidth}{-2\fboxrule}%
- \begin{minipage}{\linewidth}
-  \begin{equation}
-   x^2+y^2=z^2
-  \end{equation}
- \end{minipage}
-}
-
-Multiriga sotto simbolone:
-
-\begin{equation}
-  \prod_{\substack{
-            1\le i \le n\\
-            1\le j \le m}}
-     M_{i,j}
-\end{equation}
-
-Testo fra lista di equazioni:
-
-\begin{minipage}{3in}
-\begin{align*}
-\intertext{If}
-   A &= \sigma_1+\sigma_2\\
-   B &= \rho_1+\rho_2\\
-\intertext{then}
-C(x) &= e^{Ax^2+\pi}+B
-\end{align*} 
-\end{minipage}
-
-
-Testo fra lista di equazioni, senza minipage:
-
-\begin{align*}
-\intertext{If}
-   A &= \sigma_1+\sigma_2\\
-   B &= \rho_1+\rho_2\\
-\intertext{then}
-C(x) &= e^{Ax^2+\pi}+B
-\end{align*} 
-
-Il \textit{merge}, cuore dell'algoritmo \ref{alg:mergesort}, avviene alla riga \ref{alg:mergeline}, quindi guarda a \algref{alg:mergesort}{alg:mergeline} per saperne di più.
-
-\begin{algorithm}[h]
-\caption{MergeSort}\label{alg:mergesort}
-\begin{algorithmic}[1]
-    \Procedure{MergeSort}{$A,p,r$}
-    \If{$p<r$}
-        \State $ q \gets \left\lfloor \frac{p+r}{2} \right\rfloor $ 
-        \State \Call{MergeSort}{$A,p,q$} \Comment{Ordina prima}
-        \State \Call{MergeSort}{$A,q+1,r$} \Comment{Ordina dopo}
-        \State
-            \Call{Merge}{$A,p,q,r$}
-            \label{alg:mergeline}
-            \Comment{Merge in $\Theta(n)$}
-    \EndIf
-    \EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-\begin{description}
-    \item{Funzione di \textbf{Divisione}} $ D : \bi{} \to \bi{}^*$
-    \item{Funzione di \textbf{Ricombinazione}} $ C : \bs{}^* \to \bs{}$
-\end{description}
-
-\begin{itemize}
-    \item $\exists n_0 \in \mathbb{N} \cup \{0\} : \forall i \in \bi{}, |i| > n_0 $
-        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
-            \item[--] $ D(i)=<i_1, i_2, \dots, i_k>:|i_j|<|i|, 1 \leq j \leq k$ \\
-                (le sottoistanze sono strettamente più piccole dell'istanza originale)
-            \item[--] data $ <s_1, s_2, \dots, s_k> \in \bs{}^* $ con $i_j \bpi{} s_j,  1 \leq j \leq k \Rightarrow i \bpi{} C(<s_1, s_2, \dots, s_k>)$ \\
-                (la ricombinazione delle soluzioni alle sottoistanze è in relazione con l'istanza originale)
-        \end{itemize}
-    \item è possibile la risoluzione diretta delle istanze $ i \in \bi{} : |i| \leq n_0 $
-\end{itemize}
-
-àg
-èg
-ìg
-òg
-ùg
-
-ede(scription) eit(emize) eeq(uation) eal(ign)
 % TODO
+% aggiungi da qualche parte delle note su 
 % pag 7.1 formula sommatoria geometrica
 % pag 9.1 formule algebra discreta
