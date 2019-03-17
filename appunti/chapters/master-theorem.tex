@@ -1,21 +1,118 @@
 \section{Contrazioni}
-Definizione contrazione, 13.6
+% definizione contrazioni, pag 13.5
+\begin{definition}[Contrazione]\label{def:contraz}
+    Una contrazione è una funzione $f: \mathbb{N} \rightarrow \mathbb{N}$, per cui vale
+    \[ f(n) < n \quad \forall n>n_0 \]
+\end{definition}
 
 \subsection{Iterate}
-Def iterate, pag 13.8
+% definizione iterata, pag 13.6
+\begin{definition}[Iterata]\label{def:iterata}
+    Ad una contrazione sono associate le iterate di $f(n)$
+    \[
+    \begin{cases} 
+        f^{(0)} (n) = n      &  i = 0 \\
+        f^{(i)} (n) = f \left( f^{(i-i)} (n) \right)   &  i > 0 \\
+        
+    \end{cases}
+    \]
+\end{definition}
 
-Nota successione decrescente 14.3
+Nota: le iterate formano una successione decrescente $ f^{(0)} (n) > f^{(1)} (n) > \cdots > f^{(i)} (n) $ \\
+Nella prossima sezione, l'iterata $0$ sarà associata alla radice dell'abero e all'istanza generale, l'iterata $i-esima$ rappresenterà la taglia al livello $i$ dell'albero.
 
 \subsection{Ausiliaria}
-Def ausiliaria, pag 14.6
+% Def ausiliaria, pag 14.6
+\begin{definition}[Ausiliaria]\label{def:ausiliaria}
+    Alle iterate di una funzione si associa anche una funzione ausiliaria, che indica il maggior indice di iterata per cui il valore è ancora maggiore del valore di base. Nell'albero delle ricorrenze, questo indicherà l'ultimo livello.
+    \[ f^*(n, n_0) = \max \{ i>0 : f^{(i)}(n) > n_0 \} \]
+    La funzione è definita solo per $n>n_0$, per convenzione assume il valore $f^*(n,n_0)=-1$ se $ n \leq n_0$
+\end{definition}
 
 \subsection{Esempi}
-\subsubsection{ esempio $\bm{n/2}$}
-pag 13.9, 14.8
+\subsubsection{$\bm{f(n) = n/2}$}
+% pag 13.9, 14.8
+Calcoliamo la forma esplicita dell'iterata e la funzione ausiliaria per
+\[ f(n) = \frac{n}{2} \quad \text{con} \quad n=2^k \]
+Forma esplicita iterata:
+\begin{align*}
+    & f^{(0)}(n) = n \\
+    & f^{(1)}(n) = f(n) = \frac{n}{2} \\
+    & f^{(2)}(n) = f \left( f^{(1)}(n) \right) = f \left( \frac{n}{2} \right) = \frac{n}{4} = \frac{n}{2^2} \\
+    & f^{(i)}(n) = \frac{n}{2^i} 
+\end{align*}
+Dove la generalizzazione  è valida perché gli argomenti restano potenze di due: $n/2^i = 2^{k-i}$ \\
+Calcolo funzione ausiliaria:
+\begin{align*}
+    & f^{(i)}(n) \mgeq n_0 
+        & \text{per quali $i\:$?}\\
+    & \frac{n}{2^i} \mges n_0 \\
+    & 2^i \mles \frac{n}{n_0} \\
+    & i < \log_2 \left( \frac{n}{n_0} \right)
+        & \text{il vincolo è risolto} \\
+    \rightarrow \quad & f^*(n, n_0) = \log_2 \left( \frac{n}{n_0} \right) - 1
+        & \text{ne prendo il massimo} \\
+    n_0 = 1 \rightarrow \quad & f^*(n, 1) = \log_2 \left( n \right) - 1
+        & \text{se $n_0=1$}
+\end{align*}
 
-\subsubsection{ esempio $\bm{n-1}$}
-\subsubsection{ esempio $\bm{\sqrt{n}}$}
-\subsubsection{ esempio $\bm{\left\lfloor n/2 \right\rfloor}$}
+\subsubsection{$\bm{f(n) = n-1}$}
+% pag 14, 15
+Calcoliamo la forma esplicita dell'iterata e la funzione ausiliaria per
+\[ f(n) = n-1 \]
+Forma esplicita iterata:
+\begin{align*}
+    & f^{(0)}(n) = n \\
+    & f^{(1)}(n) = f(n) = n-1 \\
+    & f^{(2)}(n) = f \left( f^{(1)}(n) \right) = f \left( n-1 \right) = n-1-1 = n-2 \\
+    & f^{(i)}(n) = n-i
+\end{align*}
+Calcolo funzione ausiliaria:
+\begin{align*}
+    & f^{(i)}(n) \mgeq n_0 
+        & \text{per quali $i\:$?}\\
+    & n-i \mges n_0 \\
+    & i < n - n_0
+        & \text{il vincolo è risolto} \\
+    \rightarrow \quad & f^*(n, n_0) = n - n_0 - 1
+        & \text{ne prendo il massimo} \\
+    n_0 = 1 \rightarrow \quad & f^*(n, 1) = n - 2
+        & \text{se $n_0=1$}
+\end{align*}
+
+\subsubsection{$\bm{f(n) = \sqrt{n}}$}
+% pag 14.2, 15.2
+Calcoliamo la forma esplicita dell'iterata e la funzione ausiliaria per
+\[ f(n) = \sqrt{n} \quad \text{con} \quad n=2^{2^k} \]
+Forma esplicita iterata:
+\begin{align*}
+    & f^{(0)}(n) = n \\
+    & f^{(1)}(n) = f(n) = \sqrt{n} = n^{\nicefrac{1}{2}} \\
+    & f^{(2)}(n) = f \left( f^{(1)}(n) \right) = f \left( n^{\nicefrac{1}{2}} \right) = n^{\nicefrac{1}{2^2}} \\
+    & f^{(i)}(n) = n^{\nicefrac{1}{2^i}} \\
+\end{align*}
+Calcolo funzione ausiliaria:
+\begin{align*}
+    & f^{(i)}(n) \mgeq n_0 
+        & \text{per quali $i\:$?}\\
+    & n^{\nicefrac{1}{2^i}} \mges n_0 \\
+    & \log_2 n^{\nicefrac{1}{2^i}} \mges \log_2 n_0 \\
+    & \frac{1}{2^i} \log_2 n \mges \log_2 n_0 \\
+    & 2^i \mles \frac{\log_2 n}{\log_2 n_0} \\
+    & i < \log_2 \frac{\log_2 n}{\log_2 n_0} 
+        & \text{il vincolo è risolto} \\
+    & i < \log_2 \log_2 n + \log_2 \log_2 n_0 \\
+    \rightarrow \quad & f^*(n, n_0) = \log_2 \log_2 n + \log_2 \log_2 n_0 - 1
+        & \text{ne prendo il massimo} \\
+    n_0 = 2 \rightarrow \quad & f^*(n, 2) = \log_2 \log_2 n - 1
+        & \text{se $n_0=2$}
+\end{align*}
+Il vincolo su $n$ può essere generalizzato a $n=a^{2^k}$, in questo caso $n_0 = a$
+
+\subsubsection{$\bm{f(n) = \left\lfloor n/2 \right\rfloor}$}
+Nel caso $f(n) = \left\lfloor n/2 \right\rfloor$, si può dimostrare che
+$ f^{(2)}(n) = \left\lfloor \left\lfloor n/2 \right\rfloor / 2 \right\rfloor = \left\lfloor n / 2^2 \right\rfloor $
+ma non è per niente banale.
 
 \section{Modifica al \textit{Divide and Conquer}}
 % titolo meno informativo della storia
@@ -34,7 +131,7 @@ Alberone, pag 15.8
 
 Formulone, pag 16
 
-Da qualche parte le convenzioni sugli operatori, pag 15.5; insieme alle cose a fine capitolo DnC
+Da qualche parte le convenzioni sugli operatori, pag 15.5; insieme alle cose a fine capitolo DnC -> Appendice
 
 \subsubsection{Esempio formula}
 Esempio, pag 16.5
@@ -62,3 +159,4 @@ Una bella scatola:
 ìg
 òg
 ùg
+perché
