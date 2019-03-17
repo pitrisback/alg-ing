@@ -149,7 +149,7 @@ L'algoritmo ha dei vincoli in più rispetto al prototipo generico, in particolar
     \item[--] $ w(n) = T_{A_D}(n) + T_{A_C}(n)$ \\
         lavoro compiuto per ogni istanza per dividere e ricomporre
     \item[--] $n_0$ taglia del caso base
-    \item[--] $ T_0$ tempo al caso peggiore di risoluzione diretta quando $|i| \leq n_0$
+    \item[--] $T_0$ tempo al caso peggiore di risoluzione diretta quando $|i| \leq n_0$
 \end{itemize}
 % Nuova eq di ricorrenza, pag 13.3
 L'equazione di ricorrenza diventa
@@ -170,7 +170,12 @@ $S(n)=2$, $f(n)=n/2$, $w(n)=1$, $T_0=0$, $n_0=1$
 \subsection{Equazione delle ricorrenze generica}
 Alberone, pag 15.8
 
-Formulone, pag 16
+% Formulone, pag 16
+\begin{align*}
+    T(n) & = \sum_{l=0}^{f^*(n,n_0)}\text{\# nodi nel livello}\cdot\text{\# $w$ per nodo del livello}+\text{contributo foglie}\\
+    &= \sum_{l=0}^{f^*(n,n_0)} \left[ \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) \cdot w \left( f^{(l)}(n) \right) \right] +
+        \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) \cdot T_0
+\end{align*}
 
 Da qualche parte le convenzioni sugli operatori, pag 15.5; insieme alle cose a fine capitolo DnC -> Appendice
 
