@@ -4,4 +4,6 @@ Le lezioni sono tenute dal professor [Geppino Pucci](http://www.dei.unipd.it/~ge
 
 La formattazione l'ho, francamente, abbandonata un po' a se stessa.
 
+L'italiano è stato formale per circa mezza pagina, lo stile diventa decisamente colloquiale entro il capitolo 2. Peccato.
+
 Chi avesse voglia di collaborare con la stesura non si tiri indietro, ho messo gli appunti su GitHub per qualcosa :grin:
