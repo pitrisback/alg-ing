@@ -17,7 +17,6 @@
     \end{cases}
     \]
 \end{definition}
-
 Nota: le iterate formano una successione decrescente $ f^{(0)} (n) > f^{(1)} (n) > \cdots > f^{(i)} (n) $ \\
 Nella prossima sezione, l'iterata $0$ sarà associata alla radice dell'abero e all'istanza generale, l'iterata $i-esima$ rappresenterà la taglia al livello $i$ dell'albero.
 
@@ -30,6 +29,7 @@ Nella prossima sezione, l'iterata $0$ sarà associata alla radice dell'abero e a
 \end{definition}
 
 \subsection{Esempi}
+
 \subsubsection{$\bm{f(n) = n/2}$}
 % pag 13.9, 14.8
 Calcoliamo la forma esplicita dell'iterata e la funzione ausiliaria per
@@ -114,17 +114,58 @@ Nel caso $f(n) = \left\lfloor n/2 \right\rfloor$, si può dimostrare che
 $ f^{(2)}(n) = \left\lfloor \left\lfloor n/2 \right\rfloor / 2 \right\rfloor = \left\lfloor n / 2^2 \right\rfloor $
 ma non è per niente banale.
 
-\section{Modifica al \textit{Divide and Conquer}}
+\section
+[Modifica al \textit{Divide and Conquer}]
+{Modifica al \textit{Divide and Conquer} \\ 
+{ \large Risoluzione di una classe generale di ricorrenze\\ associate ad algoritmi \textit{Divide and Conquer} } }
 % titolo meno informativo della storia
-\subsection{Metaalgoritmo}
-Metaalgoritmo DnC modificato, pag 12.5
-
-Parametri noti, pag 13
-
-Nuova eq di ricorrenza, pag 13.3
+% sottotitolo già meglio
+\subsection{Meta-algoritmo}
+% Metaalgoritmo DnC modificato, pag 12.5
+\begin{algorithm}[H]
+\caption{Divide and Conquer modificato}\label{alg:dncm}
+\begin{algorithmic}[1]
+    \Procedure{D\&C}{$i$}
+        \State $n=|i|$
+        \If{$n \leq n_0$}                             \Comment{BASE}
+            \State *risolvo direttamente*
+        \EndIf
+        \State $<i_1, i_2, \dots, i_{S(n)}> \gets A_D(i)$    \Comment{DIVIDE}
+        \For{$j \gets 1 $ to $ {S(n)} $ }                    \Comment{RECURSE}
+            \State $s_j \gets $ \Call{D\&C}{$i_j$}
+        \EndFor
+        \State $s \gets A_C(<s_1, s_2, \dots, s_{S(n)}>)$    \Comment{CONQUER}
+        \State return $s$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+% Parametri noti, pag 13
+L'algoritmo ha dei vincoli in più rispetto al prototipo generico, in particolare sul numero e dimensione delle sottoistanze generate. I parametri che lo descrivono sono:
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item[--] $S(n): \mathbb{N} \rightarrow \mathbb{N}$ \\
+        istanze di taglia $n$ nella fase di \textit{Divide} generano sempre lo \textbf{stesso} numero di sottoistanze
+    \item[--] $ |i_j| = f(n) < n \quad \forall j : 1 \leq j \leq S(n) $ \\
+        le sottoistanze sono sempre grandi uguali
+    \item[--] $ w(n) = T_{A_D}(n) + T_{A_C}(n)$ \\
+        lavoro compiuto per ogni istanza per dividere e ricomporre
+    \item[--] $n_0$ taglia del caso base
+    \item[--] $ T_0$ tempo al caso peggiore di risoluzione diretta quando $|i| \leq n_0$
+\end{itemize}
+% Nuova eq di ricorrenza, pag 13.3
+L'equazione di ricorrenza diventa
+\[
+    T(n) = 
+    \begin{cases} 
+        T_0      &  n \leq n_0 \\
+        S(n) \, T(f(n)) + w(n) & n > n_0
+    \end{cases}
+\]
+Ad ogni passo vengono fatte $S(n)$ chiamate ricorsive su istanze grandi $f(n)$
 
 \subsubsection{esempio parametri MAX}
-parametri max, pag 13.5
+% parametri max, pag 13.5
+I parametri del $MAX$ sono, con la nuova notazione:\\
+$S(n)=2$, $f(n)=n/2$, $w(n)=1$, $T_0=0$, $n_0=1$
 
 \subsection{Equazione delle ricorrenze generica}
 Alberone, pag 15.8
