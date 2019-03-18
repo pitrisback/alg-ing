@@ -28,7 +28,7 @@ Nella prossima sezione, l'iterata $0$ sarà associata alla radice dell'abero e a
     La funzione è definita solo per $n>n_0$, per convenzione assume il valore $f^*(n,n_0)=-1$ se $ n \leq n_0$
 \end{definition}
 
-\subsection{Esempi}
+\subsection{Esempi}\label{es_iter_aus}
 
 \subsubsection{$\bm{f(n) = n/2}$}
 % pag 13.9, 14.8
@@ -169,33 +169,57 @@ $S(n)=2$, $f(n)=n/2$, $w(n)=1$, $T_0=0$, $n_0=1$
 
 \subsection{Equazione delle ricorrenze generica}
 % Alberone, pag 15.8
-{ \centering
+% { \centering
+\begin{center}
 \begin{tikzpicture}[
-    level/.style={sibling distance=40mm},
-    every node/.style={rectangle,draw,solid},
-    dotme/.style={edge from parent/.style={dotted,draw}},
-    norm/.style={edge from parent/.style={solid,draw}}
-    ]
-    \node [label=right:{Testo $math$}] (z){$n = f^{(0)}(n)$}
-        child { node (a) {$a f^{(0)}(n)$}
-            child { node  (c) {$c f^{(0)}(n)$}
+  level/.style={sibling distance=45mm},
+  every node/.style={rectangle,draw,solid},
+  dotme/.style={edge from parent/.style={loosely dotted,draw}},
+  norm/.style={edge from parent/.style={solid,draw}}
+  ]
+  \node [label=right:{$\rightarrow w(n)$}] (z){$n = f^{(0)}(n)$}
+    child { node (a) {$f^{(1)}(n)$}
+      child { node (c) {$f^{(2)}(n)$}
+      }
+      child { node [label=right:{$\rightarrow w\left(f^{(2)}(n)\right)$}] (d) {$f^{(2)}(n)$}
+        child [dotme] { node [label=right:{$\rightarrow w\left(f^{(l)}(n)\right)$}] 
+                (d1) {$f^{(l)}(n)$}
+          child [norm] { node (e) {$f^{(l+1)}(n)$}
+            child [dotme] { node [label=right:{$\rightarrow
+                            % w\left(f^{\left(\overline{l}\right)}(n)\right)$}] 
+                            % nessuno dei due è decente
+                            w\left(f^{(\overline{l})}(n)\right)$}]
+                            (e1) {$f^{(\overline{l})}(n)$}
+              child [norm] { node (g) {$\leq n_0$}
+              }
+              child [norm]{node[label=right:{$\rightarrow T_0$}]
+                       (h) {$\leq n_0$}
+              }
             }
-            child { node  (d) {$d f^{(0)}(n)$}
-                child [dotme] { node (d1) {$d1 f^{(0)}(n)$}
-                    child [norm] { node  (e) {$e f^{(0)}(n)$}
-                    }
-                    child [norm] { node  (f) {$f f^{(0)}(n)$}
-                    }
-                }
-            }
+          }
+          child [norm] { node [label=right:{$\rightarrow w\left(f^{(l+1)}(n)\right)$}]
+                   (f) {$f^{(l+1)}(n)$}
+          }
         }
-        child { node  (b) {$b f^{(0)}(n)$}
-        }
-    ; % end of the node
-\path (a) -- (b) node [draw=none,midway] {$\cdots S(n) \cdots$ };
+      }
+    }
+    child { node [label=right:{$\rightarrow w\left(f^{(1)}(n)\right)$}] (b) {$b f^{(1)}(n)$}
+    }
+  ; % end of the node
+  \path (a) -- (b) node [draw=none,midway] {$\cdots S\left(f^{(0)}(n)\right) \cdots$ };
+  \path (c) -- (d) node [draw=none,midway] {$\cdots S\left(f^{(1)}(n)\right) \cdots$ };
+  \path (e) -- (f) node [draw=none,midway] {$\cdots S\left(f^{(l)}(n)\right) \cdots$ };
+  \path (g) -- (h) node [draw=none,midway] {$\cdots S\left(f^{(l)}(n)\right) \cdots$ };
+  % \draw (e) -- (f) node [draw=none,midway,loosely dotted,above=10pt] {$S(f^{(l)}(n)) $ };
 \end{tikzpicture}
+\end{center}
+% } % end centering, LASCIA la riga sopra questa parentesi (serve un \par)
+% \usetikzlibrary{positioning}
+% \node[nome,right] (p2) [below = of p1] {text text};
 
-} % end centering, LASCIA la riga sopra questa parentesi (serve un \par)
+Nell'albero la taglia delle istanze è indicata nel nodo, il lavoro associato (uguale per ogni istanza del livello) è indicato a fianco del livello. Il numero di sottoistanze generate da ciascuna istanza di un livello è indicato tra i nodi figli. Si indica con $l \leq f^*(n,n_0)$ un generico livello interno e con $\overline{l} = f^*(n,n_0)$ l'ultimo livello interno. I nodi foglia sono tutti di dimensione minore del caso base, ed è a loro associato il lavoro $T_0$ necessario a risolverli direttamente.
+
+Da questo albero delle ricorrenze si può ricavare il lavoro totale, sommando i contributi di ciascun nodo.
 % Formulone, pag 16
 \begin{align*}
     T(n) & = \sum_{l=0}^{f^*(n,n_0)}\text{\# nodi nel livello}\cdot\text{\# $w$ per nodo del livello}+\text{contributo foglie}\\
@@ -203,13 +227,80 @@ $S(n)=2$, $f(n)=n/2$, $w(n)=1$, $T_0=0$, $n_0=1$
         \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) \cdot T_0
 \end{align*}
 
-Da qualche parte le convenzioni sugli operatori, pag 15.5; insieme alle cose a fine capitolo DnC -> Appendice
+Da qualche parte le convenzioni sugli operatori, pag 15.5; insieme alle cose a fine capitolo DnC -$>$ Appendice
 
 \subsubsection{Esempio formula}
-Esempio, pag 16.5
+% Esempio, pag 16.5
+Risolviamo l'equazione di ricorrenza utilzzando la formula appena ottenuta.
+\[
+    T(n) = 
+    \begin{cases} 
+        4      &  n = 1 \\
+        6 \, T\left(\frac{n}{3}\right) + n^2-n & n > 1 \quad \text{assumendo } n=3^k
+    \end{cases}
+\]
+Da cui ricaviamo i valori dei parametri:
+\begin{align*}
+    S(n)&=6 & f(n)&=\frac{n}{3} & w(n)&=n^2-n & T_0&=4 & n_0&=1
+\end{align*}
+Le formule di iterata $i-esima$ e ausiliaria si ricavano come spiegato nella sezione \ref{es_iter_aus}:
+\begin{align*}
+    f^{(i)}(n) &= \frac{n}{3^i} & f^*(n, 1) &= \log_3 \left( n \right) - 1
+\end{align*}
+Calcoliamo le componenti interne della formula:
+\begin{gather*}
+    \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) = \prod_{j=0}^{l-1} 6 = 6^{l-1+1} = 6^l \\
+    w\left(f^{(l)}(n) \right) =  w \left( \frac{n}{3^l} \right) = \frac{n^2}{3^{2l}} - \frac{n}{3^l} = \frac{n^2}{9^l}-\frac{n}{3^l} \\
+    \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) = \prod_{j=0}^{\log_3 n-1} 6 = 6^{\log_3 n} =
+    n^{log_3 6} = n^{log_3 (2\cdot3)} = n^{log_3 2 + log_3 3} = n^{log_3 2 + 1}
+\end{gather*}
+La formula risulta quindi:
+\begin{align*}
+    T(n) & = \sum_{l=0}^{\log_3 n-1} 6^l \left( \frac{n^2}{9^l}-\frac{n}{3^l} \right) + 4 n^{log_3 2 + 1} \\
+    & = n^2\,\sum_{l=0}^{\log_3 n-1} \left( \frac{2}{3} \right)^l - n\,\sum_{l=0}^{\log_3 n-1} 2^l+ 4 n^{log_3 2+1} \\
+    & = n^2 \left( \frac{1- \left( 2/3 \right)^{log_3 n} }{1 - 2/3 } \right) - n(2^{log_3 n} -1) + 4 n^{log_3 2+1} 
+    % & \left[ \left( \frac{2}{3} \right)^{log_3 n} &= \frac{2^{log_3 n}}{3^{log_3 n}} = \frac{n^{log_3 2}}{n}\right]\\
+    &
+    \left[
+    \left( \frac{2}{3} \right)^{log_3 n}
+    \right. % tutto questo per avere le parentesi quadre grandi
+    &=      % attorno a sto maledetto align
+    \left.  % che avrei anche potuto spostare 
+    \frac{2^{log_3 n}}{3^{log_3 n}} = \frac{n^{log_3 2}}{n}
+    \vphantom{\left( \frac{2}{3} \right)^{log_3 n}}
+    \right] % ma grandi quanto voglio io
+    \\
+    & = 3n^2 \left( 1- \frac{n^{log_3 2}}{n} \right) - n \left( n^{log_3 2}-1 \right) + 4 n^{log_3 2+1} \\
+    & = 3n^2 -3n^{1+log_3 2} - n^{1+log_3 2} + n + 4 n^{1+log_3 2} \\
+    & = 3n^2+n
+\end{align*}
+È una buona idea verificare la correttezza per induzione:\\
+Base: 
+\[ T(1)=4 \meq \left( 3n^2+n \right) \Big|_{n=1} = 4 \rightarrow \text{vera} \]
+Ipotesi: Considero corretta la formula per i valori $s<n$ nella forma $s=3^k$ \\
+Tesi:
+\begin{align*}
+    T(n) &= 6T \left( \frac{n}{3} \right) + n^2 -n \\
+    & = 6 \left( 3 \frac{n^2}{9} + \frac{n}{3} \right) \\
+    & = 3n^2+n\rightarrow \text{vera}
+\end{align*}
 
 \subsubsection{Esempio formula}
-Esempio, pag 17.5
+% Esempio, pag 17.5
+\[
+    T(n) = 
+    \begin{cases} 
+        1      &  n = 2 \\
+        2 \, T\left( \sqrt{n}\right) + 1 & n > 2 \quad \text{assumendo } n=2^{2^k} 
+    \end{cases}
+\]
+Le formule di iterata $i-esima$ e ausiliaria si ricavano come spiegato nella sezione \ref{es_iter_aus}:
+\begin{align*}
+    T(n) &= \sum_{l=0}^{log_2 log_2 n-1} 2^l \cdot 1 + 2^{log_2 log_2 n} \cdot 1 \\
+    &= 2^{log_2 log_2 n} -1 + 2^{log_2 log_2 n} 
+    && \left[ 2^{log_2 log_2 n} = log_2 n ^{\cancel{log_2 2}} \right] \\
+    &= 2 log_2 n - 1
+\end{align*}
 
 \section{\textit{Master theorem}}
 Ipotesi, pag 18
