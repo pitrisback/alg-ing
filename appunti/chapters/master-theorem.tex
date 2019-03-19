@@ -252,26 +252,26 @@ Calcoliamo le componenti interne della formula:
     \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) = \prod_{j=0}^{l-1} 6 = 6^{l-1+1} = 6^l \\
     w\left(f^{(l)}(n) \right) =  w \left( \frac{n}{3^l} \right) = \frac{n^2}{3^{2l}} - \frac{n}{3^l} = \frac{n^2}{9^l}-\frac{n}{3^l} \\
     \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) = \prod_{j=0}^{\log_3 n-1} 6 = 6^{\log_3 n} =
-    n^{log_3 6} = n^{log_3 (2\cdot3)} = n^{log_3 2 + log_3 3} = n^{log_3 2 + 1}
+    n^{\log_3 6} = n^{\log_3 (2\cdot3)} = n^{\log_3 2 + \log_3 3} = n^{\log_3 2 + 1}
 \end{gather*}
 La formula risulta quindi:
 \begin{align*}
-    T(n) & = \sum_{l=0}^{\log_3 n-1} 6^l \left( \frac{n^2}{9^l}-\frac{n}{3^l} \right) + 4 n^{log_3 2 + 1} \\
-    & = n^2\,\sum_{l=0}^{\log_3 n-1} \left( \frac{2}{3} \right)^l - n\,\sum_{l=0}^{\log_3 n-1} 2^l+ 4 n^{log_3 2+1} \\
-    & = n^2 \left( \frac{1- \left( 2/3 \right)^{log_3 n} }{1 - 2/3 } \right) - n(2^{log_3 n} -1) + 4 n^{log_3 2+1} 
-    % & \left[ \left( \frac{2}{3} \right)^{log_3 n} &= \frac{2^{log_3 n}}{3^{log_3 n}} = \frac{n^{log_3 2}}{n}\right]\\
+    T(n) & = \sum_{l=0}^{\log_3 n-1} 6^l \left( \frac{n^2}{9^l}-\frac{n}{3^l} \right) + 4 n^{\log_3 2 + 1} \\
+    & = n^2\,\sum_{l=0}^{\log_3 n-1} \left( \frac{2}{3} \right)^l - n\,\sum_{l=0}^{\log_3 n-1} 2^l+ 4 n^{\log_3 2+1} \\
+    & = n^2 \left( \frac{1- \left( 2/3 \right)^{\log_3 n} }{1 - 2/3 } \right) - n(2^{\log_3 n} -1) + 4 n^{\log_3 2+1} 
+    % & \left[ \left( \frac{2}{3} \right)^{\log_3 n} &= \frac{2^{\log_3 n}}{3^{\log_3 n}} = \frac{n^{\log_3 2}}{n}\right]\\
     &
     \left[
-    \left( \frac{2}{3} \right)^{log_3 n}
+    \left( \frac{2}{3} \right)^{\log_3 n}
     \right. % tutto questo per avere le parentesi quadre grandi
     &=      % attorno a sto maledetto align
     \left.  % che avrei anche potuto spostare 
-    \frac{2^{log_3 n}}{3^{log_3 n}} = \frac{n^{log_3 2}}{n}
-    \vphantom{\left( \frac{2}{3} \right)^{log_3 n}}
+    \frac{2^{\log_3 n}}{3^{\log_3 n}} = \frac{n^{\log_3 2}}{n}
+    \vphantom{\left( \frac{2}{3} \right)^{\log_3 n}}
     \right] % ma grandi quanto voglio io
     \\
-    & = 3n^2 \left( 1- \frac{n^{log_3 2}}{n} \right) - n \left( n^{log_3 2}-1 \right) + 4 n^{log_3 2+1} \\
-    & = 3n^2 -3n^{1+log_3 2} - n^{1+log_3 2} + n + 4 n^{1+log_3 2} \\
+    & = 3n^2 \left( 1- \frac{n^{\log_3 2}}{n} \right) - n \left( n^{\log_3 2}-1 \right) + 4 n^{\log_3 2+1} \\
+    & = 3n^2 -3n^{1+\log_3 2} - n^{1+\log_3 2} + n + 4 n^{1+\log_3 2} \\
     & = 3n^2+n
 \end{align*}
 È una buona idea verificare la correttezza per induzione:\\
@@ -296,10 +296,10 @@ Tesi:
 \]
 Le formule di iterata $i-esima$ e ausiliaria si ricavano come spiegato nella sezione \ref{es_iter_aus}:
 \begin{align*}
-    T(n) &= \sum_{l=0}^{log_2 log_2 n-1} 2^l \cdot 1 + 2^{log_2 log_2 n} \cdot 1 \\
-    &= 2^{log_2 log_2 n} -1 + 2^{log_2 log_2 n} 
-    && \left[ 2^{log_2 log_2 n} = log_2 n ^{\cancel{log_2 2}} \right] \\
-    &= 2 log_2 n - 1
+    T(n) &= \sum_{l=0}^{\log_2 \log_2 n-1} 2^l \cdot 1 + 2^{\log_2 \log_2 n} \cdot 1 \\
+    &= 2^{\log_2 \log_2 n} -1 + 2^{\log_2 \log_2 n} 
+    && \left[ 2^{\log_2 \log_2 n} = \log_2 n ^{\cancel{\log_2 2}} \right] \\
+    &= 2 \log_2 n - 1
 \end{align*}
 
 \section{\textit{Master Theorem}}
@@ -329,12 +329,12 @@ La formula di ricorrenza è quindi nella forma:
 % T(n) = 
 % % \begin{numcases}
 % \begin{cases}
-    % \Theta (n^{log_b a}) & \text{se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})\\
-    % \Theta (n^{log_b a} \, log_n) & \text{se } w(n) = \Theta(n^{log_b a})\\
+    % \Theta (n^{\log_b a}) & \text{se } \exists \varepsilon > 0 : w(n) = O(n^{\log_b a-\varepsilon})\\
+    % \Theta (n^{\log_b a} \, \log_n) & \text{se } w(n) = \Theta(n^{\log_b a})\\
     % \Theta (w(n)) & \text{se }
     % \begin{cases}
     % % \begin{numcases}
-        % \exists \varepsilon > 0 : w(n) = \Omega(n^{log_b a+\varepsilon})\\
+        % \exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon})\\
         % \exists 0<c<1 : \forall n \in \mathbb{N}-\{0\} : a w \left( \frac{n}{b} \right) < c w(n)
     % % \end{numcases}
     % \end{cases}
@@ -343,17 +343,17 @@ La formula di ricorrenza è quindi nella forma:
 % \]
 
 % \begin{numcases}{T(n)=}
-    % \Theta (n^{log_b a}) & se $\exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})$\\
-    % \Theta (n^{log_b a} \, log_n) & se $w(n) = \Theta(n^{log_b a})$\\
+    % \Theta (n^{\log_b a}) & se $\exists \varepsilon > 0 : w(n) = O(n^{\log_b a-\varepsilon})$\\
+    % \Theta (n^{\log_b a} \, \log_n) & se $w(n) = \Theta(n^{\log_b a})$\\
     % \Theta (w(n)) & condition
     % % \begin{subnumcases}{se}
-        % % \exists \varepsilon > 0 : w(n) = \Omega(n^{log_b a+\varepsilon})\\
+        % % \exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon})\\
         % % \exists 0<c<1 : \forall n \in \mathbb{N}-\{0\} : a w \left( \frac{n}{b} \right) < c w(n)
     % % \end{subnumcases}
 % \end{numcases}
 % \textbf{Caso 1:} 
 % \begin{equation}
-    % T(n) = \Theta (n^{log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})
+    % T(n) = \Theta (n^{\log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{\log_b a-\varepsilon})
     % \label{eq:mastercaso1}
 % \end{equation}
 
@@ -361,17 +361,17 @@ Ci sono tre casi possibili:\\
 \begin{description}
     \item[\textbf{Caso 1:}] 
         \begin{equation}
-            T(n) = \Theta (n^{log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})
+            T(n) = \Theta (n^{\log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{\log_b a-\varepsilon})
             \label{eq:mastercaso1}
         \end{equation}
     \item[\textbf{Caso 2:}] 
         \begin{equation}
-            T(n) = \Theta (n^{log_b a} \, log_n) \text{se } w(n) = \Theta(n^{log_b a})
+            T(n) = \Theta (n^{\log_b a} \, \log_n) \text{se } w(n) = \Theta(n^{\log_b a})
             \label{eq:mastercaso2}
         \end{equation}
     \item[\textbf{Caso 3:}] 
         \begin{subnumcases}{T(n) = \Theta (w(n)) \text{ se }}
-            \exists \varepsilon > 0 : w(n) = \Omega(n^{log_b a+\varepsilon})
+            \exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon})
             \label{eq:mastercaso3a}\\
             \exists 0<c<1 : \forall n \in \mathbb{N} \setminus \{0\} : a w \left( \frac{n}{b} \right) < c w(n)
             \label{eq:mastercaso3b}
@@ -380,7 +380,7 @@ Ci sono tre casi possibili:\\
 
 Note:
 \begin{itemize}
-    \item[--] $n^{log_b a}$ è detta funzione di soglia, o \textit{treshold}
+    \item[--] $n^{\log_b a}$ è detta funzione di soglia, o \textit{treshold}
     \item[--] la condizione \ref{eq:mastercaso3b} è detta condizione di regolarità, indica che $w(n)$ è non decrescente, e quando cresce lo fa in modo uniforme
 \end{itemize}
 
@@ -388,7 +388,7 @@ Note:
 
 \subsubsection{Considerazioni sui parametri}
 % Considerazioni sull'asintotico, pag 18.9, 19
-Il parametro $n_0$, con $T_0>0$, rende alcuni passaggi della dimostrazione più difficili. Lo si può assumere come il primo elemento della famiglia $b^k=b^0=1$? Considerando i nodi foglia dell'albero delle ricorrenze, hanno tutti taglia $n_0$ e lavoro associato $T_0$. Continuando a dividere i nodi finché raggiungono taglia $1$, si generano dei sotto-alberi alti $log_b \left( n_0 \right)$, con nodi foglia di taglia $1$, a ciascuno dei quali è associato ancora il lavoro $T_0$, essendo il lavoro al caso peggiore. Il lavoro associato ai sotto-alberi è quindi $O(1)$ (costante), e senza perdita di generalità si può considerare $n_0=1$.
+Il parametro $n_0$, con $T_0>0$, rende alcuni passaggi della dimostrazione più difficili. Lo si può assumere come il primo elemento della famiglia $b^k=b^0=1$? Considerando i nodi foglia dell'albero delle ricorrenze, hanno tutti taglia $n_0$ e lavoro associato $T_0$. Continuando a dividere i nodi finché raggiungono taglia $1$, si generano dei sotto-alberi alti $\log_b \left( n_0 \right)$, con nodi foglia di taglia $1$, a ciascuno dei quali è associato ancora il lavoro $T_0$, essendo il lavoro al caso peggiore. Il lavoro associato ai sotto-alberi è quindi $O(1)$ (costante), e senza perdita di generalità si può considerare $n_0=1$.
 
 \subsubsection{Considerazioni sulle relazioni asintotiche}
 % Considerazioni sull'asintotico, pag 18.9, 19
@@ -433,55 +433,116 @@ Per funzioni intere positive $g: \mathbb{N} \setminus \{0\} \rightarrow  \mathbb
 \subsubsection{Costo delle foglie}
 Ricordiamo che 
 \begin{align*}
-    f(n)&= \frac{n}{b} & f^{(j)}(n) &= \frac{n}{b^j} & f^*(n,1) &= log_b n -1
+    f(n)&= \frac{n}{b} & f^{(j)}(n) &= \frac{n}{b^j} & f^*(n,1) &= \log_b n -1
 \end{align*}
 
 Per cui la formula risulta:
 \begin{equation}
     \begin{aligned}[b]
-        T(n) &= \sum_{l=0}^{log_b n -1} \left[ a^l \cdot w \left( \frac{n}{b^l} \right) \right] + a^{log_b n} \cdot T_0 \\
-        &= \sum_{l=0}^{log_b n -1} \left[ a^l \cdot w \left( \frac{n}{b^l} \right) \right] + n^{log_b a} \cdot T_0
+        T(n) &= \sum_{l=0}^{\log_b n -1} \left[ a^l \cdot w \left( \frac{n}{b^l} \right) \right] + a^{\log_b n} \cdot T_0 \\
+        &= \sum_{l=0}^{\log_b n -1} \left[ a^l \cdot w \left( \frac{n}{b^l} \right) \right] + n^{\log_b a} \cdot T_0
         \label{eq:masterchiusa1}
     \end{aligned}
 \end{equation}
 
 In cui possiamo notare la presenza della funzione di soglia come numero di foglie dell'albero. In più, avendo imposto (per ora) $T_0>0$, è triviale dedurre \begin{equation}
-    n^{log_b a} \cdot T_0 = \Theta \left( n^{log_b a} \right) 
+    n^{\log_b a} \cdot T_0 = \Theta \left( n^{\log_b a} \right) 
     \label{eq:masterfoglie}
 \end{equation}
 
 \subsubsection{Dimostrazione caso 1}
 % Dimostrazione, pag 20
-Valgono le ipotesi del caso $1$:
+Vogliamo dimostrare il caso $1$:
 \begin{align*}
-    \exists \varepsilon > 0 &: w(n) = O(n^{log_b a-\varepsilon})
-    \intertext{ossia}
-    \exists \varepsilon > 0 , \exists c>0 &: \forall n>1 \rightarrow w(n) \leq cn^{log_b a-\varepsilon} \\
+    \exists \varepsilon > 0 &: w(n) = O(n^{\log_b a-\varepsilon})
+    \Rightarrow
+    T(n) = \Theta \left( n^{\log_b a} \right) 
+    \intertext{ossia per ipotesi}
+    \exists \varepsilon > 0 , \exists c>0 &: \forall n>1 \rightarrow w(n) \leq cn^{\log_b a-\varepsilon} \\
     \intertext{maggioriamo il primo termine della formula \ref{eq:masterchiusa1}, ricavandone il limite superiore asintotico cercato:}
-    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
-    & \leq c \sum_{l=0}^{log_b n -1} a^l \cdot \left( \frac{n}{b^l} \right)^{log_b a - \varepsilon} 
-    & w=O \left( n^{log_b a - \varepsilon} \right) & \\
-    & = c n^{log_b a - \varepsilon} \sum_{l=0}^{log_b n -1} \frac{a^l}{b^{l^{log_b a}} b^{l^{-\varepsilon}}}
-    & b^{l^{log_b a}} = b^{log_b a^{l}} = a^l & \\
-    & = c n^{log_b a - \varepsilon} \sum_{l=0}^{log_b n -1} \frac{\cancel{a^l}}{\cancel{a^l} b^{-\varepsilon^l}} \\
-    & = c n^{log_b a - \varepsilon} \sum_{l=0}^{log_b n -1} b^{\varepsilon^l}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & \leq c \sum_{l=0}^{\log_b n -1} a^l \cdot \left( \frac{n}{b^l} \right)^{\log_b a - \varepsilon} 
+    & w=O \left( n^{\log_b a - \varepsilon} \right) & \\
+    & = c n^{\log_b a - \varepsilon} \sum_{l=0}^{\log_b n -1} \frac{a^l}{b^{l^{\log_b a}} b^{l^{-\varepsilon}}}
+    & b^{l^{\log_b a}} = b^{\log_b a^{l}} = a^l & \\
+    & = c n^{\log_b a - \varepsilon} \sum_{l=0}^{\log_b n -1} \frac{\cancel{a^l}}{\cancel{a^l} b^{-\varepsilon^l}} \\
+    & = c n^{\log_b a - \varepsilon} \sum_{l=0}^{\log_b n -1} b^{\varepsilon^l}
     & \text{se } b>1, \, b^{\varepsilon}>1 & \\
-    & = c n^{log_b a - \varepsilon} \left( \frac{b^{\varepsilon^{log_b n}} - 1}{b^{\varepsilon} - 1} \right) \\
-    & = c n^{log_b a - \varepsilon} \left( \frac{n^{\varepsilon} - 1}{b^{\varepsilon} - 1} \right) \\
-    & \leq c n^{log_b a - \varepsilon} \left( \frac{n^{\varepsilon} }{b^{\varepsilon} - 1} \right) \\
-    & \leq c\frac{ n^{log_b a - \varepsilon + \varepsilon} }{b^{\varepsilon} - 1} \\
-    & \leq \frac{ c }{b^{\varepsilon} - 1} n^{log_b a}
+    & = c n^{\log_b a - \varepsilon} \left( \frac{b^{\varepsilon^{\log_b n}} - 1}{b^{\varepsilon} - 1} \right) \\
+    & = c n^{\log_b a - \varepsilon} \left( \frac{n^{\varepsilon} - 1}{b^{\varepsilon} - 1} \right) \\
+    & \leq c n^{\log_b a - \varepsilon} \left( \frac{n^{\varepsilon} }{b^{\varepsilon} - 1} \right) \\
+    & \leq c\frac{ n^{\log_b a - \varepsilon + \varepsilon} }{b^{\varepsilon} - 1} \\
+    & \leq \frac{ c }{b^{\varepsilon} - 1} n^{\log_b a}
     & c, b, \varepsilon \text{ sono costanti} &\\
-    \intertext{quindi la sommatoria è $O-grande$ di $n^{log_b a}$}
-    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
-    & = O \left( n^{log_b a} \right)
+    \intertext{quindi la sommatoria è $O-grande$ di $n^{\log_b a}$}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = O \left( n^{\log_b a} \right)
     \intertext{combinando questo risultato con \ref{eq:masterfoglie} si ottiene}
-    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
-    & = O \left( n^{log_b a} \right) + \Theta \left( n^{log_b a} \right) 
+    T(n) & = O \left( n^{\log_b a} \right) + \Theta \left( n^{\log_b a} \right) 
     \intertext{per le leggi sui vincoli asintotici, $O$ è implicato da $\Theta$}
-    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
-    & = \Theta \left( n^{log_b a} \right) 
+    T(n) & = \Theta \left( n^{\log_b a} \right) 
+    \intertext{Nota: se $T_0=0$, \ref{eq:masterfoglie} non è valida, e risulta nullo il contributo delle foglie}
+    T(n) & = O \left( n^{\log_b a} \right)
 \end{align*}
+In questo caso la maggior parte del lavoro è svolto dai nodi foglia.
+
+\subsubsection{Dimostrazione caso 2}
+% Dimostrazione, pag 21
+Vogliamo dimostrare il caso $2$:
+\begin{align*}
+    w(n) = \Theta(n^{\log_b a})
+    & \Rightarrow
+    T(n) = \Theta \left( n^{\log_b a} \log n \right) 
+    \intertext{ossia per ipotesi}
+    \exists c_1, c_2 : \forall n \geq 1 & \rightarrow c_1 n^{\log_b a} \leq w(n) \leq n^{\log_b a}
+    \intertext{usiamo la seconda disequazione per maggiorare $w$}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & \leq c_2 \sum_{l=0}^{\log_b n -1} a^l \left( \frac{n}{b^l} \right)^{\log_b a} \\
+    % & = c_2 \sum_{l=0}^{\log_b n -1} \frac{\cancel{a^l}}{\cancel{a^l}} n^{log_b a}
+    & = c_2 \sum_{l=0}^{\log_b n -1} \frac{a^l n^{\log_b a}}{a^l} 
+    & b^{l^{\log_b a}} = a^l &\\
+    & = c_2 n^{\log_b a} \sum_{l=0}^{\log_b n -1} 1 \\
+    & = c_2 n^{\log_b a} \log_b n \\
+    \intertext{quindi la sommatoria è $O-grande$ di $n^{\log_b a} \log n$}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = O \left( n^{\log_b a} \log n \right) \\
+    \intertext{in modo analogo si minora con $c_1$}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & \geq c_1 \sum_{l=0}^{\log_b n -1} a^l \left( \frac{n}{b^l} \right)^{\log_b a} = c_1 n^{\log_b a} \log_b n \\
+    \intertext{quindi la sommatoria è $\Omega-grande$ di $n^{\log_b a} \log n$}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = \Omega \left( n^{\log_b a} \log n \right) \\
+    \intertext{combinando i due risultati}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = \Theta \left( n^{\log_b a} \log n \right) \\
+    \intertext{combinando questo risultato con \ref{eq:masterfoglie} si ottiene}
+    T(n) & = \Theta \left( n^{\log_b a} \right) + \Theta \left( n^{\log_b a} \log n \right) \\
+    \intertext{per le leggi sui vincoli asintotici, il primo contributo è trascurabile}
+    T(n) & = \Theta \left( n^{\log_b a} \log n \right) \\
+\end{align*}
+In questo caso la maggior parte del lavoro è compiuta all'interno dell'albero, ogni livello compie lo stesso lavoro cumulativo, e ci sono $\log n$ livelli. L'esempio principale del caso 2 è il \textit{Merge-Sort}, descritto da $T(n)=2T(n/2)+n$, dove ogni livello compie $n^{\log_2 2}=n$ operazioni e la complessità è $\Theta (n \log n)$.
+
+\subsubsection{Dimostrazione caso 3}
+% Dimostrazione, pag 22
+Vogliamo dimostrare il caso $3$:
+\begin{align*}
+a) \quad &\exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon}) \\
+b) \quad &\exists c, 0 \leq c \leq 1 : \forall n \rightarrow aw\left( \frac{n}{b} \right) \leq cw(n) \\
+\Rightarrow \quad & T(n) = \Theta \left( w(n) \right)
+\end{align*}
+\begin{lemma}
+    Se una funzione è regolare $\left( \exists c, 0 \leq c \leq 1 : \forall n \rightarrow aw\left( \frac{n}{b} \right) \leq cw(n) \right) $
+    vale \[ \forall l \geq 1 \quad a^l w\left( \frac{n}{b^l} \right) \leq c^l w(n) \]
+    \label{teo:regestesa}
+\end{lemma}
+
+\begin{proof}
+    \begin{align*}
+        a) \quad &\exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon}) \\
+        b) \quad &\exists c, 0 \leq c \leq 1 : \forall n \rightarrow aw\left( \frac{n}{b} \right) \leq cw(n) \\
+        \Rightarrow \quad & T(n) = \Theta \left( w(n) \right)
+    \end{align*}
+\end{proof}
 
 \subsection{autocomplete}
 Una bella scatola:
