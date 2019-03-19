@@ -349,13 +349,13 @@ La formula di ricorrenza è quindi nella forma:
         % % \exists 0<c<1 : \forall n \in \mathbb{N}-\{0\} : a w \left( \frac{n}{b} \right) < c w(n)
     % % \end{subnumcases}
 % \end{numcases}
-% Ci sono tre casi possibili:\\
 % \textbf{Caso 1:} 
 % \begin{equation}
     % T(n) = \Theta (n^{log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})
     % \label{eq:mastercaso1}
 % \end{equation}
 
+Ci sono tre casi possibili:\\
 \begin{description}
     \item[\textbf{Caso 1:}] 
         \begin{equation}
@@ -385,7 +385,10 @@ Note:
 \subsection{Dimostrazione}
 
 \subsubsection{Considerazioni}
-Considerazioni sull'asintotico, pag 18.9, 19
+% Considerazioni sull'asintotico, pag 18.9, 19
+Il parametro $n_0$, con $T_0>0$, rende alcuni passaggi della dimostrazione più difficili. Lo si può assumere come il primo elemento della famiglia $b^k=b^0=1$? Considerando i nodi foglia dell'albero delle ricorrenze, hanno tutti taglia $n_0$ e lavoro associato $T_0$. Continuando a dividere i nodi finché raggiungono taglia $1$, si generano dei sotto-alberi alti $log_b \left( n_0 \right)$, con nodi foglia di taglia $1$, a ciascuno dei quali è associato ancora il lavoro $T_0$, essendo il lavoro al caso peggiore. Il lavoro associato ai sotto-alberi è quindi $O(1)$ (costante), e senza perdita di generalità si può considerare $n_0=1$.
+
+Per funzioni intere positive, si può modificare la definizione delle maggiorazioni e minorazioni asintotiche.
 
 \subsubsection{Caso 1}
 Dimostrazione, pag 20
