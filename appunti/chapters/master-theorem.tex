@@ -302,20 +302,112 @@ Le formule di iterata $i-esima$ e ausiliaria si ricavano come spiegato nella sez
     &= 2 log_2 n - 1
 \end{align*}
 
-\section{\textit{Master theorem}}
-Ipotesi, pag 18
+\section{\textit{Master Theorem}}
+% Ipotesi, pag 18
+\subsection{Ipotesi}
+Il \textit{Master Theorem} è valido per sottoclassi di ricorrenze in cui:
+\begin{enumerate}
+    \item $S(n) = a$ con $a$ costante, $a \geq 1$ (almeno un'istanza viene generata)
+    \item $f(n) = \frac{n}{b}$ con $b$ costante, $b > 1$ (deve essere una contrazione)
+    \item $w(n): \mathbb{N} \rightarrow \mathbb{N}$% \setminus \{0\}$ % ???
+    \item $T_0 > 1$ ($ T_0 = 0$ è ragionevole ma non vale la dimostrazione)
+    \item $n_0 \in \mathbb{N}$
+\end{enumerate}
+La formula di ricorrenza è quindi nella forma:
+\[
+    T(n) = 
+    \begin{cases} 
+        T_0      &  n \leq n_0 \\
+        a \, T\left( \frac{n}{b} \right) + w(n) & n > n_0 \quad \text{assumendo } n=b^k
+    \end{cases}
+\]
+\subsection{Tesi}
+% Tesi, pag 18.5
+% \[
+% T(n) = 
+% % \begin{numcases}
+% \begin{cases}
+    % \Theta (n^{log_b a}) & \text{se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})\\
+    % \Theta (n^{log_b a} \, log_n) & \text{se } w(n) = \Theta(n^{log_b a})\\
+    % \Theta (w(n)) & \text{se }
+    % \begin{cases}
+    % % \begin{numcases}
+        % \exists \varepsilon > 0 : w(n) = \Omega(n^{log_b a+\varepsilon})\\
+        % \exists 0<c<1 : \forall n \in \mathbb{N}-\{0\} : a w \left( \frac{n}{b} \right) < c w(n)
+    % % \end{numcases}
+    % \end{cases}
+% % \end{numcases}
+% \end{cases}
+% \]
 
-Tesi, pag 18.5
+% \begin{numcases}{T(n)=}
+    % \Theta (n^{log_b a}) & se $\exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})$\\
+    % \Theta (n^{log_b a} \, log_n) & se $w(n) = \Theta(n^{log_b a})$\\
+    % \Theta (w(n)) & condition
+    % % \begin{subnumcases}{se}
+        % % \exists \varepsilon > 0 : w(n) = \Omega(n^{log_b a+\varepsilon})\\
+        % % \exists 0<c<1 : \forall n \in \mathbb{N}-\{0\} : a w \left( \frac{n}{b} \right) < c w(n)
+    % % \end{subnumcases}
+% \end{numcases}
+% Ci sono tre casi possibili:\\
+% \textbf{Caso 1:} 
+% \begin{equation}
+    % T(n) = \Theta (n^{log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})
+    % \label{eq:mastercaso1}
+% \end{equation}
 
+\begin{description}
+    \item[\textbf{Caso 1:}] 
+        \begin{equation}
+            T(n) = \Theta (n^{log_b a})  \text{ se } \exists \varepsilon > 0 : w(n) = O(n^{log_b a-\varepsilon})
+            \label{eq:mastercaso1}
+        \end{equation}
+    \item[\textbf{Caso 2:}] 
+        \begin{equation}
+            T(n) = \Theta (n^{log_b a} \, log_n) \text{se } w(n) = \Theta(n^{log_b a})
+            \label{eq:mastercaso2}
+        \end{equation}
+    \item[\textbf{Caso 3:}] 
+        \begin{subnumcases}{T(n) = \Theta (w(n)) \text{ se }}
+            \exists \varepsilon > 0 : w(n) = \Omega(n^{log_b a+\varepsilon})
+            \label{eq:mastercaso3a}\\
+            \exists 0<c<1 : \forall n \in \mathbb{N} \setminus \{0\} : a w \left( \frac{n}{b} \right) < c w(n)
+            \label{eq:mastercaso3b}
+        \end{subnumcases}
+\end{description}
+
+Note:
+\begin{itemize}
+    \item[--] $n^{log_b a}$ è detta funzione di soglia, o \textit{treshold}
+    \item[--] la condizione \ref{eq:mastercaso3b} è detta condizione di regolarità, indica che $w(n)$ è non decrescente, e quando cresce lo fa in modo uniforme
+\end{itemize}
+
+\subsection{Dimostrazione}
+
+\subsubsection{Considerazioni}
+Considerazioni sull'asintotico, pag 18.9, 19
+
+\subsubsection{Caso 1}
 Dimostrazione, pag 20
 
-Considerazioni sull'asintotico, pag 18.9, 19
 
 \subsection{autocomplete}
 Una bella scatola:
 \begin{equation}
     \boxed{x^2+y^2 = z^2}
 \end{equation}
+
+Numeri nei casi
+\begin{numcases}{T(n)=}
+    2^3 \label{escaso1} \\
+    2^4 \label{escaso2} 
+\end{numcases}
+
+Sotto numeri
+\begin{subnumcases}{T(n)=}
+    2^3 \label{escaso3} \\
+    2^4 
+\end{subnumcases}
 
 àg
 èg
