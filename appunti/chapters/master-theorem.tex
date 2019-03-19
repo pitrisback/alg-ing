@@ -384,14 +384,56 @@ Note:
 
 \subsection{Dimostrazione}
 
-\subsubsection{Considerazioni}
+\subsubsection{Considerazioni sui parametri}
 % Considerazioni sull'asintotico, pag 18.9, 19
 Il parametro $n_0$, con $T_0>0$, rende alcuni passaggi della dimostrazione più difficili. Lo si può assumere come il primo elemento della famiglia $b^k=b^0=1$? Considerando i nodi foglia dell'albero delle ricorrenze, hanno tutti taglia $n_0$ e lavoro associato $T_0$. Continuando a dividere i nodi finché raggiungono taglia $1$, si generano dei sotto-alberi alti $log_b \left( n_0 \right)$, con nodi foglia di taglia $1$, a ciascuno dei quali è associato ancora il lavoro $T_0$, essendo il lavoro al caso peggiore. Il lavoro associato ai sotto-alberi è quindi $O(1)$ (costante), e senza perdita di generalità si può considerare $n_0=1$.
 
-Per funzioni intere positive, si può modificare la definizione delle maggiorazioni e minorazioni asintotiche.
+\subsubsection{Considerazioni sulle relazioni asintotiche}
+% Considerazioni sull'asintotico, pag 18.9, 19
+Per funzioni intere positive $g: \mathbb{N} \setminus \{0\} \rightarrow  \mathbb{N} \setminus \{0\}$, si può modificare la definizione delle maggiorazioni e minorazioni asintotiche.
+\begin{description}
+    \item[$\bm{T(n)=O \left( g(n) \right)}$:]
+        $T$ è \textit{O-grande} di $g$ ($T$ è asintoticamente minore di $g$) se vale
+        $$T(n) = O\left(g(n)\right)\text{ se }\exists c>0,\overline{n}:
+            \forall n>\overline{n}\Rightarrow T(n)\leq c\cdot g(n) \qquad \circola{A}$$
+        mostriamo che per le funzioni intere positive, $\overline{n}=1$
+        $$T(n) = O\left(g(n)\right)\text{ se }\exists c'>0:
+            \forall n>1 \Rightarrow T(n)\leq c'\cdot g(n) \qquad \circola{B}$$
+        dimostriamo $ \circola{A} \Rightarrow \circola{B}$
+        $$ \text{sia } \overline{c} = \max \left\{ c, T(1), T(2), \dots, T( \overline{n} ) \right\} $$
+        verifico che $ \forall n>1 \rightarrow T(n) \leq \overline{c} g(n) $
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+            \item $1 \leq n \leq \overline{n} \rightarrow T(n) \leq \overline{c} \leq \overline{c}g(n) $ \\
+                la prima valida per definizione di $ \overline{c} $, la seconda perché $g$ è intera positiva
+            \item $ n > \overline{n} \rightarrow T(n) \leq cg(n) \leq \overline{c}g(n)$ \\
+                la prima valida perché $T=O(G)$, la seconda per definizione di $\overline{c}$
+        \end{itemize}
+    \item[$\bm{T(n)=\Omega \left( g(n) \right)}$:]
+        $T$ è \textit{omega} di $g$ ($T$ è asintoticamente maggiore di $g$) se vale
+        $$T(n) = \Omega \left(g(n)\right)\text{ se }\exists c>0,\overline{n}:
+            \forall n>\overline{n}\Rightarrow T(n)\geq c\cdot g(n) \qquad \circola{A}$$
+        mostriamo che per le funzioni intere positive, $\overline{n}=1$
+        $$T(n) = \Omega \left(g(n)\right)\text{ se }\exists c'>0:
+            \forall n>1 \Rightarrow T(n)\geq c'\cdot g(n) \qquad \circola{B}$$
+        dimostriamo $ \circola{A} \Rightarrow \circola{B}$
+        $$ \text{sia } \overline{c} = \min \left\{ c, \frac{T(1)}{g(1)}, \frac{T(2)}{g(2)} ,
+            \dots, \frac{T( \overline{n})}{ g( \overline{n}) } \right\} $$
+        verifico che $ \forall n>1 \rightarrow T(n) \geq \overline{c} g(n) $
+        \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+            \item $1 \leq n \leq \overline{n} \rightarrow T(n) = \frac{T(n)}{g(n)}g(n) \geq \overline{c}g(n) $ \\
+                per definizione di $ \overline{c} $ come minimo dei valori
+            \item $ n > \overline{n} \rightarrow T(n) \geq cg(n) \geq \overline{c}g(n)$ \\
+                la prima valida perché $T=\Omega(G)$, la seconda per definizione di $\overline{c}$
+        \end{itemize}
+    \item[$\bm{T(n)=\Theta \left( g(n) \right)}$:] $T=\Omega(G)$ e $T=O(g)$ implicano $T=\Theta(g)$
+\end{description}
 
 \subsubsection{Caso 1}
-Dimostrazione, pag 20
+% Dimostrazione, pag 20
+Ricordiamo che 
+\begin{align*}
+    f(n)&= \frac{n}{b} & f^{(j)}(n) &= \frac{n}{b^j} & f^*(n,1) &= log_b n -1
+\end{align*}
 
 
 \subsection{autocomplete}
@@ -412,6 +454,12 @@ Sotto numeri
     2^4 
 \end{subnumcases}
 
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item qualcosa
+    \item[+] qualcosa
+    \item[*] qualcosa
+    \item[--] qualcosa
+\end{itemize}
 àg
 èg
 ìg
