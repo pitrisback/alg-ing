@@ -314,13 +314,15 @@ Il \textit{Master Theorem} è valido per sottoclassi di ricorrenze in cui:
     \item $n_0 \in \mathbb{N}$
 \end{enumerate}
 La formula di ricorrenza è quindi nella forma:
-\[
+\begin{equation}
     T(n) = 
     \begin{cases} 
         T_0      &  n \leq n_0 \\
         a \, T\left( \frac{n}{b} \right) + w(n) & n > n_0 \quad \text{assumendo } n=b^k
     \end{cases}
-\]
+    \label{eq:masterricorrenza1}
+\end{equation}
+
 \subsection{Tesi}
 % Tesi, pag 18.5
 % \[
@@ -428,13 +430,58 @@ Per funzioni intere positive $g: \mathbb{N} \setminus \{0\} \rightarrow  \mathbb
     \item[$\bm{T(n)=\Theta \left( g(n) \right)}$:] $T=\Omega(G)$ e $T=O(g)$ implicano $T=\Theta(g)$
 \end{description}
 
-\subsubsection{Caso 1}
-% Dimostrazione, pag 20
+\subsubsection{Costo delle foglie}
 Ricordiamo che 
 \begin{align*}
     f(n)&= \frac{n}{b} & f^{(j)}(n) &= \frac{n}{b^j} & f^*(n,1) &= log_b n -1
 \end{align*}
 
+Per cui la formula risulta:
+\begin{equation}
+    \begin{aligned}[b]
+        T(n) &= \sum_{l=0}^{log_b n -1} \left[ a^l \cdot w \left( \frac{n}{b^l} \right) \right] + a^{log_b n} \cdot T_0 \\
+        &= \sum_{l=0}^{log_b n -1} \left[ a^l \cdot w \left( \frac{n}{b^l} \right) \right] + n^{log_b a} \cdot T_0
+        \label{eq:masterchiusa1}
+    \end{aligned}
+\end{equation}
+
+In cui possiamo notare la presenza della funzione di soglia come numero di foglie dell'albero. In più, avendo imposto (per ora) $T_0>0$, è triviale dedurre \begin{equation}
+    n^{log_b a} \cdot T_0 = \Theta \left( n^{log_b a} \right) 
+    \label{eq:masterfoglie}
+\end{equation}
+
+\subsubsection{Dimostrazione caso 1}
+% Dimostrazione, pag 20
+Valgono le ipotesi del caso $1$:
+\begin{align*}
+    \exists \varepsilon > 0 &: w(n) = O(n^{log_b a-\varepsilon})
+    \intertext{ossia}
+    \exists \varepsilon > 0 , \exists c>0 &: \forall n>1 \rightarrow w(n) \leq cn^{log_b a-\varepsilon} \\
+    \intertext{maggioriamo il primo termine della formula \ref{eq:masterchiusa1}, ricavandone il limite superiore asintotico cercato:}
+    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & \leq c \sum_{l=0}^{log_b n -1} a^l \cdot \left( \frac{n}{b^l} \right)^{log_b a - \varepsilon} 
+    & w=O \left( n^{log_b a - \varepsilon} \right) & \\
+    & = c n^{log_b a - \varepsilon} \sum_{l=0}^{log_b n -1} \frac{a^l}{b^{l^{log_b a}} b^{l^{-\varepsilon}}}
+    & b^{l^{log_b a}} = b^{log_b a^{l}} = a^l & \\
+    & = c n^{log_b a - \varepsilon} \sum_{l=0}^{log_b n -1} \frac{\cancel{a^l}}{\cancel{a^l} b^{-\varepsilon^l}} \\
+    & = c n^{log_b a - \varepsilon} \sum_{l=0}^{log_b n -1} b^{\varepsilon^l}
+    & \text{se } b>1, \, b^{\varepsilon}>1 & \\
+    & = c n^{log_b a - \varepsilon} \left( \frac{b^{\varepsilon^{log_b n}} - 1}{b^{\varepsilon} - 1} \right) \\
+    & = c n^{log_b a - \varepsilon} \left( \frac{n^{\varepsilon} - 1}{b^{\varepsilon} - 1} \right) \\
+    & \leq c n^{log_b a - \varepsilon} \left( \frac{n^{\varepsilon} }{b^{\varepsilon} - 1} \right) \\
+    & \leq c\frac{ n^{log_b a - \varepsilon + \varepsilon} }{b^{\varepsilon} - 1} \\
+    & \leq \frac{ c }{b^{\varepsilon} - 1} n^{log_b a}
+    & c, b, \varepsilon \text{ sono costanti} &\\
+    \intertext{quindi la sommatoria è $O-grande$ di $n^{log_b a}$}
+    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = O \left( n^{log_b a} \right)
+    \intertext{combinando questo risultato con \ref{eq:masterfoglie} si ottiene}
+    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = O \left( n^{log_b a} \right) + \Theta \left( n^{log_b a} \right) 
+    \intertext{per le leggi sui vincoli asintotici, $O$ è implicato da $\Theta$}
+    \sum_{l=0}^{log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = \Theta \left( n^{log_b a} \right) 
+\end{align*}
 
 \subsection{autocomplete}
 Una bella scatola:
