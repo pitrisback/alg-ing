@@ -303,13 +303,13 @@ Le formule di iterata $i-esima$ e ausiliaria si ricavano come spiegato nella sez
 \end{align*}
 
 \section{\textit{Master Theorem}}
-% Ipotesi, pag 18
 \subsection{Ipotesi}
+% Ipotesi, pag 18
 Il \textit{Master Theorem} è valido per sottoclassi di ricorrenze in cui:
 \begin{enumerate}
     \item $S(n) = a$ con $a$ costante, $a \geq 1$ (almeno un'istanza viene generata)
     \item $f(n) = \frac{n}{b}$ con $b$ costante, $b > 1$ (deve essere una contrazione)
-    \item $w(n): \mathbb{N} \rightarrow \mathbb{N}$% \setminus \{0\}$ % ???
+    \item $w(n): \mathbb{N}^+ \rightarrow \mathbb{N}^+$% \setminus \{0\}$ % ???
     \item $T_0 > 1$ ($ T_0 = 0$ è ragionevole ma non vale la dimostrazione)
     \item $n_0 \in \mathbb{N}$
 \end{enumerate}
@@ -385,7 +385,6 @@ Note:
 \end{itemize}
 
 \subsection{Dimostrazione}
-
 \subsubsection{Considerazioni sui parametri}
 % Considerazioni sull'asintotico, pag 18.9, 19
 Il parametro $n_0$, con $T_0>0$, rende alcuni passaggi della dimostrazione più difficili. Lo si può assumere come il primo elemento della famiglia $b^k=b^0=1$? Considerando i nodi foglia dell'albero delle ricorrenze, hanno tutti taglia $n_0$ e lavoro associato $T_0$. Continuando a dividere i nodi finché raggiungono taglia $1$, si generano dei sotto-alberi alti $\log_b \left( n_0 \right)$, con nodi foglia di taglia $1$, a ciascuno dei quali è associato ancora il lavoro $T_0$, essendo il lavoro al caso peggiore. Il lavoro associato ai sotto-alberi è quindi $O(1)$ (costante), e senza perdita di generalità si può considerare $n_0=1$.
@@ -524,24 +523,50 @@ In questo caso la maggior parte del lavoro è compiuta all'interno dell'albero, 
 
 \subsubsection{Dimostrazione caso 3}
 % Dimostrazione, pag 22
-Vogliamo dimostrare il caso $3$:
-\begin{align*}
-a) \quad &\exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon}) \\
-b) \quad &\exists c, 0 \leq c \leq 1 : \forall n \rightarrow aw\left( \frac{n}{b} \right) \leq cw(n) \\
-\Rightarrow \quad & T(n) = \Theta \left( w(n) \right)
-\end{align*}
+Prima di dimostrare il caso 3, dimostriamo il seguente lemma sulla condizione di regolarità estesa
 \begin{lemma}
     Se una funzione è regolare $\left( \exists c, 0 \leq c \leq 1 : \forall n \rightarrow aw\left( \frac{n}{b} \right) \leq cw(n) \right) $
     vale \[ \forall l \geq 1 \quad a^l w\left( \frac{n}{b^l} \right) \leq c^l w(n) \]
     \label{teo:regestesa}
 \end{lemma}
-
 \begin{proof}
+    Dimostriamo il lemma per induzione. La base, per $l=1$, coincide con l'ipotesi di regolarità. Ipotizzando il lemma sia valido per $l'<l$, dimostriamo che vale per $l$.
+    \begin{align*}
+        a^l w\left( \frac{n}{b^l} \right)
+        &= a^{l-1} a w \left( \frac{n/b^{l-1}}{b} \right)
+        & \text{per la regolarità } a w \left( \frac{n/b^{l-1}}{b} \right) \leq cw \left( \frac{n}{b^{l-1}} \right)&\\
+        & \leq a^{l-1} cw \left( \frac{n}{b^{l-1}} \right)
+        & \text{per l'HP induttiva } a^{l-1} \left( \frac{n}{b^{l-1}} \right) \leq c^{l-1}w(n)&\\
+        & \leq cc^{l-1}w(n) \\
+        & = c^lw\left( n \right)
+    \end{align*}
+\end{proof}
+Dimostriamo ora il caso $3$, di cui riportiamo l'enunciato:
     \begin{align*}
         a) \quad &\exists \varepsilon > 0 : w(n) = \Omega(n^{\log_b a+\varepsilon}) \\
         b) \quad &\exists c, 0 \leq c \leq 1 : \forall n \rightarrow aw\left( \frac{n}{b} \right) \leq cw(n) \\
         \Rightarrow \quad & T(n) = \Theta \left( w(n) \right)
     \end{align*}
+\begin{proof}
+\begin{align*}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & \leq \sum_{l=0}^{\log_b n -1} c^l \cdot w(n) \\
+    & \leq w(n) \sum_{l=0}^{+\infty} c^l & c<1 &\\
+    & = \frac{1}{1-c}w(n)
+    \intertext{quindi la sommatoria è $O-grande$ di $w(n)$}
+    \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+    & = O \left (w(n) \right) \\
+    \intertext{combinando questo risultato con \ref{eq:masterfoglie} si ottiene}
+    T(n) & = \Theta \left( n^{\log_b a} \right) + O\left( w(n) \right)
+    \intertext{per le leggi sui vincoli asintotici, il primo contributo è trascurabile}
+    T(n) & = O\left( w(n) \right)
+    \intertext{per $n>1$ osserviamo}
+    T(n) &= aT\left( \frac{n}{b} \right) w(n) \geq w(n)
+    & \text{$a$ e $T$ positive} &\\
+    T(n) & = \Omega \left( w(n) \right) 
+    \intertext{da cui ricaviamo}
+    T(n) & = \Theta \left( w(n) \right)
+\end{align*}
 \end{proof}
 
 \subsection{autocomplete}
@@ -575,3 +600,39 @@ Sotto numeri
 ùg
 perché
 
+\subsubsection{Caso 2}
+% Dimostrazione, pag 21
+\begin{proof}
+    \begin{align*}
+        w(n) = \Theta(n^{\log_b a})
+        & \Rightarrow
+        T(n) = \Theta \left( n^{\log_b a} \log n \right) 
+        \intertext{ossia per ipotesi}
+        \exists c_1, c_2 : \forall n \geq 1 & \rightarrow c_1 n^{\log_b a} \leq w(n) \leq n^{\log_b a}
+        \intertext{usiamo la seconda disequazione per maggiorare $w$}
+        \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+        & \leq c_2 \sum_{l=0}^{\log_b n -1} a^l \left( \frac{n}{b^l} \right)^{\log_b a} \\
+    % & = c_2 \sum_{l=0}^{\log_b n -1} \frac{\cancel{a^l}}{\cancel{a^l}} n^{log_b a}
+        & = c_2 \sum_{l=0}^{\log_b n -1} \frac{a^l n^{\log_b a}}{a^l} 
+        & b^{l^{\log_b a}} = a^l &\\
+        & = c_2 n^{\log_b a} \sum_{l=0}^{\log_b n -1} 1 \\
+        & = c_2 n^{\log_b a} \log_b n \\
+        \intertext{quindi la sommatoria è $O-grande$ di $n^{\log_b a} \log n$}
+        \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+        & = O \left( n^{\log_b a} \log n \right) \\
+        \intertext{in modo analogo si minora con $c_1$}
+        \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+        & \geq c_1 \sum_{l=0}^{\log_b n -1} a^l \left( \frac{n}{b^l} \right)^{\log_b a} = c_1 n^{\log_b a} \log_b n \\
+        \intertext{quindi la sommatoria è $\Omega-grande$ di $n^{\log_b a} \log n$}
+        \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+        & = \Omega \left( n^{\log_b a} \log n \right) \\
+        \intertext{combinando i due risultati}
+        \sum_{l=0}^{\log_b n -1} a^l \cdot w \left( \frac{n}{b^l} \right)
+        & = \Theta \left( n^{\log_b a} \log n \right) \\
+        \intertext{combinando questo risultato con \ref{eq:masterfoglie} si ottiene}
+        T(n) & = \Theta \left( n^{\log_b a} \right) + \Theta \left( n^{\log_b a} \log n \right) \\
+        \intertext{per le leggi sui vincoli asintotici, il primo contributo è trascurabile}
+        T(n) & = \Theta \left( n^{\log_b a} \log n \right) \\
+    \end{align*}
+\end{proof}
+In questo caso la maggior parte del lavoro è compiuta all'interno dell'albero, ogni livello compie lo stesso lavoro cumulativo, e ci sono $\log n$ livelli. L'esempio principale del caso 2 è il \textit{Merge-Sort}, descritto da $T(n)=2T(n/2)+n$, dove ogni livello compie $n^{\log_2 2}=n$ operazioni e la complessità è $\Theta (n \log n)$.
