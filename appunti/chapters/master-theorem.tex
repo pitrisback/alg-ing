@@ -248,12 +248,18 @@ Le formule di iterata $i-esima$ e ausiliaria si ricavano come spiegato nella sez
     f^{(i)}(n) &= \frac{n}{3^i} & f^*(n, 1) &= \log_3 \left( n \right) - 1
 \end{align*}
 Calcoliamo le componenti interne della formula:
-\begin{gather*}
-    \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) = \prod_{j=0}^{l-1} 6 = 6^{l-1+1} = 6^l \\
-    w\left(f^{(l)}(n) \right) =  w \left( \frac{n}{3^l} \right) = \frac{n^2}{3^{2l}} - \frac{n}{3^l} = \frac{n^2}{9^l}-\frac{n}{3^l} \\
-    \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) = \prod_{j=0}^{\log_3 n-1} 6 = 6^{\log_3 n} =
+% \begin{gather*}
+\begin{align*}
+    \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) 
+    &= \prod_{j=0}^{l-1} 6 = 6^{l-1+1} = 6^l \\
+    w\left(f^{(l)}(n) \right) 
+    &=  w \left( \frac{n}{3^l} \right) 
+    = \frac{n^2}{3^{2l}} - \frac{n}{3^l} = \frac{n^2}{9^l}-\frac{n}{3^l} \\
+    \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) 
+    &= \prod_{j=0}^{\log_3 n-1} 6 = 6^{\log_3 n} =
     n^{\log_3 6} = n^{\log_3 (2\cdot3)} = n^{\log_3 2 + \log_3 3} = n^{\log_3 2 + 1}
-\end{gather*}
+% \end{gather*}
+\end{align*}
 La formula risulta quindi:
 \begin{align*}
     T(n) & = \sum_{l=0}^{\log_3 n-1} 6^l \left( \frac{n^2}{9^l}-\frac{n}{3^l} \right) + 4 n^{\log_3 2 + 1} \\
@@ -366,7 +372,7 @@ Ci sono tre casi possibili:\\
         \end{equation}
     \item[\textbf{Caso 2:}] 
         \begin{equation}
-            T(n) = \Theta (n^{\log_b a} \, \log_n) \text{se } w(n) = \Theta(n^{\log_b a})
+            T(n) = \Theta (n^{\log_b a} \, \log_n) \text{ se } w(n) = \Theta(n^{\log_b a})
             \label{eq:mastercaso2}
         \end{equation}
     \item[\textbf{Caso 3:}] 

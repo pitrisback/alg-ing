@@ -32,7 +32,7 @@ E devono valere le due seguenti proprietà:
 Note:
 \begin{itemize}[noitemsep,parsep=0pt,partopsep=0pt]
     \item[--] il numero di sottoistanze può variare, in base all'istanza considerata
-    \item[--] gli algoritmi che implementano (con sequenze di istruzioni elementari) le funzioni, sono, formalmente, oggetti matematici diversi \\
+    \item[--] gli algoritmi che implementano (con sequenze di istruzioni elementari) le funzioni, sono, formalmente, oggetti matematici diversi rispetto alle funzioni che implementano \\
         $ A_D : i \mapsto <i_1, i_2, \dots, i_k> \sim D(i)$ e $ A_C : <s_1, s_2, \dots, s_k> \mapsto s \sim C(<s_1, s_2, \dots, s_k>) $
 \end{itemize}
 
@@ -124,7 +124,7 @@ Per prima cosa va identificata la taglia di una generica sottoistanza in funzion
 
 
 \begin{description}
-    \item{\textbf{Base:}} $n=1 \rightarrow j-i+1=1 \rightarrow j=i \rightarrow return \: A[i]$: corretto, $max\{a\}=a$
+    \item{\textbf{Base:}} $n=1 \rightarrow j-i+1=1 \rightarrow j=i \rightarrow return \: A[i]$: corretto, $\max\{a\}=a$
     \item{\textbf{HP:}} MAX viene considerato corretto per i casi $j-i+1 < n$
     \item{\textbf{TH:}} $j-i+1 = n$, $n>1$ e quindi anche $i<j$
         \begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
@@ -153,10 +153,10 @@ Per prima cosa va identificata la taglia di una generica sottoistanza in funzion
                 \end{equation*}
                 in maniera analoga si dimostra $ 0 < j-k < n $ , fallo per ESERCIZIO
             \item 
-                $m_1 = MAX(A,i,k) = max(\{A(x):i \leq x \leq k \}) $ \\
-                $m_2 = MAX(A,k+1,j) = max(\{A(x):k+1 \leq x \leq j \}) $ \\
+                $m_1 = MAX(A,i,k) = \max(\{A(x):i \leq x \leq k \}) $ \\
+                $m_2 = MAX(A,k+1,j) = \max(\{A(x):k+1 \leq x \leq j \}) $ \\
                 considerati corretti per l'ipotesi induttiva
-            \item sfruttando la proprietà $ A = A_1 \cup A_2 \Rightarrow max\{A\} = max\{max\{A_1\}, max\{A_2\}\}$,
+            \item sfruttando la proprietà $ A = A_1 \cup A_2 \Rightarrow \max\{A\} = \max\{\max\{A_1\}, \max\{A_2\}\}$,
                 basta verificare che le due sottoistanze coprano tutto $A$: $A[i..j] = A[i..k] + A[k+1..j] $ 
         \end{enumerate}
 \end{description}
@@ -225,8 +225,9 @@ Nelle sezioni successive sono presentate tre tecniche per risolvere le relazioni
         = 2 \left( 2 T_{MAX} \left( \frac{n}{4} \right) + 1 \right) + 1 \\
         &= 2^2 \:T_{MAX} \left( \frac{n}{2^2} \right) +2 +1
         = 2^2 \left( 2 T_{MAX} \left( \frac{n}{2^3} \right) + 1 \right) +2+1 \\
-        &= 2^3 \:T_{MAX} \left( \frac{n}{2^3} \right) +2^2 +2 +1 = \cdots \\ 
-        \intertext{passo di generalizzazione}
+        &= 2^3 \:T_{MAX} \left( \frac{n}{2^3} \right) +2^2 +2 +1 = \cdots 
+        & \text{passo di generalizzazione} & \\
+        % \intertext{passo di generalizzazione}
         \cdots &=2^i \:T_{MAX} \left( \frac{n}{2^i} \right) +2^i + \cdots +2^2 +2 +1 \\
         &= 2^i \:T_{MAX} \left( \frac{n}{2^i} \right) + \sum_{j=0}^{i-1} 2^j \\
         \intertext{elimino la dipendenza implicita quando il parametro è un valore base: $n / 2^i=1 \rightarrow i=\log_2 n$}
