@@ -221,11 +221,20 @@ Nell'albero la taglia delle istanze è indicata nel nodo, il lavoro associato (u
 
 Da questo albero delle ricorrenze si può ricavare il lavoro totale, sommando i contributi di ciascun nodo.
 % Formulone, pag 16
-\begin{align*}
+% \begin{align*}
+    % T(n) & = \sum_{l=0}^{f^*(n,n_0)}\text{\# nodi nel livello}\cdot\text{\# $w$ per nodo del livello}+\text{contributo foglie}\\
+    % &= \sum_{l=0}^{f^*(n,n_0)} \left[ \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) \cdot w \left( f^{(l)}(n) \right) \right] +
+        % \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) \cdot T_0
+% \end{align*}
+\begin{equation}
+    \begin{aligned}[b]
     T(n) & = \sum_{l=0}^{f^*(n,n_0)}\text{\# nodi nel livello}\cdot\text{\# $w$ per nodo del livello}+\text{contributo foglie}\\
     &= \sum_{l=0}^{f^*(n,n_0)} \left[ \prod_{j=0}^{l-1} S \left( f^{(j)}(n) \right) \cdot w \left( f^{(l)}(n) \right) \right] +
         \prod_{j=0}^{f^*(n,n_0)} S \left( f^{(j)}(n) \right) \cdot T_0
-\end{align*}
+        \label{eq:formachiusaric}
+    \end{aligned}
+\end{equation}
+
 
 Da qualche parte le convenzioni sugli operatori, pag 15.5; insieme alle cose a fine capitolo DnC -$>$ Appendice
 
@@ -588,7 +597,43 @@ Dimostriamo ora il caso $3$, di cui riportiamo l'enunciato:
 \end{proof}
 
 \subsection{Considerazioni sull'applicabilità ed estensioni}
+\subsubsection{Accortezze sulle ipotesi}
 % esempio ipotesi non rispettate, pag 22.9, 23
+Quando si applica la formula, si deve fare attenzione durante la verifica delle ipotesi.
+Il fatto che una funzione $w(n)$ non sia $O(n)$ e neppure $\Theta(n)$ \textit{non} implica che essa sia $\Omega(n)$. Per esempio
+\[
+    T(n) = 
+    \begin{cases} 
+        1      &  n = 1 \\
+        2 \, T\left(\frac{n}{2}\right) + n \log_2 n & n > 1 \quad \text{assumendo } n=2^k
+    \end{cases}
+\]
+ha come \textit{treshold} $n^{\log_b a} = n$ per cui
+\begin{description}
+    \item[Caso 1:] $w(n) \meq O(n) \rightarrow $ no, è strettamente maggiore
+    \item[Caso 2:] $w(n) \meq \Theta(n) \rightarrow $ no, è un infinito di ordine superiore
+    \item[Caso 3:] $w(n) \meq \Omega(n) \rightarrow $
+        no! $w(n)$ deve essere \textit{polinomialmente} più grande, e non è così
+        \begin{align*}
+            \exists \, \varepsilon > 0 :\, & w(n) = \Omega \left( n^{1+\varepsilon} \right) \\
+            & n \log_n n = \Omega \left( n^{1+\varepsilon} \right) \\
+            & \log_n n = \Omega \left( n^{\varepsilon} \right) \rightarrow
+                \text{ mai verificato per nessun $\varepsilon$}
+        \end{align*}
+        il \textit{Master Theorem} nel caso tre sosterrebbe $T(n)=\Omega \left( n \log_n n \right)$
+        commettendo un errore. Applicando la formula \ref{eq:formachiusaric}, le cui ipotesi sono invece tutte rispettate, otteniamo infatti
+        \begin{align*}
+            T(n) &= \sum_{l=0}^{\log_2 n} 2^l \left( \frac{n}{2^l} \log_2 \left( \frac{n}{2^l} \right) \right) + 2^{\log_2 n} \cdot 1 \\
+            & \left[ \log_2 \left( \frac{n}{2^l} \right) + 2^{\log_2 n} = \log_2 n - \log_2 2^l = \log_2 n - l \log_2 2 \right] \\
+            & = n + n \sum_{l=0}^{\log_2 n} \left( \log_2 n - l \right) \\
+            & \left[ \text{cambio di variabile } k = \log_2n-l \quad
+                l=0 \rightarrow k=\log_2 n \quad l=\log_2 n -1 \rightarrow k=1 \right] \\
+            & = n + n \sum_{l=0}^{\log_2 n} k \\
+            & = n + n \frac{\left( \log_2 n \right) \left( \log_2 n + 1 \right)}{2} \\
+            & = n + \frac{n \log_2^2 n }{2}  + \frac{n \log_2 n }{2} \\
+            & = \Theta \left( n \log_2^2 n \right) 
+        \end{align*}
+\end{description}
 
 % regolarità per polinomi, pag 24
 % forse una subsection tutta sua
