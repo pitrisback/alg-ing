@@ -13,7 +13,6 @@
     \begin{cases} 
         f^{(0)} (n) = n      &  i = 0 \\
         f^{(i)} (n) = f \left( f^{(i-i)} (n) \right)   &  i > 0 \\
-        
     \end{cases}
     \]
 \end{definition}
@@ -658,38 +657,41 @@ Dimostriamo ora la regolarità di un monomio generico $w(n) = n^k$, dimostrandol
 
 \subsection{Estensione del \textit{Master Theorem}}
 % estensione del MT, pag 24.6o
+\begin{equation}
+    T'(n) = 
+    \begin{cases} 
+        T_0      &  n \leq n_0 \\
+        a \, T' \left( \left\lfloor \frac{n}{b} \right\rfloor \right) + w(n) & n > n_0 
+    \end{cases}
+    \label{eq:masterestesofloor}
+\end{equation}
+\begin{equation}
+    T''(n) = 
+    \begin{cases} 
+        T_0      &  n \leq n_0 \\
+        a \, T''\left( \left\lceil \frac{n}{b} \right\rceil \right) + w(n) & n > n_0
+    \end{cases}
+    \label{eq:masterestesoceil}
+\end{equation}
+Si può dimostrare che $T' \text{ e } T''$ hanno lo stesso comportamento asintotico di $T(n)$ con $n=b^k$
+
+\begin{proof}
+    La dimostrazione si basa sul comportamento asintotico simile delle funzioni
+    $f_{\left\lceil\right\rceil}(n)=\left(\left\lceil\frac{n}{b}\right\rceil\right)$
+    e
+    $f_{\left\lfloor\right\rfloor}(n)=\left(\left\lfloor\frac{n}{b}\right\rfloor\right)$
+    rispetto a 
+    $f(n)=\left(\frac{n}{b}\right)$. Inoltre 
+    $f_{\left\lceil\right\rceil}^{(l)}(n)=\left(\left\lceil\frac{n}{b^l}\right\rceil\right)$
+    e
+    $f_{\left\lfloor\right\rfloor}^{(l)}(n)=\left(\left\lfloor\frac{n}{b^l}\right\rfloor\right)$
+    entrambe $\Theta \left( \frac{n}{b^l} \right)$. Introducendo costanti moltiplicative, si conclude.
+\end{proof}
 
 \subsection{Convenzioni sull'equazione di ricorrenza}
 % convenzioni sull'eq di ricorrenza, pag 25.2
-
-\subsection{autocomplete}
-Una bella scatola:
-\begin{equation}
-    \boxed{x^2+y^2 = z^2}
-\end{equation}
-
-Numeri nei casi
-\begin{numcases}{T(n)=}
-    2^3 \label{escaso1} \\
-    2^4 \label{escaso2} 
-\end{numcases}
-
-Sotto numeri
-\begin{subnumcases}{T(n)=}
-    2^3 \label{escaso3} \\
-    2^4 
-\end{subnumcases}
-
-\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
-    \item qualcosa
-    \item[+] qualcosa
-    \item[*] qualcosa
-    \item[--] qualcosa
-\end{itemize}
-àg
-èg
-ìg
-òg
-ùg
-perché
-
+Per comodità di notazione, quando si parla di problemi che rispettano le ipotesi del \textit{Master Theorem}, è sufficiente riportare solo l'equazione
+\[
+    T(n) = a \, T\left( \frac{n}{b} \right) + w(n)
+\]
+sfruttando le considerazioni appena compiute.
