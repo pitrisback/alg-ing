@@ -596,8 +596,7 @@ Dimostriamo ora il caso $3$, di cui riportiamo l'enunciato:
 \end{align*}
 \end{proof}
 
-\subsection{Considerazioni sull'applicabilità ed estensioni}
-\subsubsection{Accortezze sulle ipotesi}
+\subsection{Accortezze sulle ipotesi}
 % esempio ipotesi non rispettate, pag 22.9, 23
 Quando si applica la formula, si deve fare attenzione durante la verifica delle ipotesi.
 Il fatto che una funzione $w(n)$ non sia $O(n)$ e neppure $\Theta(n)$ \textit{non} implica che essa sia $\Omega(n)$. Per esempio
@@ -635,11 +634,32 @@ ha come \textit{treshold} $n^{\log_b a} = n$ per cui
         \end{align*}
 \end{description}
 
+\subsection{Regolarità dei polinomi}
 % regolarità per polinomi, pag 24
-% forse una subsection tutta sua
+Sempre nel caso tre, una volta provata l'ipotesi asintotica \ref{eq:mastercaso3a}, occorre provare l'ipotesi di regolarità \ref{eq:mastercaso3b}. Quest'ipotesi va provata però $\forall n$, cosa non sempre banale.
 
+Dimostriamo ora la regolarità di un monomio generico $w(n) = n^k$, dimostrandola anche per tutti i polinomi
+
+\begin{theorem} \label{teo:regolarita}
+    Se $w(n) = n^k \Rightarrow \exists 0<c<1 : a w \left( \frac{n}{b} \right) < c w(n) \forall n$
+\end{theorem}
+\begin{proof}
+    Combinando le due ipotesi $w(n)=n^k $ e $w(n)= \Theta \left( n^{\log_b a + \varepsilon} \right) $ si ottiene $n^k = \Theta \left( n^{\log_b a + \varepsilon} \right) $ da cui ricaviamo la limitazione \textit{esatta} (e non più asintotica) $k \geq \log_b a + \varepsilon$.
+    \begin{align*}
+        a w \left( \frac{n}{b} \right) &= a \left( \frac{n}{b} \right)^k 
+        & b>1 \text{ minoro il denominatore} & \\
+        & \leq a \frac{n^k}{b^{\log_b a + \varepsilon}} 
+        = a \frac{n^k}{a b^{\varepsilon}} 
+        = \frac{1}{b^{\varepsilon}} n^k
+        & \frac{1}{b^{\varepsilon}} \text{ è costante} \\
+        & = cn^k = cw(n)
+    \end{align*}
+\end{proof}
+
+\subsection{Estensione del \textit{Master Theorem}}
 % estensione del MT, pag 24.6o
 
+\subsection{Convenzioni sull'equazione di ricorrenza}
 % convenzioni sull'eq di ricorrenza, pag 25.2
 
 \subsection{autocomplete}
