@@ -1,16 +1,213 @@
-\section{Notazione sulle matrici}
+\section{Introduzione - Notazione}
 % notazione, pag 25.5
+Saranno principalmente considerate matrici quadrate $\mathbb{R}^{n \times n}$, con taglia associata $n$, il numero di righe, o $N=n^2$, il numero di elementi.\\
+Verranno considerate operazioni costose solo somme, sottrazioni, prodotti e divisioni tra scalari reali. A volte verrà posta particolare attenzione a prodotti e divisioni, che sono più computazionalmente intensi.\\
+Una matrice $A$ è composta da elementi $a_{i,j}$ e si indica
+\[ A = \left( a_{i,j} \right)_{1 \leq i,j \leq n} \]
 
 \section{Somma e sottrazione}
 % sum sub, pag 25.8, 26
+La somma (e, in tutta la sezione, in modo analogo la sottrazione) è una delle operazioni definita fra le matrici.
+\begin{definition}
+    La somma fra matrici è definita come
+    \[
+    C = A + B \rightarrow
+    c_{i,j} = a_{i,j} + b_{i,j}
+    \]
+    \label{def:somma}
+\end{definition}
+\begin{algorithm}[H]
+\caption{Somma tra matrici}\label{alg:sum}
+\begin{algorithmic}[1]
+\Procedure{SUM}{$A,B$}
+    \State $n \gets A.rows$
+        \For{$i \gets 1 $ to $ n $ }
+            \For{$j \gets 1 $ to $ n $ }
+                \State $c_{i,j} \gets a_{i,j} + b_{i,j} $
+            \EndFor
+        \EndFor
+    \State return $C$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+La correttezza dell'algoritmo discende in maniera diretta dalla definizione.
+
+La complessità dell'algoritmo è $T(n) = n^2$
 
 \section{Moltiplicazione di matrici}
 \subsection{Definizione}
 % definizione, pag 26.4
+La moltiplicazione tra matrici è definita secondo il prodotto righe per colonne.
+\begin{definition}
+    Il prodotto righe per colonne è definito come
+    \[
+    C = A \times B \rightarrow
+    c_{i,j} = \sum_{k=1}^{n}a_{i,k} b_{k,j}
+    \]
+    \label{def:prodrc}
+\end{definition}
+\begin{algorithm}[H]
+\caption{Prodotto righe per colonne secondo la definizione}\label{alg:mulrcdef}
+\begin{algorithmic}[1]
+\Procedure{MUL}{$A,B$}
+    \State $n \gets A.rows$
+        \For{$i \gets 1 $ to $ n $ }
+            \For{$j \gets 1 $ to $ n $ }
+                \State $c_{i,j} \gets a_{i,j} \cdot b_{i,j} $
+                \For{$k \gets 2 $ to $ n $ }
+                \State $c_{i,j} \gets c_{i,j} + a_{i,j} \cdot b_{i,j} $
+                \EndFor
+            \EndFor
+        \EndFor
+    \State return $C$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+La correttezza dell'algoritmo discende in maniera diretta dalla definizione.
+
+La complessità dell'algoritmo è $T(n) = \Theta (n^3)$, infatti trasformando i cicli $for$ in sommatorie, si ottiene la formula
+\[
+    T(n) = \sum_{i=1}^{n} \sum_{j=1}^{n} \left( 1 + \sum_{k=2}^{n} 2 \right) = 
+    = \sum_{i=1}^{n} \sum_{j=1}^{n} \left( 2n-2+1 \right) 
+    = \left( 2n-1 \right) \sum_{i=1}^{n} \sum_{j=1}^{n} 1 
+    = (2n-1)n^2 = 2n^3 -n^2
+\]
+
 \subsection{Implementazione ricorsiva}
 % moltiplicazione ricorsiva, pag 27.3, 28
+Nel corso del capitolo ci limiteremo a studiare matrici di taglia $n=2^k$, semplificando notevolmente l'analisi asintotica. Questo non comporta una perdita di generalità, infatti $\forall m \neq 2^k$ è sufficiente scegliere $n=2^{\left\lceil \log_2 m \right\rceil} < 2m$ e si può procedere con gli algoritmi che saranno presentati, avendo al più quadruplicato il numero di elementi.
+
+TODO disegni delle matrici pag 27.5
+
+Il prodotto righe per colonne ha la proprietà frattale, ovvero lo si può risolvere dal prodotto righe per colonne dei suoi blocchi.
+% TODO l'italiano quà è brutto forte
+Infatti dividendo le matrici in blocchi di dimensione $\frac{n}{2} \times \frac{n}{2}$ vale
+\[
+    1 \leq r \leq 2,\, 1 \leq s \leq 2 \rightarrow C_{r,s} = A_{r,1} B_{1,s} + A_{r,2} B_{2,s}
+\]
+
+TODO divisione in blocchi di C, pag 27.6
+
+TODO altri disegni pag 27.9
+
+La proprietà frattale descritta, che permette di ottenere il prodotto righe per colonne di due matrici $n \times n$ tramite prodotti righe per colonne di matrici $\frac{n}{2} \times \frac{n}{2}$ che poi vengono combinati è una proprietà di sottostruttura. Il caso di base è semplicemente il prodotto di due scalari. Quando $n>1$ si calcolano ricorsivamente tutti i prodotti delle sottomatrici.
+
+\begin{algorithm}[H]
+\caption{Prodotto righe per colonne ricorsivo}\label{alg:mulrcric}
+\begin{algorithmic}[1]
+\Procedure{RMUL}{$A, B$}
+    \State $n \gets A.rows$
+    \If{$n = 1$}                             \Comment{BASE}
+        \State return $\left( a_{11} \cdot b_{11} \right)$
+    \EndIf
+    \State *divido $A, B$ in blocchi $A_{11}, \cdots, B_{22}$*    \Comment{DIVIDE}
+    \For{$r \gets 1 $ to $ 2 $ }                                    \Comment{RECURSE e CONQUER sono simultanei}
+        \For{$s \gets 1 $ to $ 2 $ }
+        \State $C_{r,s} \gets 
+        \Call{SUM}{}
+        % \Call{SUM}{ % boh si offende un sacco
+        \left(
+            \Call{RMUL}{A_{r,1}, B_{1,s}}, 
+            \Call{RMUL}{A_{r,2}, B_{2,s}} 
+        \right)
+        $
+        % } $
+        \EndFor
+    \EndFor
+    \State return $C$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+Osservando che il \textit{Divide} non comporta alcun costo, il \textit{Recurse} comporta $2$ chiamate ricorsive per ciascuna delle quattro iterazioni dei cicli $for$ e il \textit{Conquer} necessita di $4$ somme su matrici di dimensione $\frac{n}{2} \times \frac{n}{2}$, si può scrivere l'equazione di ricorrenza
+\begin{equation}
+    T(n) = 
+    \begin{cases}
+        1 & n=1 \\
+        8 T \left( \frac{n}{2} \right) + 4 \left( \frac{n}{2} \right)^2 & n>1
+    \end{cases}
+    \label{eq:rcric}
+\end{equation}
+con parametri
+\begin{align*}
+    a&=8 & b&=2 & w(n)&=n^2 & n^{log_2 8}&=n^3
+\end{align*}
+per cui siamo nel caso uno del \textit{Master Theorem}, e risulta
+\begin{equation*}
+    T(n) = \Theta\left( n^{log_2 8} \right) = \Theta\left( n^{3} \right)  
+\end{equation*}
+TODO applica per ESERCIZIO la formula generale per ricavare le costanti $2n^3-n^2$
+
 \subsection{Algoritmo di \textit{Strassen}}
 % moltiplicazione Strassen, pag 29
+Il \textit{Master Theorem}, oltre ad essere strumento di analisi, può essere usato per la progettazione di algoritmi. Si può notare dall'equazione \ref{eq:rcric} che il costo delle chiamate ricorsive è molto maggiore rispetto al costo di ricombinazione. Cercando un algoritmo che riduca il primo, eventualmente a scapito del secondo, si può provare ad abbassare la complessità dell'algoritmo.
+
+L'algoritmo di \textit{Strassen} segue proprio questa strada, mostrando una maniera per ottenere il prodotto di due matrici $n \times n$ usando solo $7$ prodotti di matrici $\frac{n}{2} \times \frac{n}{2}$ e un numero costante($18$) di somme e sottrazioni tra matrici $\frac{n}{2} \times \frac{n}{2}$.
+
+\begin{algorithm}[H]
+    \caption{Algoritmo di \textit{Strassen}}\label{alg:strassen}
+\begin{algorithmic}[1]
+% \Procedure{$D_S$}{$A, B$}
+\Procedure{D\textsubscript{S}}{$A, B$}
+    \State $A_1 \gets A_{11}$; $B_1 \gets \Call{SUB}{B_{12}, B_{22} }$
+    \State $A_2 \gets \Call{SUM}{A_{11}, A_{12}}$; $B_2 \gets B_{22}$
+    \State $A_3 \gets \Call{SUM}{A_{21}, A_{22}}$; $B_3 \gets B_{11}$
+    \State $A_4 \gets A_{22}$; $B_4 \gets \Call{SUB}{B_{21}, B_{11} }$
+    \State $A_5 \gets \Call{SUM}{A_{11}, A_{22}}$; $B_5 \gets \Call{SUM}{B_{11}, B_{22} }$
+    \State $A_6 \gets \Call{SUM}{A_{12}, A_{22}}$; $B_6 \gets \Call{SUM}{B_{21}, B_{22} }$
+    \State $A_7 \gets \Call{SUB}{A_{11}, A_{21}}$; $B_7 \gets \Call{SUB}{B_{11}, B_{12} }$
+    \State return $A_1, \cdots, A_7, B_1, \cdots, B_7$
+\EndProcedure
+\Procedure{R\textsubscript{S}}{$A_1, \cdots, A_7, B_1, \cdots, B_7$}
+    \For{$i \gets 1 $ to $ 7 $ }
+    \State $P_i \gets \Call{SMUL}{A_{i}, B_{i} }$
+    \EndFor
+    \State return $P_1, \cdots, P_7$
+\EndProcedure
+\Procedure{C\textsubscript{S}}{$P_1, \cdots, P_7$}
+    \State $C_{11} \gets \Call{SUB}{} \left( \Call{SUM}{P_4, P_5}, \Call{SUB}{P_2, P_6} \right) $
+    \State $C_{12} \gets \Call{SUM}{P_1, P_2}$
+    \State $C_{21} \gets \Call{SUM}{P_3, P_4}$
+    \State $C_{22} \gets \Call{SUB}{} \left( \Call{SUM}{P_1, P_5}, \Call{SUB}{P_3, P_7} \right) $
+    \State return $C_1, \cdots, C_4$
+\EndProcedure
+\Procedure{SMUL}{$A, B$}
+    \State $n \gets A.rows$
+    \If{$n = 1$}                             \Comment{BASE}
+        \State return $\left( a_{11} \cdot b_{11} \right)$
+    \EndIf
+    \State $\left( A_1, \cdots, A_7, B_1, \cdots, B_7 \right) \gets \Call{D\textsubscript{S}}{A, B}$
+    \Comment{DIVIDE}
+    \State $\left( P_1, \cdots, P_7 \right) \gets \Call{R\textsubscript{S}}{A_1, \cdots, A_7, B_1, \cdots, B_7}$
+    \Comment{RECURSE}
+    \State $C  \gets \Call{C\textsubscript{S}}{P_1, \cdots, P_7}$
+    \Comment{CONQUER}
+    \State return $C$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+La correttezza dell'algoritmo si prova mostrando la correttezza dei singoli blocchi di $C$, per esempio per $C_{12}$
+\begin{equation*}
+    C_{12} = P_1+P_2 = A_{11} \left( B_{12}-B_{22} \right) + \left( A_{11}+A_{12} \right) B_{22} =
+    A_{11}B_{12} - \cancel{A_{11}B_{22}} + \cancel{A_{11}B_{22}} + A_{12}B_{22}
+\end{equation*}
+
+L'equazione di ricorrenza associata all'algoritmo è
+\begin{equation}
+    T(n) = 
+    \begin{cases}
+        1 & n=1 \\
+        7 T \left( \frac{n}{2} \right) + 18 \left( \frac{n}{2} \right)^2 & n>1
+    \end{cases}
+    \label{eq:ricstrassen}
+\end{equation}
+per cui la funzione di soglia è diventata $n^{log_2 7} \approx n^{2.80}$, per cui si è ancora nel caso uno e vale
+\begin{equation*}
+    T_S(n) = \Theta \left( n^{log_2 7} \right)
+\end{equation*}
+TODO verifica per ESERCIZIO il valore alle costanti, deve venire $T_S(n)=7n^{log_2 7}-6n^2$
+
+Per quanto l'esponente sia diminuito rispetto all'implementazione ricorsiva base, è aumentato il coefficiente da $2$ a $7$. Per valori piccoli di $n$ quindi, la complessità dell'algoritmo di \textit{Strassen} è maggiore, e solo per $n>1024$ diventa conveniente.
 
 \subsection{autocomplete}
 Una bella scatola:
