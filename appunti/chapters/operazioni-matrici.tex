@@ -326,9 +326,11 @@ L'equazione di ricorrenza associata all'algoritmo è
         = 2n^3 - n^2 & n \leq 8 \\
         \approx 3,92 n^{log_2 7} + 6n^2 & n > 8
     \end{cases}
-    \label{eq:richybrid}
+    \label{eq:richybrid8}
 \end{equation}
+Che risulta in quasi il $50\%$ di miglioramento. Notare come $8$ non abbia niente a che fare con il $1024$ che si era ottenuto in precedenza. Il metodo con cui è stato ricavato il valore ci assicura però che questo metodo sia sempre migliore di entrambi.
 
+Nota: il modello di costo considerato non è sufficientemente descrittivo, e trascura tutti i costi associati alla ricorsione (chiamate ricorsive, allocazioni di memoria, salvataggio dello stato del programma\ldots) quindi nella realtà si consiglia di fare test empirici modificando il valore di $n_0$ per individuare il valore effettivamente migliore.
 
 \subsection{autocomplete}
 Una bella scatola:
