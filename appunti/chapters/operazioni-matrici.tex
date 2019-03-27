@@ -201,13 +201,134 @@ L'equazione di ricorrenza associata all'algoritmo è
     \end{cases}
     \label{eq:ricstrassen}
 \end{equation}
-per cui la funzione di soglia è diventata $n^{log_2 7} \approx n^{2.80}$, per cui si è ancora nel caso uno e vale
+per cui la funzione di soglia è diventata $n^{log_2 7} \approx n^{2.80}$, si è ancora nel caso uno e vale
 \begin{equation*}
     T_S(n) = \Theta \left( n^{log_2 7} \right)
 \end{equation*}
 TODO verifica per ESERCIZIO il valore alle costanti, deve venire $T_S(n)=7n^{log_2 7}-6n^2$
 
 Per quanto l'esponente sia diminuito rispetto all'implementazione ricorsiva base, è aumentato il coefficiente da $2$ a $7$. Per valori piccoli di $n$ quindi, la complessità dell'algoritmo di \textit{Strassen} è maggiore, e solo per $n>1024$ diventa conveniente.
+
+\subsection{Algoritmo ibrido}
+Si può notare come l'algoritmo di Strassen sia asintoticamente veloce, ma con costanti elevate, mentre l'algoritmo diretto sia asintoticamente più lento, ma abbia costanti minori. Utilizzando la tecnica dell'ibridizzazione, si possono combinare i due algoritmi, mantenendo l'andamento asintotico del primo e diminuendo le costanti.
+
+Il primo approccio, immediato, si limita a selezionare uno dei due algoritmi in base alla taglia della matrice
+
+
+\begin{algorithm}[H]
+    \caption{Algoritmo ibrido naive}\label{alg:mulrcnaive}
+\begin{algorithmic}[1]
+\Procedure{Naive\_Hybrid\_MUL}{$A, B$}
+    \State $n \gets A.rows$
+    \If{$n < 1024 $}
+        \State return $\Call{MUL}{A,B}$
+        \Else
+        \State return $\Call{SMUL}{A,B}$
+    \EndIf
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+L'equazione di ricorrenza associata all'algoritmo è
+\begin{equation*}
+    T_{NH}(n) = 
+    \begin{cases}
+        2n^3 - n^2 & n<1024 \\
+        7 n^{log_2 7} - 6n^2& n \geq 1024
+    \end{cases}
+    \label{eq:ricnaivehybrid}
+\end{equation*}
+e si può notare non è che sia cambiata molto, in particolare per $n \geq 1024 $ è rimasta identica.
+
+Innestiamo quindi in modo più efficace l'algoritmo veloce, modificando il caso base di \textit{Strassen}, cambiando $n_0$ e bloccando prima la ricorsione.
+
+TODO albero pag 31.7
+
+\begin{algorithm}[H]
+    \caption{Algoritmo ibrido}\label{alg:mulrcibrido}
+\begin{algorithmic}[1]
+\Procedure{Hybrid\_SMUL}{$A, B$}
+    \State $n \gets A.rows$
+    \If{$n \leq n_0 $}
+        \State return $\Call{MUL}{A,B}$
+        \Comment{BASE}
+    \EndIf
+    \State $\left( A_1, \cdots, A_7, B_1, \cdots, B_7 \right) \gets \Call{D\textsubscript{S}}{A, B}$
+    \Comment{DIVIDE}
+    \State $\left( P_1, \cdots, P_7 \right) \gets \Call{R\textsubscript{HS}}{A_1, \cdots, A_7, B_1, \cdots, B_7}$
+    \Comment{RECURSE}
+    \State $C  \gets \Call{C\textsubscript{S}}{P_1, \cdots, P_7}$
+    \Comment{CONQUER}
+    \State return $C$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Nota:
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item[--] nell'algoritmo \ref{alg:mulrcibrido} la chiamata ricorsiva è stata modificata, in modo da chiamare l'algoritmo ibrido
+    \item[--] l'analisi di correttezza va modificata, la base è valida per la correttezza di MUL, il resto dell'induzione è analogo
+\end{itemize}
+
+L'equazione di ricorrenza associata all'algoritmo è
+\begin{equation}
+    T(n, n_0) = 
+    \begin{cases}
+        2n^3 - n^2 & n<n_0 \\
+        7 T \left( \frac{n}{2}, n_0 \right) + \frac{9}{2}n^2 & n \geq n_0
+    \end{cases}
+    \label{eq:richybrid}
+\end{equation}
+
+Risolvendo l'equazione ricorsiva, si ottiene una complessità in funzione di $n_0$ e si può minimizzare la funzione
+
+Utilizzando la formula generale \ref{eq:formachiusaric}, con $n=2^k$ e scegliendo $n_0 = 2^k$, si ricava per il caso base
+\begin{align*}
+    T_0 &= 2 n_0^3 - n_0^2
+    \intertext{e per l'ultimo livello prima dei nodi foglia $f^*\left( n, n_0 \right)$}
+    l \text{ generale } &\rightarrow \text{ taglia } \frac{n}{2^l} \text{ che pongo uguale a } n_0 \\
+    \frac{n}{2^l} &= n_0 \rightarrow 2^l = \frac{n}{n_0} \rightarrow l = log_2 \left( \frac{n}{n_0} \right)
+    \intertext{come livello delle foglie, per cui}
+    f^*\left( n, n_0 \right) &= log_2 \left( \frac{n}{n_0} \right) -1
+    \intertext{che si comporta come previsto, al crescere di $n_0$ il numero di livelli diminuisce; ricordando inoltre}
+    S(n) = 7 \quad f(n) &= \frac{n}{2} \quad w(n) = \frac{9}{2} n^2
+\end{align*}
+risulta
+\begin{align*}
+    T(n, n_0) &=
+    \sum_{l=0}^{ log_2 \left( \frac{n}{n_0} \right) -1} 7^l \frac{9}{2} \left( \frac{n}{2^l} \right)^2
+    + 7^{log_2 \frac{n}{n_0}} \left( s n_0^3 - n_0^2 \right) \\
+    &= \ldots \text{TODO ESERCIZIO} \\
+    &= \left( \frac{2n_0+5}{n_0^{log_2 7}-2} \right)n^{log_2 7} - 6n^2
+\end{align*}
+Per cui la relazione con $n_0$ risulta solo nella costante moltiplicativa, e possiamo minimizzare $g(n_0)$, vincolato a $n_0 = 2^k$, in generale la derivata che si deve studiare è
+\begin{equation}
+    \frac{\partial}{\partial n_0} T(n, n_0)
+\end{equation}
+
+% \begin{align*}
+\begin{gather*}
+    \left( \frac{d}{d n_0} g(n_0) \right) n^{log_2 7} \quad \text{di cui studio il segno} \\
+    \text{sign} \left( \frac{d}{d n_0} g(n_0) \right) 
+    = \text{sign} \left( 2 n_0 - \left( 2n_0+5 \right)\left( log_2 7-2 \right) \right) \\
+    % TODO parentesi più grandi
+    \frac{d}{d n_0} g(n_0) \geq 0  \rightarrow n_0 \geq \frac{5\left( log_2 7 - 2 \right)}{2\left( 3-log_2 7 \right)} \approx 10,48
+    \intertext{per cui il massimo vincolato a $n_0=2^k$ vale}
+    n_0' = 8 \rightarrow g(8) \approx 3,92 \\
+    n_0'' = 16 \rightarrow g(16) \approx 3,94 \\
+% \end{align*}
+\end{gather*}
+
+L'equazione di ricorrenza associata all'algoritmo è
+\begin{equation}
+    T(n, 8) 
+    \begin{cases}
+        = 2n^3 - n^2 & n \leq 8 \\
+        \approx 3,92 n^{log_2 7} + 6n^2 & n > 8
+    \end{cases}
+    \label{eq:richybrid}
+\end{equation}
+
 
 \subsection{autocomplete}
 Una bella scatola:
