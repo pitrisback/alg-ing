@@ -262,7 +262,35 @@ dove
 per cui $X$ è una matrice di \textit{Vandermonde}, quindi invertibile se e solo se $x_i \neq x_j, \; i\neq j$ ipotesi verificata per definizione di base.
 
 Utilizzando il metodo dell'eliminazione di \textit{Gauss}, occorrono $n$ operazioni \textit{pivot} su $n^2$ elementi, portando ad una complessità di $\Theta \left( n^3 \right)$
+
+\subsubsection{Interpolazione con \textit{Lagrange}}
 % interpolazione lagrange 38.7
+\textit{Lagrange} ha trovato una formula chiusa per il polinomio interpolante
+\begin{equation*}
+    p(x) = \sum_{k=0}^{n-1} \frac{\left(
+            \displaystyle
+            \prod_{\substack{j=0 \\ j \neq k}}^{n-1} \left( x - x_j \right)
+    \right)}{\left( 
+            \displaystyle
+            \prod_{\substack{j=0 \\ j \neq k}}^{n-1} \left( x_k - x_j \right)
+    \right)}
+    = \sum_{k=0}^{n-1} \frac{y_k}{Q_k(x_k)} q_k(x)
+\end{equation*}
+avendo definito
+\begin{equation*}
+    Q_k(x) = \prod_{\substack{j=0 \\ j \neq k}}^{n-1} \left( x - x_j \right)
+\end{equation*}
+e si può dimostrare che la formula si valuta in $\Theta \left( n^2 \right)$ (sulle dispense online c'è un utile ESERCIZIO da leggere)
+
+\section{Conversioni meno generali}
+Senza perdita di generalità, si possono considerare basi particolari su cui valutare e interpolare un polinomio. In particolare si sceglie una famiglia di vettori di taglia $n$ legata alla radice principale dell'unità:
+\begin{equation*}
+    \vec{\Omega}_n = 
+    \left(
+        \omega_n^0=1 , \omega_n, \omega_n^2, \cdots, \omega_n^{n-1} 
+    \right)
+\end{equation*}
+dove $\omega_n$ è la radice principale $n-esima$ di $1$ nel campo complesso.
 % conversioni più veloci 39
 
 \subsection{autocomplete}
