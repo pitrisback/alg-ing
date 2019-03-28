@@ -1,4 +1,4 @@
-\section{Rappresentazione di Polinomi}
+\section{Rappresentazione di polinomi}
 % polinomi definizione 33.7
 In generale, avere diverse rappresentazioni di un oggetto permette di eseguire operazioni diverse su rappresentazioni diverse, dove risulta più comodo. Chiaramente la rappresentazione è legata a come si possono fare le operazioni, e sono inoltre necessarie operazioni efficienti di conversione.
 
@@ -7,7 +7,7 @@ Introduciamo quindi un nuovo dominio applicativo, i polinomi, su cui verrà cost
 \begin{definition}[Polinomio]
     Un polinomio è una funzione $p: \mathbb{C} \rightarrow \mathbb{C}$ definita su un'indeterminata e un insieme di coefficienti, come somma di monomi.
     \begin{equation*}
-        p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n-1} x^{n-1}
+        p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n-1} x^{n-1} = \sum_{j=0}^{n-1}a_j x^j
     \end{equation*}
     \label{def:polinomio}
 \end{definition}
@@ -68,7 +68,202 @@ Anche la rappresentazione per punti si può estendere
 Per estendere la rappresentazione occorre valutare il polinomio in $m-n$ punti aggiuntivi
 
 \subsection{Conversione tra rappresentazioni}
-Se si dispone della rappresentazione per coefficienti, è sufficiente valutare il polinomio in un certo numero di punti per ricavare la rappresentazione per punti, mentre se si dispone di una tabulazione occorre interpolare il polinomio.
+Se si dispone della rappresentazione per coefficienti, è sufficiente valutare il polinomio in un certo numero di punti per ricavare la rappresentazione per punti, mentre se si dispone di una tabulazione occorre interpolare il polinomio. Eseguire questa conversione in maniera efficiente sarà argomento della sezione \ref{sez:conversione}
+
+\section{Operazioni tra polinomi}
+
+\subsection{Operazioni utilizzando la rappresentazione per coefficienti}
+% somma sottrazione coefficienti 34.8
+\subsubsection{Somma e sottrazione}
+Siano $A(x) \equiv \vec{a}$ e $B(x) \equiv \vec{b}$, con $\vec{a}, \vec{b} \in \mathbb{C}^n$ e $C(x) \equiv \vec{c}$ omogeneo, con $\vec{c} \in \mathbb{C}^n$
+\begin{align*}
+    C(x) &= A(x) + B(x)
+    = \sum_{j=0}^{n-1} a_j x^j + \sum_{j=0}^{n-1} b_j x^j 
+    = \sum_{j=0}^{n-1} \left( a_j + b_j \right) x^j 
+    = \sum_{j=0}^{n-1} c_j x^j 
+\end{align*}
+Per cui $C(x)$ è rappresentato dalla somma vettoriale delle rappresentazioni: $\vec{c} = \vec{a} + \vec{b}$
+
+% prodotto coefficienti 35
+\subsubsection{Prodotto}
+Siano $A(x) \equiv \vec{a}$ e $B(x) \equiv \vec{b}$, con $\vec{a}, \vec{b} \in \mathbb{C}^n$, in questo caso $C(x)$ è un polinomio di grado limitato da $2n-1$, infatti $(n-1)+(n-1)+1$ (il limite di grado è di $1$ superiore al grado massimo) quindi $C(x) \equiv \vec{c}$, con $\vec{c} \in \mathbb{C}^{2n-1}$
+\begin{align*}
+    C(x) &= A(x) \cdot B(x)
+    = \left( \sum_{j=0}^{n-1} a_j x^j \right) \cdot \left( \sum_{j=0}^{n-1} b_j x^j \right) 
+\end{align*}
+Da cui, per $ 0 \leq j \leq 2n-2$
+\begin{align*}
+    c_j &= \sum_{ \substack{k,h \\ k+h=j \\ 0 \leq k,h \leq n-1} } a_k b_h
+    \intertext{che semplifichiamo notando che $h=j-k$}
+    c_j &= \sum_{k=0}^{n-1} a_k b_{j-k}
+    \intertext{ma questa sommatoria è valida solo sfruttando una convenzione per cui se $j-k$ è $<0$ o $\geq n$, il coefficiente $b_{j-k}$ assume valore $0$}
+\end{align*}
+Si possono cercare vincoli più stretti su $k$
+\begin{equation*}
+    \left\{ 
+        \begin{array}[h]{l}
+            0 \leq k \leq n-1 \\
+            0 \leq j-k \leq n-1
+        \end{array}
+    \right.
+    \rightarrow
+    \left\{ 
+        \begin{array}[h]{l}
+            0 \leq k \leq n-1 \\
+            j-n+1 \leq k \leq j
+        \end{array}
+    \right.
+\end{equation*}
+ossia
+\begin{equation*}
+    \max\left\{ 0, j-n+1 \right\} \leq k \leq \min \left\{ n-1, j \right\}
+\end{equation*}
+\begin{definition}[Convoluzione lineare]
+    La convoluzione lineare è un operatore vettoriale definito come
+    \begin{equation*}
+        \vec{c}=\vec{a} * \vec{b} \rightarrow 0\leq j \leq 2n : c_j = \sum_{\max\left\{ 0, j-n+1 \right\}}^{\min \left\{ n-1, j \right\}} a_k b_{j-k}
+        % ho dubbi su quel \leq 2n, cioè per j=2n k va da n+1 a n-1 quindi la somma è vuota, ed è corretto, ma comunque si è allungato senza dire niente a nessuno e mi da fastidio
+    \end{equation*}
+    \label{def:convlin}
+\end{definition}
+TODO ESERCIZIO: supponi $\vec{b} \in \mathbb{C}^m$, ricava i vincoli, dovrebbe venirti $\max \left\{ 0, j-m+1 \right\}$
+
+% magia delle più nere questo calcolo di complessità
+La complessità per calcolare direttamente la convoluzione risulta, contando il numero di operazioni: $n^2$ prodotti $+n^2$ somme $-(2n-1)$ somme che risparmi, per cui $T(n)=2n^2-2n+1$ o alternativamente $T(n)=n^2+(n-1)^2$, in cui si mette in evidenza il numero di prodotti $\left[ n^2 \right]$ e di somme $\left[ (n-1)^2 \right]$.
+
+% algoritmo convoluzione lineare 36
+L'algoritmo naive per implementare la convoluzione lineare risulta
+\begin{algorithm}[H]
+\caption{Convoluzione lineare}\label{alg:convlinnaive}
+\begin{algorithmic}[1]
+    \Procedure{DEF\_LIN\_CONV}{$\vec{a}, \vec{b}$}
+        \State $n \gets \vec{a}.length$
+        \For{$j \gets 0 $ to $ 2n-2 $ }
+            \State $c_j \gets 0$
+            \For{$k \gets \max\left\{ 0, j-n+1 \right\} $ to $ \min \left\{ n-1, j \right\} $ }
+                \State $c_j \gets c_j + a_k b_{j-k}$
+            \EndFor
+        \EndFor
+        \State return $ \vec{c}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+In quest'implementazione una somma è stata sprecata inizializzando $c_j=0$, si potrebbe inizializzare a $c_j=a_{\max\left\{ 0, j-n+1 \right\}}b_{j-\max\left\{ 0, j-n+1 \right\}}$
+
+La complessità dell'algoritmo risulta $T_{DLC} = \Theta \left( n^2 \right)$
+\subsection{Operazioni utilizzando la rappresentazione per punti}
+
+% somma per punti 36.3
+\subsubsection{Somma e sottrazione}
+Siano $A(x) \equiv \left( \vec{x}, \vec{y}_A \right)$ e $B(x) \equiv \left( \vec{x}, \vec{y}_B \right)$ rappresentazioni omogenee, sulla stessa base.
+\begin{align*}
+    C(x) &= A(x) + B(x)
+    \rightarrow C(x_i) = A(x_i)+B(x_i)
+    \rightarrow y_{C_{i}}= y_{A_{i}}+ y_{B_{i}}
+\end{align*}
+Per cui $C(x)$ è rappresentato da $\left( \vec{x}, \vec{y}_A+\vec{y}_B \right)$
+
+% prodotto per punti 36.5
+\subsubsection{Prodotto}
+La relazione $C(x) = A(x) \cdot B(x) $ è valida per ogni $x$, quindi anche per tutti i punti $x_i$ della base: $C(x_i) = A(x_i) \cdot B(x_i) $.
+Tuttavia \emph{non} è sufficiente rappresentare $C$ come
+$\left( \vec{x}, \vec{y}_A \odot \vec{y}_B \right)$,
+infatti sono necessari $2n-1$ punti per definire il polinomio.
+
+Considerando le rappresentazioni estese $A(x) \equiv \left( \vec{x}^E, \vec{y}_A^E \right)$ e $B(x) \equiv \left( \vec{x}^E, \vec{y}_B^E \right)$, con $\vec{x}^E, \vec{y}_A^E,  \vec{y}_B^E \in \mathbb{C}^{2n-1}$ si ottiene la rappresentazione lecita 
+$C(x) \equiv \left( \vec{x}^E, \vec{y}^E_A \odot \vec{y}^E_B \right)$.
+
+Per eseguire il prodotto sono quindi necessari solamente $2n-1$ prodotti, posto di avere a disposizione la rappresentazione estesa, portando a una complessità di $T(n) = \Theta \left( n \right)$
+
+\section{Conversione tra rappresentazioni}\label{sez:conversione}
+% convertire in modo lento e poi veloce pag 36.9
+% grafo commutativo secsi 36.9
+Se si vuole interpolare o valutare un polinomio in maniera generale, non è possibile raggiungere una complessità minore di $\Theta \left( n^2 \right)$. È necessario utilizzare basi particolari per poter accelerare l'algoritmo.
+
+\subsection{Valutazione}
+\subsubsection{Valutazione naive}
+% valutazione naive 37.2
+Ricordando che
+    \begin{equation*}
+        p(x) = \sum_{j=0}^{n-1}a_j x^j
+    \end{equation*}
+si ottiene direttamente un algoritmo dalla definizione
+\begin{algorithm}[H]
+\caption{Valutazione naive}\label{alg:valnaive}
+\begin{algorithmic}[1]
+    \Procedure{DEF\_VAL}{$\vec{a}, \bar{x}$}
+        \State $n \gets \vec{a}.length$
+        \State $y \gets a_0$
+        \State $pow \gets 1$
+        \For{$j \gets 1 $ to $ n-1 $ }
+            \State $pow \gets pow \cdot \bar{x}$
+            \State $y \gets y + a_j \cdot pow$
+        \EndFor
+        \State return $y$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+Vengono compiute $n-1$ iterazioni con una somma e due prodotti per ciclo.
+
+% valutazione con horner 37.5
+\subsubsection{Valutazione con \textit{Horner}}
+Si può riscrivere un polinomio seguendo la regola di \textit{Horner} come 
+    \begin{equation*}
+        % p(x) = a_0 + x \left( a_1 + x \left( a_2 + \cdots + x 
+        p(x) = a_0 + x ( a_1 + x ( a_2 + \cdots + x 
+        % \left( a_{n-2} + x a_{n-1} \right) \right. \cdots \right)
+        ( a_{n-2} + x a_{n-1} 
+        \underbrace{ ) \cdots ) }_{\mathclap{ n-1 \text{ parentesi} } }
+    \end{equation*}
+si ottiene così l'algoritmo
+\begin{algorithm}[H]
+    \caption{Valutazione con \textit{Horner}}\label{alg:valhorner}
+\begin{algorithmic}[1]
+    \Procedure{HOR\_VAL}{$\vec{a}, \bar{x}$}
+        \State $n \gets \vec{a}.length$
+        \State $y \gets a_{n-1}$
+        \For{$j \gets 2 $ to $ n $ }
+            \State $y \gets a_{n-j} + \bar{x}y$
+        \EndFor
+        \State return $y$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+Vengono compiute $n-1$ iterazioni con una somma e un prodotto per ciclo, portando la complessità a $T_H(n) = 2(n-1)$
+
+% aggregato su n punti 37.9
+Questo algoritmo deve essere applicato per ciascuno degli $n$ punti, per cui la complessità della valutazione risulta $\Theta \left( n^2 \right)$
+
+\subsection{Interpolazione}
+\subsubsection{Interpolazione con \textit{Gauss}}
+% interpolazione gauss 38.2
+La formula \ref{def:polinomio} vale $\forall x_i \in \vec{x}$ base della rappresentazione
+\begin{equation*}
+    p(x) = \sum_{j=0}^{n-1}a_j x^j
+    \rightarrow y_i = p(x_i) = \sum_{j=0}^{n-1}a_j x_i^j
+    \quad 0 \leq i \leq n-1
+\end{equation*}
+Si può considerare $\vec{a}$ come incognita di un sistema lineare di $n$ equazioni:
+\begin{equation*}
+    X \vec{a} = \vec{y}
+\end{equation*}
+dove
+\begin{equation*}
+    X = \left( 
+        \begin{array}[h]{ccccccc}
+            1 & x_0 & x_0^2 & \cdots & x_0^j & \cdots & x_0^{n-1} \\
+            \vdots &&&&&& \vdots\\
+            1 & x_i & x_i^2 & \cdots & x_i^j & \cdots & x_i^{n-1} \\
+            \vdots &&&&&& \vdots\\
+            1 & x_n & x_n^2 & \cdots & x_n^j & \cdots & x_n^{n-1} 
+        \end{array}
+    \right)
+\end{equation*}
+per cui $X$ è una matrice di \textit{Vandermonde}, quindi invertibile se e solo se $x_i \neq x_j, \; i\neq j$ ipotesi verificata per definizione di base.
+
+Utilizzando il metodo dell'eliminazione di \textit{Gauss}, occorrono $n$ operazioni \textit{pivot} su $n^2$ elementi, portando ad una complessità di $\Theta \left( n^3 \right)$
+% interpolazione lagrange 38.7
+% conversioni più veloci 39
 
 \subsection{autocomplete}
 Una bella scatola:
