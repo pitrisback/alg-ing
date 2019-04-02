@@ -237,7 +237,7 @@ Questo algoritmo deve essere applicato per ciascuno degli $n$ punti, per cui la 
 \subsection{Interpolazione}
 \subsubsection{Interpolazione con \textit{Gauss}}
 % interpolazione gauss 38.2
-La formula \ref{def:polinomio} vale $\forall x_i \in \vec{x}$ base della rappresentazione
+La formula \ref{def:polinomio} vale $\forall x$ e in particolare $\forall x_i \in \vec{x}$ base della rappresentazione
 \begin{equation*}
     p(x) = \sum_{j=0}^{n-1}a_j x^j
     \rightarrow y_i = p(x_i) = \sum_{j=0}^{n-1}a_j x_i^j
@@ -259,7 +259,7 @@ dove
         \end{array}
     \right)
 \end{equation*}
-per cui $X$ è una matrice di \textit{Vandermonde}, quindi invertibile se e solo se $x_i \neq x_j, \; i\neq j$ ipotesi verificata per definizione di base.
+per cui $X$ è una matrice di \textit{Vandermonde}, quindi invertibile se e solo se $x_i \neq x_j \; \forall i\neq j$, ipotesi verificata per definizione di base.
 
 Utilizzando il metodo dell'eliminazione di \textit{Gauss}, occorrono $n$ operazioni \textit{pivot} su $n^2$ elementi, portando ad una complessità di $\Theta \left( n^3 \right)$
 
@@ -283,6 +283,7 @@ avendo definito
 e si può dimostrare che la formula si valuta in $\Theta \left( n^2 \right)$ (sulle dispense online c'è un utile ESERCIZIO da leggere)
 
 \section{Conversioni meno generali}
+% conversioni più veloci 39
 Senza perdita di generalità, si possono considerare basi particolari su cui valutare e interpolare un polinomio. In particolare si sceglie una famiglia di vettori di taglia $n$ legata alla radice principale dell'unità:
 \begin{equation*}
     \vec{\Omega}_n = 
@@ -291,7 +292,78 @@ Senza perdita di generalità, si possono considerare basi particolari su cui val
     \right)
 \end{equation*}
 dove $\omega_n$ è la radice principale $n-esima$ di $1$ nel campo complesso.
-% conversioni più veloci 39
+Basandosi su questa base si può definire la trasformata veloce di \textit{Fourier}
+
+\begin{definition}[\textit{Discrete Fourier Transform}]
+    Dato un polinomio $A(x)$ e la sua rappresentazione per punti $A(x) \equiv \vec{a} \in \mathbb{C}^n$, si definisce la trasformata veloce di \textit{Fourier} come la valutazione di $A(x)$ sui punti di $\vec{\Omega}_n$
+    \begin{equation*}
+        \vec{y} = DFT_n \left( \vec{a} \right) \quad \text{ con } \quad y_i = \sum_{j=0}^{n-1} a_j \left( \omega_n^{i} \right)^{j}
+    \end{equation*}
+    per cui $\vec{y} \in \mathbb{C}^n$ e $A(x) \equiv \left( \vec{\Omega}_n , \vec{y} \right)$ è una rappresentazione per punti di $A(x)$
+    \label{def:dft}
+\end{definition}
+% TODO piccole note a pag 40.1
+Gli $n$ vincoli introdotti nella definizione sono $n$ valutazioni di $A(x)$ nei punti della base $\vec{\Omega}_n$ e possono essere raccolti in una matrice di \textit{Vandermonde} detta \emph{matrice di \emph{Fourier} di ordine $n$}
+\begin{equation*}
+    V\left( \vec{\Omega}_n \right) = \left( 
+        \begin{array}[h]{ccccccc}
+            1 & \omega_n^0 = 1 & 1 & \cdots & 1 & \cdots & 1 \\
+            \vdots &&&&&& \vdots\\
+            1 & \omega_n & \omega_n^2 & \cdots & \omega_n^j & \cdots & \omega_n^{n-1} \\
+            \vdots &&&&&& \vdots\\
+            1 & \omega_n^{i} & \omega_{n}^{i2} & \cdots & \omega_{n}^{ij} & \cdots & \omega_n^{i\left( n-1 \right)} \\
+            \vdots &&&&&& \vdots\\
+            1 & \omega_n^{n-1} & \omega_{n}^{\left( n-1 \right) 2} & \cdots & \omega_{n}^{\left( n-1 \right) j} & \cdots & \omega_n^{\left( n-1 \right) \left( n-1 \right)} \\
+        \end{array}
+    \right) = F_n
+\end{equation*}
+Si può riscrivere la $DFT$ come operatore lineare
+\begin{equation*}
+    DFT_n\left( \vec{a} \right) = F_n \vec{a} = \vec{y}
+\end{equation*}
+Ricordando che $\vec{\Omega}_n$ è una base composta da punti distinti e $F_n$ è una matrice di \textit{Vandermonde}, questa è anche invertibile e si può definire la trasformata inversa
+\begin{equation*}
+    DFT_n^{-1} \left( \vec{y} \right) = \vec{a} = F_n^{-1} \vec{y}
+\end{equation*}
+che risulta l'operazione di interpolazione.
+
+Nota: la $DFT_n\left( \vec{a} \right) $ appena definita è un operatore algebrico lineare, una descrizione astratta del problema computazionale, mentre $FFT \left( \vec{a} \right)$ è l'algoritmo per calcolarla. Mostreremo che $T_{FFT} \left( n \right) = \Theta \left( n \log_n \right)$
+
+\section{Proprietà della base $\vec{\Omega}_n$}
+Prima di implementare l'algoritmo è ancora necessario individuare la proprietà di sottostruttura, che permetta di valutare un polinomio in funzione di valutazioni di polinomi di grado minore.
+
+\subsection{Radici complesse}
+Ogni numero complesso $z \in \mathbb{C}$ può essere rappresentato con la sua rappresentazione algebrica $z = a+ib$, ma è di maggiore utilità in questo caso la rappresentazione polare
+\begin{equation*}
+    z = \rho \left( \cos \theta + i \sin \theta \right) = \rho e ^{i \theta} \quad
+    \text{ con } \quad \rho = \sqrt{a^2+b^2} \; \text{ e } \; 0 \leq \theta < 2\pi
+\end{equation*}
+Con questa rappresentazione il prodotto è molto semplice, ma in particolare lo è l'esponenziazione:
+\begin{equation*}
+    z^n = \rho^n e^{in\theta}
+\end{equation*}
+da cui si ricavano facilmente le $n$ radici $n-esime$ di un numero complesso $z \in \mathbb{C} \setminus \left\{ 0 \right\}$
+\begin{equation*}
+    z_k = \rho_k e^{i \theta_k}
+    \quad \rightarrow \quad 
+    z_k^n = z = \rho e^{i\theta} = \rho_k^n e ^{i \left( n \theta_k - 2 \pi k \right)}
+\end{equation*}
+da cui si ricavano due vincoli su $\rho_k $ e $ \theta_k$ con $0 \leq k \leq n-1$
+\[
+    \left\{
+        \begin{array}[h]{l}
+            \rho = \rho_k^n \\[4pt]
+            \theta = n \theta_k - 2 \pi k
+        \end{array}
+    \right.
+    \quad \rightarrow \quad 
+    \left\{
+        \begin{array}[h]{l}
+            \rho_k = \sqrt[n]{\rho} \\[4pt]
+            \theta_k = \frac{\theta + 2 \pi k}{n} = \frac{\theta}{n} + 2 \pi \frac{k}{n}
+        \end{array}
+    \right.
+\]
 
 \subsection{autocomplete}
 Una bella scatola:
