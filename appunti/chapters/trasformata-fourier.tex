@@ -282,7 +282,7 @@ avendo definito
 \end{equation*}
 e si può dimostrare che la formula si valuta in $\Theta \left( n^2 \right)$ (sulle dispense online c'è un utile ESERCIZIO da leggere)
 
-\section{Conversioni meno generali}
+\subsection{Conversioni con la \textit{Discrete Fourier Transform}}
 % conversioni più veloci 39
 Senza perdita di generalità, si possono considerare basi particolari su cui valutare e interpolare un polinomio. In particolare si sceglie una famiglia di vettori di taglia $n$ legata alla radice principale dell'unità:
 \begin{equation*}
@@ -364,6 +364,150 @@ da cui si ricavano due vincoli su $\rho_k $ e $ \theta_k$ con $0 \leq k \leq n-1
         \end{array}
     \right.
 \]
+Le radici sono quindi le rotazioni della radice principale intorno all'origine. Nel caso che ci interessa, per $z=1$ risultano $\rho=1$ e $\theta = 0$ da cui
+\begin{equation*}
+    z_k = \sqrt[n]{1}  \; e^{i \left( \frac{0}{n} + \frac{2 \pi k}{n} \right)} 
+    = e ^{i \frac{2 \pi k }{n}} \quad k=0,\cdots,n-1
+\end{equation*}
+e risultano
+\begin{equation*}
+    k=1 \quad \rightarrow \quad \omega_n= e^{i \frac{2 \pi}{n}}
+\end{equation*}
+
+\subsection{Proprietà delle radici $n-esime$ dell'unità}
+
+\subsubsection{Modulo dell'esponente}
+
+Moltiplicare l'argomento per $k$ corrisponde a esponenziare, e vale
+\begin{equation*}
+    % \omega_n^j = \omega_n^{j \mod n}
+    % \omega_n^j = \omega_n^{j \! \! \! \! \mod n}
+    \omega_n^j = \omega_n^{j \bmod n}
+\end{equation*}
+infatti è come aggiungere o sottrarre multipli di $2\pi$. Questo vale anche in negativo: $\omega_8^{6} = \omega_8^{-2} $
+
+\subsubsection{Lemma di Cancellazione}
+\begin{lemma}[Lemma di Cancellazione]
+    $\forall n, d > 0$ e $k \geq 0$ vale 
+    \begin{equation*}
+    % $
+        \omega_{dn}^{dk} = \omega_n^k
+    % $
+    \end{equation*}
+    \label{teo:cancellazione}
+\end{lemma}
+\begin{proof}
+    $e^{i 2 \pi \frac{dk}{dn}} = e^{i 2 \pi \frac{k}{n}}$
+\end{proof}
+In più vale il seguente corollario
+\begin{lemma}
+    Se $n$ è pari, $ \omega_{n}^{n/2} =1 $
+\end{lemma}
+\begin{proof}
+    $ \omega_{n}^{n/2} =
+    \omega_{2 \cdot n/2}^{1 \cdot n/2} =
+    \omega_{2} = 1 $
+\end{proof}
+Nota: la radice principale quadrata dell'unità è $-1$
+
+\subsubsection{Lemma di Dimezzamento}
+\begin{lemma}
+    Sia $n>0$, $n$ pari. Allora gli $n$ quadrati
+    \begin{equation*}
+        \left( \omega_{n}^{i} \right)^2 \quad 0 \leq i \leq n-1
+    \end{equation*}
+    coincidono a coppie, e in particolare
+    \begin{equation*}
+        \left( \omega_{n}^{i} \right)^2 = 
+        \left( \omega_{n}^{i + n/2} \right)^2 = 
+        \omega_{n/2}^{i}
+    \end{equation*}
+    \label{teo:dimezzamento}
+\end{lemma}
+\begin{proof}
+    \begin{equation*}
+        \left( \omega_{n}^{i} \right)^2 = 
+        \omega_{n}^{2i}  = 
+        \omega_{2 \cdot n/2}^{2 \cdot i}  = 
+        \omega_{n/2}^{i}
+    \end{equation*}
+    \begin{equation*}
+        \left( \omega_{n}^{i + n/2} \right)^2 = 
+        \omega_{n}^{2i+n}  = 
+        \omega_{n}^{2i} \cdot
+        \cancel{ \omega_{n}^{n} } = 
+        \omega_{2 \cdot n/2}^{2 \cdot i}  = 
+        \omega_{n/2}^{i}
+    \end{equation*}
+\end{proof}
+
+\subsubsection{Lemma di Somma}
+\begin{lemma}
+    Sia $n \geq 1$, $k \geq 0$
+    \begin{equation*}
+        \sum_{j=0}^{n-1} \left( \omega_n^k \right)^j = 
+        \begin{cases}
+            % n & \text{ se } k \mod n = 0 \\
+            % n & \text{ se } k \pmod n = 0 \\
+            n & \text{se } k \bmod n = 0 \\
+            % n & \text{ se } k \mathrm{mod} n = 0 \\
+            0 & \text{altrimenti}
+        \end{cases}
+    \end{equation*}
+    \label{teo:somma}
+\end{lemma}
+\begin{proof}
+    Nel primo caso $k \bmod n = 0$
+    \begin{equation*}
+        \omega_n^k = \omega_n^{k \bmod n} = \omega_n^0 = 1
+        \quad \rightarrow \quad
+        \sum_{j=0}^{n-1} 1 = n
+    \end{equation*}
+    Nel secondo caso $k \bmod n \neq 0$ e $\omega_n^k \neq 1$
+    \begin{equation*}
+        \sum_{j=0}^{n-1} \left( \omega_n^k \right)^j = 
+        \frac{\left( \omega_n^k \right)^n -1}{\omega_n^k -1} =
+        \frac{\left( \omega_n^n \right)^k -1}{\omega_n^k -1} =
+        \frac{1 -1}{\omega_n^k -1} = 0
+    \end{equation*}
+\end{proof}
+
+\section{Proprietà di sottostruttura}
+Ricordando che $n=2^k$, $A(x) = \vec{a} \in \mathbb{C}^n$ e 
+\begin{equation*}
+    \vec{y} = DFT_n \left( \vec{a} \right) \quad \text{ con }
+    \quad y_i = 
+    A\left( \omega_n^i \right) = 
+    \sum_{j=0}^{n-1} a_j \left( \omega_n^{i} \right)^{j}
+\end{equation*}
+si può sviluppare la proprietà di sottostruttura.
+Per il caso base $n=1$
+\begin{equation*}
+    \vec{a} = a_0 \in \mathbb{C}^1
+    \quad \rightarrow \quad
+    A(x) = a_0 |_{x=\omega_1^0} = a_0
+\end{equation*}
+ossia
+\begin{equation*}
+    \vec{y} = DFT_1 \left( \vec{a} \right) = \vec{a}
+\end{equation*}
+mentre per $n>1$ si può suddividere il vettore
+$\vec{a}=\left( a_0, a_1,\cdots, a _{n-1} \right)$ in due vettori di lunghezza $n/2$ composti dalle sue componenti pari e dispari
+\begin{equation*}
+    \vec{a}^{[0]}=\left( a_0, a_2,\cdots, a _{n-2} \right)
+    \quad \text{ e } \quad
+    \vec{a}^{[1]}=\left( a_1, a_3,\cdots, a _{n-1} \right)
+\end{equation*}
+che avendo $n/2$ coefficienti sono di grado limitato da $n/2$
+
+Si può quindi definire la seguente proprietà di sottostruttura, che permette di ottenere $A(x)$ in funzione solamente di $A^{[0]} \left( x^2 \right)$ e $A^{[1]} \left( x^2 \right)$ 
+\begin{definition}[Identità polinomiale]
+    $\forall x \in \mathbb{C}$ vale
+    \begin{equation*}
+        A(x) = A^{[0]} \left( x^2 \right) + x \cdot A^{[1]} \left( x^2 \right) 
+    \end{equation*}
+    \label{def:identipolinomiale}
+\end{definition}
 
 \subsection{autocomplete}
 Una bella scatola:
