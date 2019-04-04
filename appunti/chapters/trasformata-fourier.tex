@@ -485,7 +485,8 @@ Per il caso base $n=1$
 \begin{equation*}
     \vec{a} = a_0 \in \mathbb{C}^1
     \quad \rightarrow \quad
-    A(x) = a_0 |_{x=\omega_1^0} = a_0
+    % A(x) = a_0 |_{x=\omega_1^0} = a_0
+    A(x) = a_0 \bigr|_{x=\omega_1^0} = a_0
 \end{equation*}
 ossia
 \begin{equation*}
@@ -500,14 +501,188 @@ $\vec{a}=\left( a_0, a_1,\cdots, a _{n-1} \right)$ in due vettori di lunghezza $
 \end{equation*}
 che avendo $n/2$ coefficienti sono di grado limitato da $n/2$
 
-Si può quindi definire la seguente proprietà di sottostruttura, che permette di ottenere $A(x)$ in funzione solamente di $A^{[0]} \left( x^2 \right)$ e $A^{[1]} \left( x^2 \right)$ 
+Si può quindi definire la seguente identità polinomiale su cui verrà costruita la proprietà di sottostruttura, che permetterà di ottenere $A(x)$ in funzione solamente di $A^{[0]} \left( x^2 \right)$ e $A^{[1]} \left( x^2 \right)$ 
 \begin{definition}[Identità polinomiale]
     $\forall x \in \mathbb{C}$ vale
     \begin{equation*}
         A(x) = A^{[0]} \left( x^2 \right) + x \cdot A^{[1]} \left( x^2 \right) 
     \end{equation*}
-    \label{def:identipolinomiale}
+    \label{def:identitapolinomiale}
 \end{definition}
+\begin{proof}
+    I due polinomi sono definiti come
+    \begin{equation*}
+        A^{[0]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j}x^j
+        \quad \text{ e } \quad
+        A^{[1]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^j
+    \end{equation*}
+    quindi valutando $A^{[0]}(x)$ in $x^2$ e sviluppando $x \cdot A^{[1]} \left( x^2 \right) $ risultano
+    \begin{equation*}
+        A^{[0]} \left( x^2 \right) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j}x^{2j}
+        \quad \text{ e } \quad
+        x \cdot A^{[1]} \left( x^2 \right) =
+        x \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^{2j} = 
+        \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^{2j+1}
+    \end{equation*}
+    dove il primo contiene tutti i monomi pari di $A(x)$ e il secondo tutti i monomi dispari. Sommando i due termini si ottiene $A(x)$ come cercato.
+\end{proof}
+
+Il caso base è stato già trattato, supponiamo ora di aver già calcolato 
+\begin{equation*}
+    \vec{y}^{\,[0]} = DFT_{n/2} \left( \vec{a}^{[0]} \right)
+    \quad \text{ e } \quad
+    \vec{y}^{\,[1]} = DFT_{n/2} \left( \vec{a}^{[1]} \right)
+\end{equation*}
+mostriamo come ricavare
+\begin{equation*}
+    \vec{y} = DFT_{n} \left( \vec{a} \right)
+\end{equation*}
+utilizzando l'identità polinomiale.
+In altri termini, si vogliono ottenere i valori incogniti 
+\begin{equation*}
+    y_i = A \left( \omega_{n}^{i} \right)
+    \quad \forall \: 0 \leq i \leq n-1
+\end{equation*}
+a partire dai valori noti
+\begin{equation*}
+    y_i^{[0]} = A^{[0]} \left( \omega_{n/2}^{i} \right)
+    \quad \text{ e } \quad
+    y_i^{[1]} = A^{[1]} \left( \omega_{n/2}^{i} \right)
+    \quad \forall \: 0 \leq i \leq \frac{n}{2}-1
+\end{equation*}
+Sia $0 \leq i \leq \frac{n}{2}-1$
+\begin{align*}
+    y_i &= A \left( \omega_{n}^{i} \right) 
+    & \text{per l'identità polinomiale}
+    \\
+    &= A^{[0]} \left( \left( \omega_{n/2}^{i} \right)^2 \right) +
+    A^{[1]} \left( \left( \omega_{n/2}^{i} \right)^2 \right)
+    & \text{per il lemma di Dimezzamento}
+    \\
+    &= A^{[0]} \left( \omega_{n/2}^{i} \right) +
+    A^{[1]} \left( \omega_{n/2}^{i} \right)
+    \\
+    &= y_i^{[0]} + \omega_{n}^{i} y_i^{[1]} 
+\end{align*}
+quindi i primi $n/2$ valori vengono trovati con semplici combinazioni dei valori ottenuti per ricorsione. Cerchiamo gli altri $n/2$ valori, sia nuovamente $0 \leq i \leq \frac{n}{2}-1$
+\begin{align*}
+    y_{i+\frac{n}{2}} &= A \left( \omega_{n}^{i} \right) 
+    & \text{per l'identità polinomiale}
+    \\
+    &= A^{[0]} \left( \left( \omega_{n/2}^{i+n/2} \right)^2 \right) +
+    \omega_{n}^{i+n/2} \,
+    A^{[1]} \left( \left( \omega_{n/2}^{i+n/2} \right)^2 \right)
+    & \text{per il lemma di Dimezzamento}
+    \\
+    &= A^{[0]} \left( \omega_{n/2}^{i} \right) +
+    \omega_{n}^{i} \,
+    \omega_{n}^{n/2} \,
+    A^{[1]} \left( \omega_{n/2}^{i} \right)
+    & \omega_{n}^{n/2} = -1
+    \\
+    &= y_i^{[0]} - \omega_{n}^{i} \, y_i^{[1]} 
+\end{align*}
+Si possono quindi calcolare tutti i punti di $A$ con quelli di $ A^{[0]} $ e $ A^{[1]}$
+
+\section{Trasformata veloce di \textit{Fourier}}
+
+\subsection{Algoritmo della trasformata veloce di \textit{Fourier}}
+
+Sfuttando la proprietà di sottostruttura sviluppata nella sezione precedente, si può scrivere l'algoritmo che implementa la trasformata veloce di \textit{Fourier}
+\begin{algorithm}[H]
+\caption{Trasformata veloce di \textit{Fourier}}\label{alg:fft}
+\begin{algorithmic}[1]
+    \Procedure{FFT}{$\vec{a}$}
+        \State $n \gets \vec{a}.length$
+        \If{$n=1$}
+        \Comment{BASE}
+            \State return $\vec{a}$
+        \EndIf
+        \State $\vec{a}^{[0]}=\left( a_0, a_2,\cdots, a _{n-2} \right)$
+        \label{alg:fft:a0}
+        \Comment{DIVIDE}
+        \State $\vec{a}^{[1]}=\left( a_1, a_3,\cdots, a _{n-1} \right)$
+        \State $\vec{y}^{[0]} \gets \Call{FFT}{\vec{a}^{[0]}}$
+        \Comment{RECURSE}
+        \State $\vec{y}^{[1]} \gets \Call{FFT}{\vec{a}^{[1]}}$
+        \State $ON \gets e^{i 2 \pi/n}$   
+        \Comment{CONQUER}
+        \State $ONI \gets 1$   
+        \label{alg:fft:oni}
+        \For{$i \gets 0 $ to $ n/2-1 $ }                   
+            \State $y_{i} \gets y_{i}^{[0]} + ONI \cdot y_i^{[1]}$
+            \label{alg:fft:con}
+            \State $y_{i+n/2} \gets y_{i}^{[0]} - ONI \cdot y_i^{[1]}$
+            \State $ONI \gets ONI \cdot ON$
+        \EndFor
+        \State return $\vec{y}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Note: il $Divide$ può essere implementato senza utilizzare spazio aggiuntivo. Alla riga~\ref{alg:fft:oni} viene salvato il valore iniziale di $\omega_n^i$, che verrà poi incrementato nel corso dell'algoritmo. Alla riga~\ref{alg:fft:con} è presente un'inefficienza, ma un compilatore degno ottimizzerebbe automaticamente il codice, salvando il risultato del prodotto in un temporaneo.
+
+La correttezza dell'algoritmo è provata facilmente per la base, e assumendo di avere a disposizione i valori corretti per $n/2$, il \textit{Conquer} implementa la proprietà di sottostruttura e la corretteza segue immediatamente.
+
+L'algoritmo effettua $2$ chiamate ricorsive su istanze di taglia $n/2$ e $5$ operazioni di somma e prodotto su istanze di taglia $n/2$ e l'equazione del \textit{Master Theorem} risulta
+\begin{equation*}
+    T_{FFT} (n) = 2 T_{FFT} \left( \frac{n}{2} \right) + 5 \frac{n}{2} %\Theta \left( n \right)
+\end{equation*}
+da cui ricaviamo la funzione di soglia $n^{\log_2 2} = n$, $w(n)= \Theta \left( n \right)$ e quindi $n = \Theta \left( w\left( n \right) \right)$ per cui siamo nel caso $2$, dove è stato ottenuto un perfetto bilanciamento di soglia e lavoro. La complessità risulta
+\begin{equation*}
+    T_{FFT} (n) = \Theta \left( n \log n \right)
+\end{equation*}
+
+\subsection{Trasformata inversa}
+Anche per l'interpolazione esiste un algoritmo veloce, ricordiamo che si può riscivere la trasformata discreta come operatore lineare 
+$$\vec{y} = DFT_n \left( \vec{a} \right) = F_n \vec{a}$$
+dove $F_n$ è una matrice di \textit{Vandermonde} della forma
+\begin{equation*}
+    F_n = V\left( \omega_n^0, \cdots, \omega_n^i, \cdots \right) =
+    \left(
+        \begin{array}[h]{ccccc}
+            1 & \cdots & & \cdots & 1 \\
+            \vdots \\
+            & & \omega_n^{ij} \\
+            \vdots \\
+            1\\
+        \end{array}
+    \right)
+\end{equation*}
+La trasformata inversa si può scrivere come 
+$$\vec{a} = DFT_n^{-1} \left( \vec{y} \right) = F_n^{-1}\vec{y}$$
+dimostriamo che gli elementi di $F_n^{-1}$ sono 
+\begin{equation*}
+    \left( F_N^{-1} \right)_{ij} = \frac{1}{n} \omega_n^{-ij}
+\end{equation*}
+dimostrando che
+\begin{equation*}
+    F_n F_n^{-1} = F_n^{-1} F_n = I_n
+\end{equation*}
+nel secondo caso, scriviamo il generico prodotto righe per colonne dell'elemento $ij$
+\begin{equation*}
+    \left( F_n^{-1} F_n \right)_{ij} =
+    \frac{1}{n} \sum_{k=0}^{n-1} \omega_n^{-ik} \omega_n^{kj} =
+    \frac{1}{n} \sum_{k=0}^{n-1} \omega_n^{(j-i)k}
+\end{equation*}
+sulla diagonale principale $i=j$ deve valere $1$ e infatti
+\begin{equation*}
+    \frac{1}{n} \sum_{k=0}^{n-1} \omega_n^{0} =
+    \frac{n}{n} = 1
+\end{equation*}
+negli altri casi, con $i \neq j$ osserviamo che $j-i$ può assumere solo valori maggiori di $-(n-1)$ quando $j=0, \; i=n-1$ e minori di $n-1$ quando $j=n-1, \; i=0$
+\begin{equation*}
+    -(n-1) \leq j-i \leq n-1
+    \quad \text{con }j-i \neq 0 
+    \text{ considerato nell'altro caso}
+\end{equation*}
+e per il lemma di somma
+\begin{equation*}
+    \frac{1}{n} \sum_{k=0}^{n-1} \left( \omega_n^{j-i} \right)^k = 0
+\end{equation*}
+dato che l'esponente non è multiplo di $n$. La prima uguaglianza si dimostra in modo analogo.
+
+\subsection{Convoluzione lineare}
 
 \subsection{autocomplete}
 Una bella scatola:
@@ -539,4 +714,33 @@ Sotto numeri
 òg
 ùg
 perché
+
+delirio di vim se scrivi \verb|<C-k>`e| o \verb|<C-k>e`| in insert mode mette una è
+
+% delirio doppio di vim se scrivi \verb|<C-k>da| in insert mode mette ``Hiragana letter DA'' che purtroppo non posso mostrarvi %だ
+
+Spazietti fra equazioni
+\begin{equation*}
+    A^{[0]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j}x^j
+    \quad \text{ e } \quad
+    A^{[1]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^j
+\end{equation*}
+
+Un gustoso algoritmo
+\begin{algorithm}[H]
+\caption{Divide and Conquer}\label{alg:dnc}
+\begin{algorithmic}[1]
+    \Procedure{D\&C}{$i$}
+        \If{$|i| \leq n_0$}                             \Comment{BASE}
+            \State *risolvo direttamente*
+        \EndIf
+        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$    \Comment{DIVIDE}
+        \For{$j \gets 1 $ to $ k $ }                    \Comment{RECURSE}
+            \State $s_j \gets $ \Call{D\&C}{$i_j$}
+        \EndFor
+        \State $s \gets A_C(<s_1, s_2, \dots, s_k>)$    \Comment{CONQUER}
+        \State return $s$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
