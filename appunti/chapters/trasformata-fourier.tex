@@ -701,16 +701,124 @@ rispetto a $\overline{\omega}_n$ si applicano tutti i lemmi e la proprietà di s
 \begin{algorithmic}[1]
     \Procedure{INV\_FFT}{$\vec{y}$}
         \State $n \gets \vec{y}.length$
-        \State $a \gets \overline{FFT} \left( \vec{y} \right)$
+        \State $\vec{a} \gets \overline{FFT} \left( \vec{y} \right)$
         \Comment{algoritmo ausiliario}
         \For{$i \gets 0 $ to $ n-1 $ }
-            \State $a_i \gets \frac{1}{n}a_i$
+            % \State $a_i \gets \frac{1}{n}a_i$
+            \State $a_i \gets a_i / n$
         \EndFor
         \State return $\vec{a}$
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-\subsection{Convoluzione lineare}
+
+Nota: vale $T_{INV\_FFT}(n) = \Theta \left( n \log n \right)$
+
+L'algoritmo $INV\_FFT$ \emph{non} è ricorsivo, $\overline{FFT}$ lo è.
+
+Si può ottenere l'algoritmo per $DFT_n^{-1} \left( \vec{y} \right)$ in un altro modo. Notiamo che 
+$\omega_n^{-0} = \omega_n^{0} = 1$ e $\forall 1 \leq j \leq n-1$ vale
+$\omega_n^{-j} = \omega_n^{-j \bmod n} = \omega_n^{n-j}$
+quindi possiamo scrivere
+\begin{equation*}
+    Y \left( \omega_n^{-j} \right) =
+        \begin{cases}
+            Y\left( \omega_n^{0} \right) & j=0 \\
+            Y \left( \omega_n^{n-j} \right) & j \neq 0
+        \end{cases}
+\end{equation*}
+e le componenti sono quindi quelle di \textit{Fourier} positive ma in ordine diverso e le valutazioni so potenze negative sono le positive permutate.
+\begin{equation*}
+    \vec{a} = DFT_n^{-1} \left( \vec{y} \right) \quad \rightarrow \quad
+    \begin{cases}
+        a_0 = \frac{1}{n} Y\left( \omega_n^{0} \right) = 
+        \frac{1}{n} \left[ DFT_n \left( \vec{y} \right) \right]_0
+        & j=0
+        \\
+        a_j = \frac{1}{n} Y\left( \omega_n^{-j} \right) = 
+        \frac{1}{n} \left[ DFT_n \left( \vec{y} \right) \right]_{n-j}
+        & j>0
+    \end{cases}
+\end{equation*}
+
+\begin{algorithm}[H]
+\caption{Trasformata inversa}\label{alg:invfftbis}
+\begin{algorithmic}[1]
+    \Procedure{INV\_FFT}{$\vec{y}$}
+        \State $n \gets \vec{y}.length$
+        \State $\vec{z} \gets FFT \left( \vec{y} \right)$
+        \State $a_0 \gets z_0 / n$
+        \For{ $j \gets 1 $ to $ n-1 $ }
+            \State $a_j \gets z_{n-j} / n $
+        \EndFor
+        \State return $\vec{a}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Introducendo l'operatore vettoriale $\cdot^{rev}$ definito come
+\begin{equation*}
+    \vec{a} = \left( a_0, a_1, \cdots, a_{n-1} \right)
+    \quad \rightarrow \quad
+    \vec{a}^{rev} = \left( a_0, a_{n-1}, \cdots, a_1 \right)
+\end{equation*}
+si può riscrivere la trasformata inversa come
+\begin{equation*}
+    DFT_{n}^{-1} \left( \vec{y} \, \right) = \frac{1}{n} \left( DFT_{n} \left( \vec{y} \, \right) \right)
+\end{equation*}
+
+\section{Convoluzione lineare}
+
+Utilizzando l'algoritmo della trasformata veloce, si può scrivere un algoritmo efficiente per la convoluzione lineare
+\begin{equation*}
+    \vec{c} = \vec{a} * \vec{b}
+    \quad
+    \vec{a}, \vec{b} \in \mathbb{C}^n, \vec{c} \in \mathbb{C}^{2n-1}
+\end{equation*}
+supponendo entrambi i vettori di lunghezza uguale e potenza di due.
+
+\begin{algorithm}[H]
+\caption{Convoluzione lineare}\label{alg:convlin}
+\begin{algorithmic}[1]
+    \Procedure{LIN\_CONV}{$\vec{a}, \vec{b}$}
+        \State $n \gets \vec{a}.length$
+        \State $\vec{a}\,' \gets \left( \vec{a} \, | 0_n \right)$
+        \Comment{$\vec{a}\,', \vec{b}\,' \in \mathbb{C}^{2n} $ }
+        % \State $\vec{a}' \gets \left( \vec{a} \, | 0_n \right)$
+        \State $\vec{b}\,' \gets \left( \vec{b} \, | 0_n \right)$
+        \State $\vec{y}_a \gets FFT \left( \vec{a}\,' \right)$
+        \Comment{valutazioni di $A(x)$ e $B(x)$ estese su $2n$ punti}
+        \State $\vec{y}_b \gets FFT \left( \vec{b}\,' \right)$
+        \For{ $i \gets 0 $ to $ 2n-1 $ }
+        \State $ \left( y_c \right)_i = \left( y_a \right)_i \cdot \left( y_b \right)_i $
+        \EndFor
+        \State return \Call{INV\_FFT}{$\vec{y}_c$}
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Dove il polinomio prodotto $\vec{c} = \text{INV\_FFT}\left( \vec{y}_c \right) \in \mathbb{C}^{2n}$ e vale sempre $c_{2n-1}=0$
+
+Vengono eseguite $3$ trasformate su vettori di $2n$ elementi, per cui
+\begin{equation*}
+    T_{LC} (n) = \Theta \left( n \log n \right)
+\end{equation*}
+
+Si può quindi enunciare il seguente teorema della convoluzione lineare
+
+\begin{theorem}[Convoluzione lineare]
+    Se $\vec{c} = \vec{a} * \vec{b}$ allora
+    \begin{equation*}
+        \vec{c} = DFT_{2n}^{-1} \left( 
+            DFT_{2n} \left( \vec{a} \, | 0_n \right)
+            \odot
+            DFT_{2n} \left( \vec{b} \, | 0_n \right)
+        \right)
+    \end{equation*}
+    \label{teo:convlin}
+\end{theorem}
+
+
 
 \subsection{autocomplete}
 Una bella scatola:
@@ -756,7 +864,7 @@ Spazietti fra equazioni
 
 Un gustoso algoritmo
 \begin{algorithm}[H]
-\caption{Divide and Conquer}\label{alg:dnc}
+\caption{Divide and Conquer}\label{alg:dncmock}
 \begin{algorithmic}[1]
     \Procedure{D\&C}{$i$}
         \If{$|i| \leq n_0$}                             \Comment{BASE}
