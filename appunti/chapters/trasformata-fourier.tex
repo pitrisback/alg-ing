@@ -682,6 +682,34 @@ e per il lemma di somma
 \end{equation*}
 dato che l'esponente non è multiplo di $n$. La prima uguaglianza si dimostra in modo analogo.
 
+Possiamo interpretare $\vec{y} \equiv Y(x)$ come rappresentazione per coefficienti di $Y$ e quindi
+\begin{equation*}
+\left( F_n^{-1} \vec{y} \, \right)_i = \frac{1}{n} Y \left( \omega_n^{-1} \right)
+\end{equation*}
+vedendo l'interpolazione come una valutazione scalata di $Y$ in $\left( \omega_n^{-1} \right)$, avendo interpretato come una matrice di \textit{Vandermonde} $F_n^{-1}$
+\begin{equation*}
+    F_n^{-1} = \frac{1}{n} V \left( \omega_n^{-0}, \omega_n^{-1}, \cdots, \omega_n^{-\left( n-1 \right)} \right)
+\end{equation*}
+% in più definendo $\bar{\omega}_n$
+In più definendo $\overline{\omega}_n = \omega_n^{-1}$
+% in più definendo $\overline{\omega_n}$
+(da cui $\overline{\omega}_n^{\,2} = \omega_n^{-2}$ e così via fino a $\overline{\omega}_n^{\,n-1} = \omega_n$)
+rispetto a $\overline{\omega}_n$ si applicano tutti i lemmi e la proprietà di sottostruttura è valida. Si possono quindi ottenere le valutazioni di un polinomio $Y(x)$ su $\left( \left( \omega_n^{-1} \right)^{0}, \omega_n^{-1}, \cdots \left( \omega_n^{-1} \right)^{n-1}, \right)$ utilizzando un algoritmo identico a $FFT$, $\overline{FFT}$, dove l'unica differenza nel codice è $ON \gets e^{-i2\pi/n} = \omega_n^{-1}$ che è appunto corretto perché rispetto a $\omega_n^{-1}$ vale la proprietà di sottostruttura. Questo algoritmo \emph{non} implementa la trasformata inversa, occorre ancora dividere per $1/n$. Supponendo $\overline{FFT} \left( \vec{y} \right)$ sia noto, si ricava $DFT_n^{-1} \left( \vec{y} \right)$
+
+\begin{algorithm}[H]
+\caption{Trasformata inversa}\label{alg:invfft}
+\begin{algorithmic}[1]
+    \Procedure{INV\_FFT}{$\vec{y}$}
+        \State $n \gets \vec{y}.length$
+        \State $a \gets \overline{FFT} \left( \vec{y} \right)$
+        \Comment{algoritmo ausiliario}
+        \For{$i \gets 0 $ to $ n-1 $ }
+            \State $a_i \gets \frac{1}{n}a_i$
+        \EndFor
+        \State return $\vec{a}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
 \subsection{Convoluzione lineare}
 
 \subsection{autocomplete}
@@ -743,4 +771,5 @@ Un gustoso algoritmo
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
+
 
