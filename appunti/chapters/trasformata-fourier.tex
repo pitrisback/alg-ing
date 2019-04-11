@@ -862,6 +862,7 @@ Calcoliamo il valore di $DFT_n \left( a, a, \cdots, a \right) = F_n \vec{a}$, co
 Dove in $\circola{1}$ il vettore contiene in ogni componente la somma di tutti gli elemeti sulla stessa riga della matrice di \textit{Fourier} e in $\circola{2}$ si applica il lemma di somma \ref{teo:somma}.
 
 \subsection{Vettore impulsivo}
+\label{sss:vetimp}
 Calcoliamo il valore di $DFT_n \left( a, 0, \cdots, 0 \right)$
 \begin{equation*}
     F_n
@@ -932,96 +933,52 @@ Per essere una proprietà di sottostruttura valida, per qualche $k'$ anche $\vec
 Quindi $\vec{x}_i^{[0]}$ è uguale a zero per ogni $i$ non multiplo di $k/2$, ovvero $\vec{x}_i^{[0]}$ è $\left( \frac{n}{2}, \frac{k}{2} \right)$-sparso.
 
 Per un vettore $\vec{x}$ $(n,k)$-sparso, con $1 \leq k \leq n$ e $n,k$ potenze di $2$, si può riscrivere l'algoritmo della trasformata di \textit{Fourier} come
-
 \begin{algorithm}[H]
-\caption{Trasformata veloce di \textit{Fourier} per vettori sparsi}\label{alg:fftsparsa}
+    \caption{Trasformata veloce di \textit{Fourier} per vettori $(n,k)$-sparsi}\label{alg:fftsparsa}
 \begin{algorithmic}[1]
     \Procedure{SPARSE\_FFT}{$\vec{x}, k$}
-        \State $n \gets \vec{a}.length$
+        \State $n \gets \vec{x}.length$
         \If{$n=1$}
         \Comment{BASE}
-            \State return $\vec{a}$
+            \State return $\Call{SPARSE\_FFT}{\vec{x}}$
         \EndIf
-        \State $\vec{a}^{[0]}=\left( a_0, a_2,\cdots, a _{n-2} \right)$
-        \label{alg:fft:a0}
+        \State $\vec{x}^{[0]}=\left( x_0, x_2,\cdots, x _{n-2} \right)$
         \Comment{DIVIDE}
-        \State $\vec{a}^{[1]}=\left( a_1, a_3,\cdots, a _{n-1} \right)$
-        \State $\vec{y}^{[0]} \gets \Call{FFT}{\vec{a}^{[0]}}$
+        \State $\vec{y}^{[0]} \gets \Call{SPARSE\_FFT}{\vec{x}^{[0]}}$
         \Comment{RECURSE}
-        \State $\vec{y}^{[1]} \gets \Call{FFT}{\vec{a}^{[1]}}$
-        \State $ON \gets e^{i 2 \pi/n}$   
-        \Comment{CONQUER}
-        \State $ONI \gets 1$   
-        \label{alg:fft:oni}
         \For{$i \gets 0 $ to $ n/2-1 $ }                   
-            \State $y_{i} \gets y_{i}^{[0]} + ONI \cdot y_i^{[1]}$
-            \label{alg:fft:con}
-            \State $y_{i+n/2} \gets y_{i}^{[0]} - ONI \cdot y_i^{[1]}$
-            \State $ONI \gets ONI \cdot ON$
+        \Comment{CONQUER}
+            \State $y_{i} \gets y_{i}^{[0]}$
+            \State $y_{i+n/2} \gets y_{i}^{[0]}$
         \EndFor
         \State return $\vec{y}$
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
+Dove si può notare che non è stato necessario calcolare $\omega_n$, e le due componenti del vettore $\vec{y}$ sono uguali.
 
-\subsection{autocomplete}
-Una bella scatola:
-\begin{equation}
-    \boxed{x^2+y^2 = z^2}
-\end{equation}
-
-Numeri nei casi
-\begin{numcases}{T(n)=}
-    2^3 \label{escaso1} \\
-    2^4 \label{escaso2} 
-\end{numcases}
-
-Sotto numeri
-\begin{subnumcases}{T(n)=}
-    2^3 \label{escaso3} \\
-    2^4 
-\end{subnumcases}
-
-\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
-    \item qualcosa
-    \item[+] qualcosa
-    \item[*] qualcosa
-    \item[--] qualcosa
-\end{itemize}
-àg
-èg
-ìg
-òg
-ùg
-perché
-
-delirio di vim se scrivi \verb|<C-k>`e| o \verb|<C-k>e`| in insert mode mette una è
-
-% delirio doppio di vim se scrivi \verb|<C-k>da| in insert mode mette ``Hiragana letter DA'' che purtroppo non posso mostrarvi %だ
-
-Spazietti fra equazioni
+La complessità è funzione di due parametri:
 \begin{equation*}
-    A^{[0]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j}x^j
-    \quad \text{ e } \quad
-    A^{[1]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^j
+    T(n,k) = 
+    \begin{cases}
+        c n \log n & k=1 \\
+        T \left( \frac{n}{2}, \frac{k}{2} \right) + 0 & k>1
+    \end{cases}
 \end{equation*}
+dove nel modello di costo il lavoro del \emph{Conquer} è pari a zero.
+Si può calcolare la soluzione per \emph{unfolding}:
+\begin{equation*}
+    T(n,k) = T \left( \frac{n}{2}, \frac{k}{2} \right)
+    = \cdots
+    =  T \left( \frac{n}{2^{i}}, \frac{k}{2^{i}} \right)
+    \overset{\circola{1}}{=}
+    T \left( \frac{n}{2^{\log_2 k}}, 1 \right)
+    = c \frac{n}{k} \log_2 \left( \frac{n}{k} \right)
+\end{equation*}
+Dove in $\circola{1}$ si è calcolato il valore di $i$ per cui $k/2^i=1$
 
-Un gustoso algoritmo
-\begin{algorithm}[H]
-\caption{Divide and Conquer}\label{alg:dncmock}
-\begin{algorithmic}[1]
-    \Procedure{D\&C}{$i$}
-        \If{$|i| \leq n_0$}                             \Comment{BASE}
-            \State *risolvo direttamente*
-        \EndIf
-        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$    \Comment{DIVIDE}
-        \For{$j \gets 1 $ to $ k $ }                    \Comment{RECURSE}
-            \State $s_j \gets $ \Call{D\&C}{$i_j$}
-        \EndFor
-        \State $s \gets A_C(<s_1, s_2, \dots, s_k>)$    \Comment{CONQUER}
-        \State return $s$
-    \EndProcedure
-\end{algorithmic}
-\end{algorithm}
+TODO per ESERCIZIO si prova la correttezza per induzione.
 
+Notiamo che al crescere di $k$ la complessità diminuisce. Nei casi limite per $k=1$ la complessità diventa $c n \log n$ come l'algoritmo standard, mentre per $k=n$ un vettore $(n,n)$-sparso è un vettore impulsivo e la sua trasformata è un vettore costante, confermando quanto calcolato nella sezione \ref{sss:vetimp}.
 
+TODO dimostra per ESERCIZIO che la forma generica di una trasformata di un vettore $(n,k)$-sparso è periodica.
