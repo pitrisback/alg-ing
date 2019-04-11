@@ -69,6 +69,7 @@ Quando $ (i,s) \in \bpi{}_{SORT} $ ? A parte il caso degenere $i=s=\epsilon$, de
 \end{algorithm}
 
 \subsection{Albero delle chiamate}
+\label{sss:alberochiamate}<++>
 Nel corso del D\&C, si alternano chiamate all'algoritmo di Divide, e quindi una fase di espansione, generazione \textit{top-down} delle sottoistanze, e chiamate all'algoritmo di Conquer, associato a fasi di contrazione, risoluzione \textit{bottom-up}. L'albero non viene generato tutto contemporaneamente, ma viene creato (e distrutto) nel corso dell'algoritmo, seguendo il cammino di una visita anticipata (\textit{depth-first search}).
 
 Il fatto che nella fase di Conquer venga eliminata la porzione di albero generato per risolvere una sottoistanza, è uno dei difetti principali di questo paradigma. Il non ricordare le soluzioni parziali trovate lo rende un processo computazionale \textit{memoryless}.

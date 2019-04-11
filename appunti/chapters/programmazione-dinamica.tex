@@ -1,0 +1,195 @@
+\section{Introduzione}
+
+% TODO disegno albero TD BU pag 53.2
+Il problema del memorylessness del paradigma \emph{Divide and Conquer} è già stato sottolineato nella sezione \ref{sss:alberochiamate}.
+Per esemplificare il problema, si introduce la sequnza di Fibonacci, definita come
+\begin{equation*}
+    F_n = 
+    \begin{cases}
+        1 & n=0,1 \\
+        F_{n-1} + F_{n-2} & n>1
+    \end{cases}
+\end{equation*}
+da cui si ricava immediatamente un algoritmo ricorsivo
+\begin{algorithm}[H]
+\caption{Fibonacci ricorsivo}\label{alg:rfib}
+\begin{algorithmic}[1]
+    \Procedure{R\_FIB}{$n$}
+        \If{$ n=0 $ or $n=1$}
+            \State return $1$
+        \EndIf
+        \State return \Call{R\_FIB}{$n-1$} + \Call{R\_FIB}{$n-2$}
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+% TODO disegno albero chiamate R_FIB pag 53.4
+\noindent
+la cui equazione di ricorrenza è
+\begin{equation*}
+    T_{RF}(n) = 
+    \begin{cases}
+        0 & n=0,1 \\
+        T_{RF}(n-1) + T_{RF}(n-2) + 1 & n>1
+    \end{cases}
+\end{equation*}
+che risulta limitata inferiormente da un esponenziale, infatti per $n>1$
+\begin{align*}
+    T_{RF}(n) 
+    &= T_{RF}(n-1) + T_{RF}(n-2) + 1 \\
+    & \geq \, 2 T_{RF}(n-2) + 1 \\
+    & \geq \, 2^2 T_{RF}(n-2-2) + 2 + 1 \\
+    & \geq \, 2^i T_{RF}(n-2i) + \sum_{j=0}^{i-1} 2^j \\
+    \intertext{che raggiunge il caso base quando $n-2i=0$ o $n-2i=1$ per $i= \left\lfloor n/2 \right\rfloor $ sia nel caso di $n$ pari sia nel caso di $n$ dispari}
+    & \geq \, 2^{\left\lfloor n/2 \right\rfloor} \cancel{ T_{RF}(0 \text{ o } 1)}
+    + \sum_{j=0}^{\left\lfloor n/2 \right\rfloor -1} 2^j \\
+    &= 2^{\left\lfloor n/2 \right\rfloor} -1 \\
+    &=  \Omega \left( 2^{n/2} \right) = \sqrt{2}^{\,n}
+    \intertext{ed essendo $\sqrt{2}>1$ cresce più velocemente di ogni polinomio. Il valore esatto di $T_{RF}$ è}
+    T_{RF}(n) &= \Theta \left( \left( \frac{1+\sqrt{5}}{2} \right)^n \right)
+\end{align*}
+
+Il sugo della storia è che viene calcolata un numero molto elevato di volte la stessa sottoistanza. Ispirandosi alla fase \emph{Bottom-Up} del \emph{D\&C}, e sfruttando strutture dati che contengano le informazioni necessarie, si può scrivere un algoritmo iterativo che risolve il problema.
+\begin{algorithm}[H]
+\caption{Fibonacci iterativo}\label{alg:itfib}
+\begin{algorithmic}[1]
+    \Procedure{IT\_FIB}{$n$}
+        \If{$ n=0 $ or $n=1$}
+            \State return $1$
+        \EndIf
+        \State $F[0] \gets 1$
+        \State $F[1] \gets 1$
+        \For{$i \gets 2 $ to $ n $ } 
+            \State $F[i] \gets F[i-1] + F[i-2]$
+        \EndFor
+        \State return $F[n]$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\noindent
+dove le soluzioni intermedie sono salvate in $F$. In realtà sarebbe sufficiente memorizzare solo gli ultimi due valori della sequenza.
+
+Si può quindi introdurre il paradigma del \emph{Dynamic Programming}, basandosi su queste osservazioni.
+
+\subsection{Paradigma del \emph{Dynamic Programming}}
+% \subsection{Introduzione}
+I due concetti fondamentali su cui si basa il paradigma \emph{Dynamic Programming} sono
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item[--] dotare di memoria l'algoritmo
+    \item[--] implementare la computazione in direzione \emph{bottom-up} (tutti i dati necessari sono già stati calcolati nelle iterazioni precedenti)
+\end{itemize}
+In ogni caso si lavora con la proprietà di sottostruttura, generando la soluzione ad un'istanza in funzione di sottoistanze di taglia minore.o
+
+Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione, gli svantaggi sono legati al dover implementare la computazione in maniera da essere sicuri di avere a disposizione le soluzioni necessarie al momento giusto, che per casi articolati non è triviale. Nel caso del \emph{D\&C} si sfrutta la convenienza della fase \emph{top-down}, che genera e risolve le istanze in modo coerente.
+
+L'algoritmo si può comunque scrivere in maniera ricorsiva.
+
+\subsection{Memoizzazione di un algoritmo ricorsivo}
+
+È possibile modificare un algoritmo ricorsivo \emph{D\&C} memorizzando le soluzioni intermedie attraverso un processo di memoizzazione.
+
+\subsubsection{Metodo generale}
+
+Un algoritmo memoizzato è costituito da due subroutine:
+\begin{enumerate}
+    \item \textbf{Routine di inizializzazione} INIT\_\{AlgName\}
+        \begin{itemize}
+            \item risolve i casi di base direttamente
+            \item inizializza una struttura tabellare \emph{globale} con
+                \begin{itemize}
+                    \item valori delle istanze di base, nelle locazioni associate alle istanze di base
+                    \item valori di default in posizioni associate a istanze non di base (il valore di default deve essere scelto in modo da far capire che non è stato ancora calcolato)
+                \end{itemize}
+            \item invoca la seconda procedura (ricorsiva) \\ % FORMATTA
+        \end{itemize}
+    \item \textbf{Routine ricorsiva} REC\_\{AlgName\}($i$)
+        \begin{itemize}
+            \item controlla sulla tabella per vedere se $i$ è già stata risolta
+                \begin{itemize}
+                    \item se sì la ritorna
+                    \item se no
+                        \begin{itemize}
+                            \item la calcola con la proprietà di sottostruttura
+                            \item la memorizza nella tabella
+                            \item la ritorna
+                        \end{itemize}
+                \end{itemize}
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Nota:} lo spazio delle sottoistanze deve essere 
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item[--] piccolo
+    \item[--] facilmente indicizzabile
+\end{itemize}
+
+\subsubsection{Algoritmo di Fibonacci memoizzato}
+
+\section{Problemi di ottimizzazione combinatoria}
+
+\subsection{Definizione}
+
+\subsection{Paradigma generale \emph{Dynamic Programming}}
+
+\subsection{autocomplete}
+Una bella scatola:
+\begin{equation}
+    \boxed{x^2+y^2 = z^2}
+\end{equation}
+
+Numeri nei casi
+\begin{numcases}{T(n)=}
+    2^3 \label{escaso1} \\
+    2^4 \label{escaso2} 
+\end{numcases}
+
+Sotto numeri
+\begin{subnumcases}{T(n)=}
+    2^3 \label{escaso3} \\
+    2^4 
+\end{subnumcases}
+
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item qualcosa
+    \item[+] qualcosa
+    \item[*] qualcosa
+    \item[--] qualcosa
+\end{itemize}
+àg
+èg
+ìg
+òg
+ùg
+perché
+
+delirio di vim se scrivi \verb|<C-k>`e| o \verb|<C-k>e`| in insert mode mette una è
+
+% delirio doppio di vim se scrivi \verb|<C-k>da| in insert mode mette ``Hiragana letter DA'' che purtroppo non posso mostrarvi %だ
+% insomma i digraph sono tanti e belli
+
+Spazietti fra equazioni
+\begin{equation*}
+    A^{[0]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j}x^j
+    \quad \text{ e } \quad
+    A^{[1]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^j
+\end{equation*}
+
+Un gustoso algoritmo
+\begin{algorithm}[H]
+\caption{Divide and Conquer}\label{alg:dncmock}
+\begin{algorithmic}[1]
+    \Procedure{D\&C}{$i$}
+        \If{$|i| \leq n_0$}                             \Comment{BASE}
+            \State *risolvo direttamente*
+        \EndIf
+        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$    \Comment{DIVIDE}
+        \For{$j \gets 1 $ to $ k $ }                    \Comment{RECURSE}
+            \State $s_j \gets $ \Call{D\&C}{$i_j$}
+        \EndFor
+        \State $s \gets A_C(<s_1, s_2, \dots, s_k>)$    \Comment{CONQUER}
+        \State return $s$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+
