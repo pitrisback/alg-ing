@@ -304,7 +304,7 @@ Basandosi su questa base si può definire la trasformata veloce di \textit{Fouri
 \end{definition}
 % TODO piccole note a pag 40.1
 Gli $n$ vincoli introdotti nella definizione sono $n$ valutazioni di $A(x)$ nei punti della base $\vec{\Omega}_n$ e possono essere raccolti in una matrice di \textit{Vandermonde} detta \emph{matrice di \emph{Fourier} di ordine $n$}
-\begin{equation*}
+\begin{equation}
     V\left( \vec{\Omega}_n \right) = \left( 
         \begin{array}[h]{ccccccc}
             1 & \omega_n^0 = 1 & 1 & \cdots & 1 & \cdots & 1 \\
@@ -316,7 +316,8 @@ Gli $n$ vincoli introdotti nella definizione sono $n$ valutazioni di $A(x)$ nei 
             1 & \omega_n^{n-1} & \omega_{n}^{\left( n-1 \right) 2} & \cdots & \omega_{n}^{\left( n-1 \right) j} & \cdots & \omega_n^{\left( n-1 \right) \left( n-1 \right)} \\
         \end{array}
     \right) = F_n
-\end{equation*}
+    \label{eq:matricefourier}
+\end{equation}
 Si può riscrivere la $DFT$ come operatore lineare
 \begin{equation*}
     DFT_n\left( \vec{a} \right) = F_n \vec{a} = \vec{y}
@@ -818,7 +819,150 @@ Si può quindi enunciare il seguente teorema della convoluzione lineare
     \label{teo:convlin}
 \end{theorem}
 
+\section{Trasformate notevoli}
 
+\subsection{Vettore costante}
+Calcoliamo il valore di $DFT_n \left( a, a, \cdots, a \right) = F_n \vec{a}$, con $F_n$ definita all'equazione \ref{eq:matricefourier}.
+\begin{equation*}
+    F_n
+    \left( 
+        \begin{array}[h]{c}
+            a \\ a \\ \vdots \\ a
+        \end{array}
+    \right)
+    =
+    a F_n
+    \left( 
+        \begin{array}[h]{c}
+            1 \\ 1 \\ \vdots \\ 1
+        \end{array}
+    \right)
+    \overset{\circola{1}}{=}
+    a
+    \left( 
+        \begin{array}[h]{c}
+            \sum_{j=0}^{n-1} \left( \omega_n^i \right)^j  \\
+            \vdots
+        \end{array}
+    \right)
+    \overset{\circola{2}}{=}
+    a
+    \left( 
+        \begin{array}[h]{c}
+            n \\ 0 \\ \vdots \\ 0
+        \end{array}
+    \right)
+    =
+    \left( 
+        \begin{array}[h]{c}
+            an \\ 0 \\ \vdots \\ 0
+        \end{array}
+    \right)
+\end{equation*}
+Dove in $\circola{1}$ il vettore contiene in ogni componente la somma di tutti gli elemeti sulla stessa riga della matrice di \textit{Fourier} e in $\circola{2}$ si applica il lemma di somma \ref{teo:somma}.
+
+\subsection{Vettore impulsivo}
+Calcoliamo il valore di $DFT_n \left( a, 0, \cdots, 0 \right)$
+\begin{equation*}
+    F_n
+    \left( 
+        \begin{array}[h]{c}
+            a \\ 0 \\ \vdots \\ 0
+        \end{array}
+    \right)
+    =
+    a F_n
+    \left( 
+        \begin{array}[h]{c}
+            1 \\ 0 \\ \vdots \\ 0
+        \end{array}
+    \right)
+    \overset{\circola{1}}{=}
+    a \left( F_n \right)^1
+    =
+    a
+    \left( 
+        \begin{array}[h]{c}
+            1 \\ 1 \\ \vdots \\ 1
+        \end{array}
+    \right)
+    =
+    \left( 
+        \begin{array}[h]{c}
+            a \\ a \\ \vdots \\ a
+        \end{array}
+    \right)
+\end{equation*}
+Dove in $\circola{1}$ viene selezionata la prima riga di $F_n$, composta tutta di $1$.
+
+\subsection{Vettore $(n,k)$-sparso}
+\begin{definition}[Vettore $(n,k)$-sparso]
+    Un vettore si dice $(n,k)$-sparso se, dati $1 \leq k \leq n$, con $n,k$ potenze di due, e dato $\vec{x} \in \mathbb{C}^n$ vale
+    \begin{equation*}
+        x_i = 0 \quad \forall i : i \bmod k \neq 0
+    \end{equation*}
+    Ossia il vettore ha componenti nulle per gli indici che \emph{non} sono multipli di $k$.
+    \label{def:nksparso}
+\end{definition}
+Il segnale è spaziato in maniera uniforme, diviso in $n/k$ sottocomponenti di lunghezza $k$.
+Esempio: $n=8, k=4 \rightarrow \left( x_0,0,0,0,x_4,0,0,0 \right)$
+
+Si può quindi seguire l'algoritmo della $FFT$ e cercare una sottostruttura più potente. Nel caso base $k=1$ il vettore $\left( n,1 \right)$-sparso risulta un vettore generico $\vec{x}=\left( x_0, x_1,\cdots, x _{n-1} \right) \in \mathbb{C}^n$ quindi non si può fare di meglio di $FFT\left( \vec{x} \right)$. Per il caso generico $k>1$, riscrivendo i due vettori delle componenti pari e dispari possiamo notare come il secondo abbia appunto tutte componenti relative ad indici dispari, che per un vettore sparso sono tutte pari a zero.
+\begin{equation*}
+    \vec{x}^{[0]}=\left( x_0, x_2,\cdots, x _{n-2} \right)
+    \quad 
+    \vec{x}^{[1]}=\left( x_1, x_3,\cdots, x _{n-1} \right) = \vec{0}_{n/2}
+\end{equation*}
+Metà del lavoro ricorsivo è quindi eliminato.
+Per essere una proprietà di sottostruttura valida, per qualche $k'$ anche $\vec{x}^{[0]} \in \mathbb{C}^{n/2}$ deve essere sparso. Consideriamo $0 \leq i \leq n/2-1$, vale
+\begin{align*}
+    \vec{x}_i^{[0]} = x_{2i} \meq 0 
+    & \leftrightarrow
+    2i \bmod k \neq 0
+    \\
+    & \leftrightarrow
+    \nexists \, m : 2i = mk
+    \\
+    & \leftrightarrow
+    \nexists \, i : m\frac{k}{2} = i
+    \\
+    & \leftrightarrow
+    \nexists \, i \bmod \frac{k}{2} \neq 0
+\end{align*}
+Quindi $\vec{x}_i^{[0]}$ è uguale a zero per ogni $i$ non multiplo di $k/2$, ovvero $\vec{x}_i^{[0]}$ è $\left( \frac{n}{2}, \frac{k}{2} \right)$-sparso.
+
+Per un vettore $\vec{x}$ $(n,k)$-sparso, con $1 \leq k \leq n$ e $n,k$ potenze di $2$, si può riscrivere l'algoritmo della trasformata di \textit{Fourier} come
+
+\begin{algorithm}[H]
+\caption{Trasformata veloce di \textit{Fourier} per vettori sparsi}\label{alg:fftsparsa}
+\begin{algorithmic}[1]
+    \Procedure{SPARSE\_FFT}{$\vec{x}, k$}
+        \State $n \gets \vec{a}.length$
+        \If{$n=1$}
+        \Comment{BASE}
+            \State return $\vec{a}$
+        \EndIf
+        \State $\vec{a}^{[0]}=\left( a_0, a_2,\cdots, a _{n-2} \right)$
+        \label{alg:fft:a0}
+        \Comment{DIVIDE}
+        \State $\vec{a}^{[1]}=\left( a_1, a_3,\cdots, a _{n-1} \right)$
+        \State $\vec{y}^{[0]} \gets \Call{FFT}{\vec{a}^{[0]}}$
+        \Comment{RECURSE}
+        \State $\vec{y}^{[1]} \gets \Call{FFT}{\vec{a}^{[1]}}$
+        \State $ON \gets e^{i 2 \pi/n}$   
+        \Comment{CONQUER}
+        \State $ONI \gets 1$   
+        \label{alg:fft:oni}
+        \For{$i \gets 0 $ to $ n/2-1 $ }                   
+            \State $y_{i} \gets y_{i}^{[0]} + ONI \cdot y_i^{[1]}$
+            \label{alg:fft:con}
+            \State $y_{i+n/2} \gets y_{i}^{[0]} - ONI \cdot y_i^{[1]}$
+            \State $ONI \gets ONI \cdot ON$
+        \EndFor
+        \State return $\vec{y}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{autocomplete}
 Una bella scatola:
