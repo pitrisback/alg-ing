@@ -77,11 +77,9 @@ I due concetti fondamentali su cui si basa il paradigma \emph{Dynamic Programmin
     \item[--] dotare di memoria l'algoritmo
     \item[--] implementare la computazione in direzione \emph{bottom-up} (tutti i dati necessari sono già stati calcolati nelle iterazioni precedenti)
 \end{itemize}
-In ogni caso si lavora con la proprietà di sottostruttura, generando la soluzione ad un'istanza in funzione di sottoistanze di taglia minore.o
+In ogni caso si lavora con la proprietà di sottostruttura, generando la soluzione ad un'istanza in funzione di sottoistanze di taglia minore.
 
-Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione, gli svantaggi sono legati al dover implementare la computazione in maniera da essere sicuri di avere a disposizione le soluzioni necessarie al momento giusto, che per casi articolati non è triviale. Nel caso del \emph{D\&C} si sfrutta la convenienza della fase \emph{top-down}, che genera e risolve le istanze in modo coerente.
-
-L'algoritmo si può comunque scrivere in maniera ricorsiva.
+Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione, gli svantaggi sono legati al dover implementare la computazione in maniera da essere sicuri di avere a disposizione le soluzioni necessarie al momento giusto, che per casi articolati non è triviale. Si può sfruttare la convenienza della fase \emph{top-down}, che genera e risolve le istanze in modo coerente, scrivendo l'algoritmo in maniera ricorsiva e dotandolo di memoria, come descritto nella sezione seguente.
 
 \subsection{Memoizzazione di un algoritmo ricorsivo}
 
@@ -124,11 +122,115 @@ Un algoritmo memoizzato è costituito da due subroutine:
 
 \subsubsection{Algoritmo di Fibonacci memoizzato}
 
-\section{Problemi di ottimizzazione combinatoria}
+Per l'algoritmo di Fibonacci le due funzioni risultano
+\begin{algorithm}[H]
+\caption{Fibonacci memoizzato}\label{alg:fibmemoizzato}
+\begin{algorithmic}[1]
+    \Procedure{INIT\_FIB}{$n$}
+        \If{$ n=0 $ or $n=1$}
+            \State return $1$
+        \EndIf
+        \State $F[0] \gets 1$, $F[1] \gets 1$
+        % \State $F[1] \gets 1$
+        \For{$i \gets 2 $ to $ n $ } 
+            \State $F[i] \gets 0$
+        \EndFor
+        \State return \Call{REC\_FIB}{$n$}
+    \EndProcedure
+    \Procedure{REC\_FIB}{$n$}
+        \If{$F[i] = 0$}
+            \State $F[i] \gets \Call{REC\_FIB}{i-1} + \Call{REC\_FIB}{i-2} $
+        \EndIf
+        \State return $F[i]$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+Note:
+$n$ è un parametro attuale, il valore che si vuole calcolare, mentre $i$ è un parametro formale, che descrive la generica sottoistanza su cui lavora l'algoritmo ricorsivo.
+Nella funzione ricorsiva si testa se la struttura tabellare contiene già la soluzione della sottoistanza, e se no lo si calcola con l'algoritmo ricorsivo e lo si salva. Nelle successive chiamate il test fallisce e non è necessario calcolare nuovamente il valore.
+Il \emph{caveat} nel dare memoria a un algoritmo \emph{D\&C} è che in lo spazio delle sottoistanze deve essere molto piccolo, in questo caso una sola sottoistanza per ogni valore di $n$. Inoltre perché l'algoritmo sia efficiente lo spazio delle possibili sottoistanze da risolvere deve essere facilmente indirizzabile e salvabile in una struttura dati semplici.
 
-\subsection{Definizione}
+Analisi della complessità:
+La ricorrenza non riesce a catturare il fatto che l'albero delle chiamate venga tagliato ogniqualvolta il valore di una sottoistanza sia stato calcolato precedentemente.
+% TODO albero delle chiamate memoizzato pag 55.9
+Per la fase di inizializzazione, il numero di operazioni aritmetiche che vengono eseguite è nullo.
+Dall'albero delle chiamate della procedura ricorsiva con memoria, si nota che l'albero è diventato molto più snello, e sono comparse foglie dove prima erano presenti sottoalberi. Inoltre il numero di nodi interni, gli unici rispetto a cui viene fatto lavoro, sono pari al numero di sottoistanze \emph{distinte} che vanno risolte per ottenere l'istanza $n$. 
+Solo nel nodo interno si esegue il conquer (la somma) associato ad ogni chiamata e la complessità sarà corrispondente al numero di nodi interni per il lavoro compiuto in ciascun nodo. C'è un nodo interno per ogni chiamata \emph{non} di base, tutte le altre sono chiamate che hanno trovato il valore in $F$ e non hanno compiuto lavoro, se non un \emph{lookup} nella tabella.
+\begin{equation*}
+    T_{RF} (n) = n-2+1 = n-1
+\end{equation*}
 
-\subsection{Paradigma generale \emph{Dynamic Programming}}
+\section{Paradigma generale \emph{Dynamic Programming}}
+
+\subsection{Problemi di ottimizzazione combinatoria}
+
+Ricordiamo la definizione di problema computazionale $\bpi{} \subseteq \bi{} \times \bs{}$
+
+Si può definire per ogni istanza un sottoinsieme $\bs{}(i)$ formato da tutte le possibili soluzioni di quell'istanza, ricordando che una sottoistanza può ammetere più soluzioni.
+\begin{equation*}
+    \forall i \in \bs{} \quad S(i) = \left\{ s \in \bs{} : i \, \bpi{} \, s \right\}
+\end{equation*}
+
+Definiamo inoltre una funzione di costo che va da S in un qualche insieme totalmente ordinato.
+\begin{equation*}
+    c : \bs{} \to \mathbb{R}
+\end{equation*}
+
+Data $i$ un istanza generica, si vuole determinare non solo una soluzione $s \in \bs{}(i)$, ma individuare $s^*$ che massimizza (o minimizza) il criterio del costo.
+\begin{equation*}
+    c(s^*) = \max \left\{ c(s) : s \in \bs{}(i) \right\}
+\end{equation*}
+
+\subsection{Caratteristiche di problemi di ottimizzazione risolubili con la programmazione dinamica}
+
+Un problema si presta ad essere risolto con la programamzione dinamica se presenta la seguente proprietà di sottostruttura ottima, che per un prolbema di ottimizzazione è una proprietà molto più ristretta rispetto a quella necessaria per il \emph{D\&C}. Infatti mette in relazione soluzioni ottime di un istanza a soluzioni ottime di sottoistanze. Questa proprietà si dice anche \emph{optimal substructure property}.
+
+% Dare paradigmi generali che si applicano quando un problema va approcciato con la programamzione dinamica.
+
+% Come nel dnc si sviluppa una proprietà di sottostruttura, possiamo seguire una serie di indicazioni generali che si possono istanziare volta per volta che conducono in maniera ordinata alla risuluzone di un problema con la prog dinanica. 
+
+% Quando si decide di usare la prog dinamica?
+
+\begin{definition}[Proprietà di sottostruttura ottima]
+    Un problema gode della proprietà di sottostruttura ottima se
+    \begin{enumerate}
+        \item la soluzione ottima di un'istanza non di base si ottiene combinando soluzioni ottime di sottoistanze
+        \item la proprietà di sottostruttura ottima genera sottoproblemi ripetuti
+        \item lo spazio delle sottoistanze generate da una data istanza non è troppo grande
+    \end{enumerate}
+\end{definition}
+
+Se la proprietà 2 manca, si può applicare il \emph{D\&C} classico e la programamzione dinamica non aiuterebbe.
+La proprietà 3 assicura l'efficienza del paradigma, il concetto è arbitrario per ora, se non esiste una struttura dati che riesca a memorizzare in maniera efficiente i risultati intermedi, il metodo avrà risultati peggiori. In genere la dimensionalità della struttura è pari al numero di sottoistanze generate (e.g. istanze di taglia $|i|=n$ generano $n^2$ sottoistanze salvate in un array bidimensionale ).
+
+\subsection{Paradigma generale}
+
+Presentiamo un paradigma generale per la programmazione dinamica.
+Passi da seguire per sviluppare un programma secondo il \emph{dynamic programming}, garantendo che il codice sia corretto.
+
+\begin{enumerate}
+    \item caratterizza la struttura di una soluzione ottima $s^*$ a un'istanza $i$ non di base in funzione di soluzioni ottime $s_1^*, s_2^*, \cdots, s_k^*$ di sottoistanze di $i$
+    \item
+        \begin{enumerate}
+            \item determina una relazione di ricorrenza sui costi di istanza e sottoistanza, mettendo in relazione il costo di un'istanza come una funzione dei costi delle sottoistanze \\ $c(s^*)=f\left(c(s_1^*),c(s_2^*),\cdots,c(s_k^*)\right)$
+                \label{enum:pd1}
+            \item determina la minima informazione strutturale necessaria ad ottenere $s^*$ a partire da $s_1^*, s_2^*, \cdots, s_k^*$, cercando di memorizzare incrementi, e non le intere soluzioni di sottoistanze
+                \label{enum:pd2}
+        \end{enumerate}
+    \item
+        \begin{enumerate}
+            \item calcola il costo $c(s^*)$ utilizzando la ricorrenza impostando la computazione
+                \begin{itemize}
+                    \item in maniera \emph{bottom-up} iterativa
+                    \item in maniera memoizzata
+                \end{itemize}
+                \label{enum:pd3}
+            \item calcola l'informazione addizionale strutturale per ottenere $s^*$ e memorizzarla
+                \label{enum:pd4}
+        \end{enumerate}
+\end{enumerate}
+
+I punti \ref{enum:pd2}, \ref{enum:pd4} sono necessari solo quando si è interessati anche alla soluzione ottima, mentre \ref{enum:pd1}, \ref{enum:pd3} forniscono solo il costo della soluzione ottimale.
 
 \subsection{autocomplete}
 Una bella scatola:
