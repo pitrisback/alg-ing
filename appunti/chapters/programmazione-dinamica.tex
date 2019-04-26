@@ -1,4 +1,6 @@
-\section{Introduzione}
+\section{Paradigma del \emph{Dynamic Programming}}
+
+\subsection{Introduzione}
 
 % TODO disegno albero TD BU pag 53.2
 Il problema del memorylessness del paradigma \emph{Divide and Conquer} è già stato sottolineato nella sezione \ref{sss:alberochiamate}.
@@ -81,11 +83,11 @@ In ogni caso si lavora con la proprietà di sottostruttura, generando la soluzio
 
 Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione, gli svantaggi sono legati al dover implementare la computazione in maniera da essere sicuri di avere a disposizione le soluzioni necessarie al momento giusto, che per casi articolati non è triviale. Si può sfruttare la convenienza della fase \emph{top-down}, che genera e risolve le istanze in modo coerente, scrivendo l'algoritmo in maniera ricorsiva e dotandolo di memoria, come descritto nella sezione seguente.
 
-\subsection{Memoizzazione di un algoritmo ricorsivo}
+\section{Memoizzazione di un algoritmo ricorsivo}
 
 È possibile modificare un algoritmo ricorsivo \emph{D\&C} memorizzando le soluzioni intermedie attraverso un processo di memoizzazione.
 
-\subsubsection{Metodo generale}
+\subsection{Metodo generale}
 
 Un algoritmo memoizzato è costituito da due subroutine:
 \begin{enumerate}
@@ -120,7 +122,7 @@ Un algoritmo memoizzato è costituito da due subroutine:
     \item[--] facilmente indicizzabile
 \end{itemize}
 
-\subsubsection{Algoritmo di Fibonacci memoizzato}
+\subsection{Algoritmo di Fibonacci memoizzato}
 
 Per l'algoritmo di Fibonacci le due funzioni risultano
 \begin{algorithm}[H]
@@ -231,7 +233,7 @@ Presentiamo un paradigma generale per la programmazione dinamica, enumerando i p
 
 I punti \ref{enum:pd2}, \ref{enum:pd4} sono necessari solo quando si è interessati anche alla soluzione ottima, mentre \ref{enum:pd1}, \ref{enum:pd3} sono sufficienti per ricavare il costo della soluzione ottima.
 
-\section{\emph{Longest Common Subsequence}}
+\section{Ricerca della \emph{Longest Common Subsequence}}
 
 \subsection{Sottostringhe e sottosequenze}
 
@@ -282,7 +284,7 @@ I punti \ref{enum:pd2}, \ref{enum:pd4} sono necessari solo quando si è interess
         1 \leq i \leq j \leq m
     \]
     Se $i>j$, $X_{i..j}=\varepsilon$
-    \label{def:suffisso}
+    \label{def:sottostringa}
 \end{definition}
 
 Lo spazio delle sottoistanze di una stringa $|X|=m$ risulta
@@ -342,11 +344,72 @@ Si può quindi introdurre il problema della ricerca della sottosequenza comune \
     $Z^* = LCS\left( X,Y \right)$
     \label{def:lcs}
 \end{definition}
-Per provare che una sottosequenza sia comune è sufficiente esibire le due successioni di indici che realizzano $Z$ in $X$ e $Y$, che sia la sottosequenza di lunghezza massima è un'altra cosa.
+Per provare che una sottosequenza sia comune è sufficiente esibire le due successioni di indici che realizzano $Z$ in $X$ e $Y$, che sia la sottosequenza di lunghezza massima viene assicurato dall'algoritmo che risolve il problema.
 
 Spesso invece di voler individuare $Z^*$ è sufficiente conoscerne il costo $|Z^*|$, di cui si sa che $|LCS(X,Y)| < \min\left\{ m,n \right\}$.
 
 Si può stabilire se $Z$ è sottosequenza di $X$ in tempo $\Theta \left( |X| \right)$, da cui si ricava un algoritmo naive per la ricerca della $LCS$, generando tutte le possibili sottosequenze della stringa più corta e verificando siano sottosequenze della più lunga. Se $m \leq n$, la complessità risulta $\Theta \left( 2^{m} n \right)$.
+
+\subsection{Proprietà di sottostruttura ottima}
+
+Supponiamo di star analizzando la sottoistanza di taglia $m+n$ relativa alle stringhe
+% $ X = < x_1, \cdots, x_m > $, $ Y = < y_1, \cdots, y_n > $, e sia
+\[
+    X = < x_1, \cdots, x_m > \quad  Y = < y_1, \cdots, y_n >
+\]
+ e sia
+$ Z^* = < z_1, \cdots, z_k > $
+la soluzione ottima associata a questa sottoistanza. 
+Soffermiamoci sull'ultimo elemento delle due stringhe:
+% $ X = < X_{m-1}, a > $ e $ Y = < Y_{n-1}, b > $.
+\[
+     X = < X_{m-1}, a >  \quad  Y = < Y_{n-1}, b >
+\]
+Si possono presentare due casi.
+\begin{enumerate}
+    \item $a=b$: di sicuro $z_k=a=b$ e $ Z^* = < Z_{k-1}^*, a > $: intuitivamente se $Z^*$ non terminasse con $a$, esisterebbe $\hat{Z}$ di lunghezza massima che termina con $\hat{z}_k \neq a$ ed è sottosequenza di $X_{m-1}^*$ e $Y_{n-1}^*$ (non terminando con $a$), ma appendendo $a$ a $\hat{Z}$ si otterrebbe una sottosequenza più lunga, che è assurdo.
+        \\
+        Inoltre $Z_{k-1}^*$ sta in $X_{m-1}^*$ e $Y_{n-1}^*$, avendo già considerato l'ultimo elemento di entrambe.
+        \\
+        La sottoistanza generata ha taglia $m+n-2$
+    \item $a \neq b$: di sicuro $z_k$ non può essere uguale ad $a$ e $b$ contemporaneamente (e può comunque essere diverso da entrambi i valori). Deve quindi verificarsi uno dei due sottocasi:
+        \begin{enumerate}[label=(\roman*)]
+            \item $z_k \neq a$: va risolto $LCS\left( X_{m-1}, Y \right)$
+            \item $z_k \neq b$: va risolto $LCS\left( X, Y_{n-1} \right)$
+        \end{enumerate}
+        In entrambi i casi la sottoistanza generata ha taglia $m+n-1$
+\end{enumerate}
+
+Lo spazio dei sottoproblemi è $\left\{ \left( X_i, Y_j \right), \: 0 \leq i \leq m, \: 0 \leq j \leq n \right\}$ ed ha quindi taglia pari a $(m+1)(n+1) = \Theta (mn)$
+
+Formalizzando la proprietà di sottostruttura ottima risulta:
+
+\begin{lemma}[Proprietà di sottostruttura ottima]
+    Per un generico sottoproblema $\left( X_i, Y_j \right), \: 0 \leq i \leq m, \: 0 \leq j \leq n$ sia 
+    $ Z^* = < z_1, \cdots, z_k > = LCS\left( X_i,Y_j \right)$ allora:
+    \begin{enumerate}
+        \item $(i=0) \vee (j=0) \Rightarrow z^* = \varepsilon$
+            \label{psolcs:casobase}
+        \item $(i>0) \wedge (j>0) \wedge (x_i = y_j) \Rightarrow $
+            \begin{enumerate}
+                \item $z_k = x_i = y_j$
+                    \label{psolcs:caso2a}
+                \item $Z_{k-1}^* = LCS(X_{m-1}^*, Y_{n-1}^*)$
+                    \label{psolcs:caso2b}
+            \end{enumerate}
+        \item $(i>0) \wedge (j>0) \wedge (x_i \neq y_j) \Rightarrow $
+            \\
+            $ Z^*$ è la stringa più lunga tra $LCS\left( X_{m-1}, Y \right)$ e $LCS\left( X, Y_{n-1} \right)$
+    \end{enumerate}
+    \label{lemma:psolcs}
+\end{lemma}
+
+La dimostrazione del caso \ref{psolcs:casobase} è immediata, infatti
+\[
+    LCS(\varepsilon, Y_j), LCS(X_i, \varepsilon) \Rightarrow Z^*=\varepsilon 
+\]
+
+La dimostrazione del caso \ref{psolcs:caso2a} si svolge per assurdo:
 
 \subsection{autocomplete}
 Una bella scatola:

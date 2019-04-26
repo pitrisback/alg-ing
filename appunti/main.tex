@@ -63,7 +63,7 @@
 \lhead{\@title}
 \chead{}
 \rhead{}
-\lfoot{Chapter \thechapter}
+\lfoot{Capitolo \thechapter}
 \cfoot{\@author}
 \rfoot{\thepage}
 \makeatother 
@@ -132,13 +132,15 @@
 \input{chapters/programmazione-dinamica}
 
 \cleardoublepage
-\fancyfoot[LO,RE]{Bibliography}
+% \fancyfoot[LO,RE]{Bibliography}
+\lfoot{Bibliography}
 \bibliographystyle{unsrt}
 \bibliography{biblio}
 \cleardoublepage
 
 \appendix
-\fancyfoot[LO,RE]{Appendix \thechapter}
+% \fancyfoot[LO,RE]{Appendix \thechapter}
+\lfoot{Appendice \thechapter}
 
 \chapter{Appendice}
 \input{chapters/appendix}
