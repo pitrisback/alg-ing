@@ -404,12 +404,82 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
     \label{lemma:psolcs}
 \end{lemma}
 
-La dimostrazione del caso \ref{psolcs:casobase} è immediata, infatti
-\[
-    LCS(\varepsilon, Y_j), LCS(X_i, \varepsilon) \Rightarrow Z^*=\varepsilon 
-\]
+\begin{proof}[Caso \ref{psolcs:casobase}]
+    La dimostrazione del caso \ref{psolcs:casobase} è immediata, infatti l'unica sottosequenza comune è la stringa vuota $\varepsilon$.
+    \[
+        LCS(\varepsilon, Y_j), LCS(X_i, \varepsilon) \Rightarrow Z^*=\varepsilon 
+    \]
+\end{proof}
 
-La dimostrazione del caso \ref{psolcs:caso2a} si svolge per assurdo:
+\begin{proof}[Caso \ref{psolcs:caso2a}]
+    La dimostrazione del caso \ref{psolcs:caso2a} si svolge per assurdo:
+    Sia 
+    $ Z^* = < z_1, \cdots, z_k > $
+    la soluzione ottima realizzata da 
+    $1 \leq i_1 < i_2 < \cdots < i_k \leq i $ in $X_i$
+    e da
+    $1 \leq j_1 < j_2 < \cdots < j_k \leq j $ in $Y_j$
+    .\\
+    Si supponga per assurdo che
+    \[
+        z_k \neq x_i ( \neq y_j)
+    \]
+    Per $1 \leq s \leq k$ il carattere generico $z_s$ è
+    \[
+        z_s = x_{i_s} = y_{j_s}
+    \]
+    Applicando l'ipotesi assurda rispetto a  $z_s$ per $s=k$ vale
+    \[
+        z_k = x_{i_k} \neq x_i \quad z_k = y_{j_k} \neq y_j
+    \]
+    devono quindi essere diversi gli indici
+    \[
+        (i_k \neq i) \; \wedge \; (j_k \neq j)
+    \]
+    e nelle successioni di indici allora
+    \[
+        (i_k<i \text{ o } i_k \leq i-1) 
+        \; \wedge \;
+        (j_k<j \text{ o } j_k \leq j-1)
+    \]
+    per cui $Z^*$ è sottosequenza comune di $X_{i-1}$ e $Y_{j=i}$.
+    Si consideri $\hat{Z} = < Z^* , x_i >$, $\hat{Z}$ è sottosequenza sia di $X_i$ sia di $Y_j$
+    e le successioni di indici da esibire sono quelle di $Z^*$ con appesi $i_k < i_{k+1} = i$ e $j_k < j_{k+1} = j$.
+    Quindi si trova una sottosequenza comune più lunga di $Z^*$, ma $Z^*$ era supposta come soluzione ottima, quindi è stato raggiunto un assurdo.
+\end{proof}
+
+\begin{proof}[Caso \ref{psolcs:caso2b}]
+    Anche la dimostrazione del caso \ref{psolcs:caso2b} si svolge per assurdo:
+    Assumendo che la soluzione ottima $Z^*$ sia realizzata dalle stesse successioni di indici della dimostrazione precedente, gli indici che realizzano
+    $Z_{k-1}^* = LCS(X_{m-1}^*, Y_{n-1}^*)$
+    sono i primi $k-1$ indici che realizzano $Z^*$.
+    \[
+        \begin{array}{c|cc}
+            1 \leq i_1 < i_2 < \cdots < i_{k-1} & < \cancel{i_k} \leq i  & \text{ in } X_{i-1}
+            \\
+            1 \leq j_1 < j_2 < \cdots < j_{k-1} & < \cancel{j_k} \leq j  & \text{ in } Y_{j-1}
+        \end{array}
+    \]
+    Quindi $i_{k-1} \leq i-1$ e $j_{k-1} \leq j-1$
+    per cui 
+    $Z_{k-1}^* $ è sottosequenza comune di $X_{i-1}^* $ e $ Y_{j-1}^*$ ed è dunque una soluzione ammissibile; si dimostra anche che è la soluzione ottima.
+    \\
+    Si supponga per assurdo che
+    $Z_{k-1}^* \neq LCS(X_{i-1}^*, Y_{j-1}^*)$
+    , allora deve esistere $\bar{Z}$ comune a $X_{i-1}^* $ e $ Y_{j-1}^*$ di lunghezza
+    % \[
+    $
+    | \bar{Z} | > | Z_{k-1}^* | = k-1
+    % \]
+    $.
+    Considerando $\hat{Z} = < \bar{Z} , x_i > $, $\hat{Z}$ è sottosequenza comune di $X_i$ e $Y_j$ di lunghezza
+    \[
+        | \hat{Z} | = | \bar{Z} | + 1 > k -1 +1 = k = | Z^* |
+    \]
+    Il che conduce ad un assurdo, essendo $Z^*$ la soluzione ottima.
+\end{proof}
+
+
 
 \subsection{autocomplete}
 Una bella scatola:
