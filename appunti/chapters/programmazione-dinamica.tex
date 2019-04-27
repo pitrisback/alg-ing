@@ -394,12 +394,13 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
             \begin{enumerate}
                 \item $z_k = x_i = y_j$
                     \label{psolcs:caso2a}
-                \item $Z_{k-1}^* = LCS(X_{m-1}^*, Y_{n-1}^*)$
+                \item $Z_{k-1}^* = LCS(X_{i-1}, Y_{j-1})$
                     \label{psolcs:caso2b}
             \end{enumerate}
         \item $(i>0) \wedge (j>0) \wedge (x_i \neq y_j) \Rightarrow $
             \\
-            $ Z^*$ è la stringa più lunga tra $LCS\left( X_{m-1}, Y \right)$ e $LCS\left( X, Y_{n-1} \right)$
+            $ Z^*$ è la stringa più lunga tra $LCS\left( X_{i-1}, Y_j \right)$ e $LCS\left( X_i, Y_{j-1} \right)$
+            \label{psolcs:caso3}
     \end{enumerate}
     \label{lemma:psolcs}
 \end{lemma}
@@ -455,9 +456,9 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
     sono i primi $k-1$ indici che realizzano $Z^*$.
     \[
         \begin{array}{c|cc}
-            1 \leq i_1 < i_2 < \cdots < i_{k-1} & < \cancel{i_k} \leq i  & \text{ in } X_{i-1}
+            1 \leq i_1 < i_2 < \cdots < i_{k-1} & < \cancel{i_k} = i  & \text{ in } X_{i-1}
             \\
-            1 \leq j_1 < j_2 < \cdots < j_{k-1} & < \cancel{j_k} \leq j  & \text{ in } Y_{j-1}
+            1 \leq j_1 < j_2 < \cdots < j_{k-1} & < \cancel{j_k} = j  & \text{ in } Y_{j-1}
         \end{array}
     \]
     Quindi $i_{k-1} \leq i-1$ e $j_{k-1} \leq j-1$
@@ -479,7 +480,135 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
     Il che conduce ad un assurdo, essendo $Z^*$ la soluzione ottima.
 \end{proof}
 
+\begin{proof}[Caso \ref{psolcs:caso3}]
+    Anche la dimostrazione del caso \ref{psolcs:caso3} si svolge per assurdo:
+    Sia $ Z^*$ la stringa più lunga tra $LCS\left( X_{i-1}, Y_j \right)$ e $LCS\left( X_i, Y_{j-1} \right)$,
+    realizzata da 
+    $1 \leq i_1 < i_2 < \cdots < i_k \leq i $ in $X_i$
+    e da
+    $1 \leq j_1 < j_2 < \cdots < j_k \leq j $ in $Y_j$.
+    \\
+    Si deve verificare uno dei due casi
+    $( z_k \neq x_i ) \vee (z_k \neq y_j)$:
+    \\
+    Nel primo caso
+    $ z_k \neq x_i \Rightarrow i_k<i$
+    e $i_k \leq i-1$
+    quindi $Z^*$ è in questo caso sottosequenza del prefisso più corto $X_{i-1}$ e come in precedenza è sottosequenza di $Y_j$. È quindi una sottosequenza comune a $X_{i-1}$ e $Y_j$ e deve essere $Z^* = LCS(X_{i-1}, Y_{j})$. Se per assurdo non lo fosse, esisterebbe $\hat{Z}^* = LCS(X_{i-1}, Y_{j})$ con $|\hat{Z}| > |Z^*|$, ma $\hat{Z}$ è anche comune a $X_{i}$ e $Y_j$ che è un assurdo perché $Z^*$ è ottima.
+    \\
+    Nel secondo caso $Z^* = LCS(X_{i}, Y_{j-1})$, dimostrato analogamente.
+    \\
+    Dato che uno dei due casi deve succedere, $Z^*$ sarà la più lunga delle due $LCS$ trovate.
+\end{proof}
+% note su prop strutturali TODO pag 64
+La funzione di costo è di due parametri $0 \leq i \leq m$ e $0 \leq j \leq n$
+\begin{equation*}
+    l(i,j) = 
+    \begin{cases}
+        0 & (i=0) \vee (j=0)
+        \\
+        1+l(i-1,j-1) & (i,j>0) \wedge (x_i = y_j)
+        \\
+        \max \left\{ l(i-1,j) , l(i,j-1) \right\}
+        & \text{altrimenti}
+    \end{cases}
+\end{equation*}
+% TODO esempio albero pag 64.5
+Il caso peggiore è caratterizzato da $m=n$ quando tutti i caratteri sono diveri tra loro e $LCS=\varepsilon$ e l'albero si biforca sempre.
+\begin{equation*}
+    T(n,n) = 
+    \begin{cases}
+        0 & n=0 \\
+        T(n-1, n) + T(n, n-1) + 1 & n>0
+    \end{cases}
+\end{equation*}
+Essendo una funzione monotona
+\begin{align*}
+    T(n,n) &\geq 2T(n-1,n-1)+1
+    \intertext{e si può procedere per unfolding:}
+    & \geq 2 \cdot 2 T(n-1-1,n-1-1)+2+1
+    \\
+    \dots & \geq 2^j T(n-j,n-j)+\sum_{k=0}^{j-1}2^k
+    \intertext{il caso base si raggiugne per $n-j=0$ ossia $j=n$}
+    & \geq \sum_{j=0}^{n-1}2^k = 2^{n-1}
+\end{align*}
+Seguendo il paradigma \emph{D\&C} anche solo calcolare il costo della souzione ottima è esponenziale.
 
+Per applicare il paradigma del \emph{Dynamic Programming}, occorre individuare la minima informazione addizionale per ricostruire la soluzione ottima.
+In un vettore bidimensionale si può salvare quale caso è successo, memorizzando uno di tre simboli:
+\begin{equation*}
+    b(i,j) = 
+    \begin{cases}
+        ` \nwarrow \textrm{'}
+        &
+        LCS(X_i, Y_j)
+        = < LCS(X_{i-1}, Y_{j-1}), x_i >
+        \\
+        ` \uparrow \textrm{'}
+        &
+        LCS(X_i, Y_j)
+        = LCS(X_{i}, Y_{j-1})
+        \\
+        ` \leftarrow \textrm{'} 
+        &
+        LCS(X_i, Y_j)
+        = LCS(X_{i-1}, Y_{j})
+    \end{cases}
+\end{equation*}
+
+Si può seguire un algoritmo iterativo per calcolare il costo, avendo cura di aver già calcolato i sottoproblemi necessari al momento giusto. Per l'istanza $(i,j)$ sono necessari $(i-1,j-1)$, $(i,j-1)$ e $(i-1,j)$. Il diagramma delle dipendenze permette di visualizzare le relazioni tra sottoistanze e di pianificare l'esecuzione in maniera appropriata. La struttura del diagramma rispecchia quella della struttura dati in cui verranno memorizzate le informazioni, $L\left[ 0 \div m, 0\div n \right]$.
+\begin{equation*}
+    \left[ 
+    \begin{array}[H]{ccccc}
+        0 & \cdots & & \cdots & 0 \\
+        \vdots & (i-1,j-1) & & (i-1,j) & \\
+        & & \nwarrow & \uparrow & \\
+        \vdots & (i,j-1) & \leftarrow & (i,j) & \\
+        0 &&&&\\
+    \end{array}
+    \right]
+\end{equation*}
+Tenuti in considerazione gli elementi che vengono popolati dal caso base, dal diagramma si evince che una scansione per righe visita gli elementi nell'ordine desiderato, trovando sempre i tre elementi su cui dipende l'istanza già correttamente calcolati. La scansione non è univoca, per esempio procedendo per colonne non si commettono errori.
+
+L'algoritmo iterativo per trovare la sottosequenza comune tra due stringhe risulta
+\begin{algorithm}[H]
+\caption{\emph{Longest Common Subsequence}}\label{alg:lcsit}
+\begin{algorithmic}[1]
+    \Procedure{LCS}{$X,Y$}
+        \State $m \gets |X|$
+        \State $n \gets |Y|$
+        \For{$i \gets 0 $ to $ m $ }                    \Comment{Caso base prima colonna}
+            \State $L[i,0] \gets 0$
+        \EndFor
+        \For{$j \gets 1 $ to $ n $ }                    \Comment{Caso base prima riga}
+            \State $L[0,j] \gets 0$
+        \EndFor
+        \For{$i \gets 1 $ to $ m $ }
+            \For{$j \gets 1 $ to $ n $ }                \Comment{L'indice interno è di colonna}
+                \If{$x_i = y_j$}\label{alg:lcsit:c1}
+                    \State $L[i,j] \gets 1 + L[i-1,j-1]$
+                    \State $B[i,j] \gets ` \nwarrow \textrm{'}$
+                \Else
+                    \If{$L[i-1,j] \geq L[i,j-1]$}\label{alg:lcsit:c2}
+                        \State $L[i,j] \gets L[i-1,j]$
+                        \State $B[i,j] \gets ` \uparrow \textrm{'}$
+                    \Else
+                        \State $L[i,j] \gets L[i,j-1]$
+                        \State $B[i,j] \gets ` \leftarrow \textrm{'}$
+                    \EndIf
+                \EndIf
+            \EndFor
+        \EndFor
+        \State return $L[m,n], B$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Nel calcolo della complessità dell'algoritmo, il confronto alla riga \ref{alg:lcsit:c1} è tra elementi della stringa, quindi viene considerato costoso, mentre quello alla riga \ref{alg:lcsit:c2} è tra interi, e si può trascurare. Si conta un confronto per iterazione del ciclo interno, per un totale di 
+\begin{equation*}
+    T_{LCS} = mn
+\end{equation*}
+I sottoproblemi utili al calcolo della soluzione sono in realtà molto meno, utilizzando la versione memoizzata dell'algoritmo
 
 \subsection{autocomplete}
 Una bella scatola:
