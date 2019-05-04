@@ -81,11 +81,11 @@ I due concetti fondamentali su cui si basa il paradigma \emph{Dynamic Programmin
 \end{itemize}
 In ogni caso si lavora con la proprietà di sottostruttura, generando la soluzione ad un'istanza in funzione di sottoistanze di taglia minore.
 
-Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione, gli svantaggi sono legati al dover implementare la computazione in maniera da essere sicuri di avere a disposizione le soluzioni necessarie al momento giusto, che per casi articolati non è triviale. Si può sfruttare la convenienza della fase \emph{top-down}, che genera e risolve le istanze in modo coerente, scrivendo l'algoritmo in maniera ricorsiva e dotandolo di memoria, come descritto nella sezione seguente.
+Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione, gli svantaggi sono legati al dover implementare la computazione in maniera da essere sicuri di avere a disposizione le soluzioni necessarie al momento giusto, che per casi articolati non è triviale. Si può sfruttare la convenienza della fase \emph{top-down}, che genera e risolve le istanze in ordine coerente, scrivendo l'algoritmo in maniera ricorsiva e dotandolo di memoria, come descritto nella sezione seguente.
 
 \section{Memoizzazione di un algoritmo ricorsivo}
 
-È possibile modificare un algoritmo ricorsivo \emph{D\&C} memorizzando le soluzioni intermedie attraverso un processo di memoizzazione.
+È possibile modificare un algoritmo ricorsivo \emph{D\&C} memorizzando le soluzioni intermedie attraverso un processo detto di memoizzazione.
 
 \subsection{Metodo generale}
 
@@ -103,7 +103,7 @@ Un algoritmo memoizzato è costituito da due subroutine:
         \end{itemize}
     \item \textbf{Routine ricorsiva} REC\_\{AlgName\}($i$)
         \begin{itemize}
-            \item controlla sulla tabella per vedere se $i$ è già stata risolta
+            \item controlla sulla tabella per vedere se l'istanza $i$ è già stata risolta
                 \begin{itemize}
                     \item se sì la ritorna
                     \item se no
@@ -147,12 +147,12 @@ Per l'algoritmo di Fibonacci le due funzioni risultano
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-Note:
+\textbf{Note:}
 $n$ è un parametro attuale, il valore che si vuole calcolare, mentre $i$ è un parametro formale, che descrive la generica sottoistanza su cui lavora l'algoritmo ricorsivo.
 Nella funzione ricorsiva si testa se la struttura tabellare contiene già la soluzione della sottoistanza, e se no lo si calcola con l'algoritmo ricorsivo e lo si salva. Nelle successive chiamate il test fallisce e non è necessario calcolare nuovamente il valore.
-Il \emph{caveat} nel dare memoria a un algoritmo \emph{D\&C} è che in lo spazio delle sottoistanze deve essere molto piccolo, in questo caso una sola sottoistanza per ogni valore di $n$. Inoltre perché l'algoritmo sia efficiente lo spazio delle possibili sottoistanze da risolvere deve essere facilmente indirizzabile e salvabile in una struttura dati semplici.
+Il \emph{caveat} nel dare memoria a un algoritmo \emph{D\&C} è che in lo spazio delle sottoistanze deve essere molto piccolo, in questo caso una sola sottoistanza per ogni valore di $n$. Inoltre perché l'algoritmo sia efficiente lo spazio delle possibili sottoistanze da risolvere deve essere facilmente indirizzabile e salvabile in una struttura dati semplice.
 
-Analisi della complessità:
+\textbf{Analisi della complessità:}
 La ricorrenza non riesce a catturare il fatto che l'albero delle chiamate venga tagliato ogniqualvolta il valore di una sottoistanza sia stato calcolato precedentemente.
 % TODO albero delle chiamate memoizzato pag 55.9
 Per la fase di inizializzazione, il numero di operazioni aritmetiche che vengono eseguite è nullo.
@@ -203,7 +203,7 @@ Un problema si presta ad essere risolto con la programamzione dinamica se presen
 \end{definition}
 
 Se la proprietà 2 manca, si può applicare il \emph{D\&C} classico e la programamzione dinamica non aiuterebbe.
-La proprietà 3 assicura l'efficienza del paradigma, il concetto è arbitrario per ora, se non esiste una struttura dati che riesca a memorizzare in maniera efficiente i risultati intermedi, il metodo avrà risultati peggiori. In genere la dimensionalità della struttura è pari al numero di sottoistanze generate (e.g. istanze di taglia $|i|=n$ generano $n^2$ sottoistanze salvate in un array bidimensionale ).
+La proprietà 3 assicura l'efficienza del paradigma, il concetto è arbitrario per ora, se non esiste una struttura dati che riesca a memorizzare in maniera efficiente i risultati intermedi, il metodo avrà risultati peggiori. In genere la dimensionalità della struttura è pari al numero di sottoistanze generate (e.g. se istanze di taglia $|i|=n$ generano $n^2$ sottoistanze, possono essere salvate in un array \emph{bi}dimensionale, $n^3$ \emph{tri}dimensionale e così via).
 
 \subsection{Paradigma generale}
 
@@ -231,7 +231,8 @@ Presentiamo un paradigma generale per la programmazione dinamica, enumerando i p
         \end{enumerate}
 \end{enumerate}
 
-I punti \ref{enum:pd2}, \ref{enum:pd4} sono necessari solo quando si è interessati anche alla soluzione ottima, mentre \ref{enum:pd1}, \ref{enum:pd3} sono sufficienti per ricavare il costo della soluzione ottima.
+I punti \ref{enum:pd1}, \ref{enum:pd3} sono sufficienti per ricavare il costo della soluzione ottima,
+mentre i punti \ref{enum:pd2}, \ref{enum:pd4} sono necessari quando si è interessati anche al valore della soluzione ottima.
 
 \section{Ricerca della \emph{Longest Common Subsequence}}
 
@@ -384,7 +385,7 @@ Lo spazio dei sottoproblemi è $\left\{ \left( X_i, Y_j \right), \: 0 \leq i \le
 
 Formalizzando la proprietà di sottostruttura ottima risulta:
 
-\begin{lemma}[Proprietà di sottostruttura ottima]
+\begin{lemma}[Proprietà di sottostruttura ottima per la \emph{Longest Common Subsequence}]
     Per un generico sottoproblema $\left( X_i, Y_j \right), \: 0 \leq i \leq m, \: 0 \leq j \leq n$ sia 
     $ Z^* = < z_1, \cdots, z_k > = LCS\left( X_i,Y_j \right)$ allora:
     \begin{enumerate}
@@ -534,6 +535,7 @@ Essendo una funzione monotona
 \end{align*}
 Seguendo il paradigma \emph{D\&C} anche solo calcolare il costo della souzione ottima è esponenziale.
 
+\subsection{Implementazione dell'algoritmo \emph{LCS} iterativo}
 Per applicare il paradigma del \emph{Dynamic Programming}, occorre individuare la minima informazione addizionale per ricostruire la soluzione ottima.
 In un vettore bidimensionale si può salvare quale caso è successo, memorizzando uno di tre simboli:
 \begin{equation*}
@@ -577,19 +579,27 @@ L'algoritmo iterativo per trovare la sottosequenza comune tra due stringhe risul
     \Procedure{LCS}{$X,Y$}
         \State $m \gets |X|$
         \State $n \gets |Y|$
-        \For{$i \gets 0 $ to $ m $ }                    \Comment{Caso base prima colonna}
+        \For{$i \gets 0 $ to $ m $ }
+            % \Comment{Caso base prima colonna}
+            \label{alg:lcsit:cbc}
             \State $L[i,0] \gets 0$
         \EndFor
-        \For{$j \gets 1 $ to $ n $ }                    \Comment{Caso base prima riga}
+        \For{$j \gets 1 $ to $ n $ }
+            % \Comment{Caso base prima riga}
+            \label{alg:lcsit:cbr}
             \State $L[0,j] \gets 0$
         \EndFor
         \For{$i \gets 1 $ to $ m $ }
-            \For{$j \gets 1 $ to $ n $ }                \Comment{L'indice interno è di colonna}
-                \If{$x_i = y_j$}\label{alg:lcsit:c1}
+            \For{$j \gets 1 $ to $ n $ }
+                % \Comment{L'indice interno è di colonna}
+                \label{alg:lcsit:colmaj}
+                \If{$x_i = y_j$}
+                \label{alg:lcsit:c1}
                     \State $L[i,j] \gets 1 + L[i-1,j-1]$
                     \State $B[i,j] \gets ` \nwarrow \textrm{'}$
                 \Else
-                    \If{$L[i-1,j] \geq L[i,j-1]$}\label{alg:lcsit:c2}
+                    \If{$L[i-1,j] \geq L[i,j-1]$}
+                    \label{alg:lcsit:c2}
                         \State $L[i,j] \gets L[i-1,j]$
                         \State $B[i,j] \gets ` \uparrow \textrm{'}$
                     \Else
@@ -604,11 +614,80 @@ L'algoritmo iterativo per trovare la sottosequenza comune tra due stringhe risul
 \end{algorithmic}
 \end{algorithm}
 
+Dove alle righe \ref{alg:lcsit:cbc} e \ref{alg:lcsit:cbr} si sta inizializzando il caso di base, e alla riga \ref{alg:lcsit:colmaj} la tabella sta venendo popolata secondo una scansione \emph{row-major}, in quanto l'indice interno è quello di colonna.
+
 Nel calcolo della complessità dell'algoritmo, il confronto alla riga \ref{alg:lcsit:c1} è tra elementi della stringa, quindi viene considerato costoso, mentre quello alla riga \ref{alg:lcsit:c2} è tra interi, e si può trascurare. Si conta un confronto per iterazione del ciclo interno, per un totale di 
 \begin{equation*}
     T_{LCS} = mn
 \end{equation*}
-I sottoproblemi utili al calcolo della soluzione sono in realtà molto meno, utilizzando la versione memoizzata dell'algoritmo
+In realtà i sottoproblemi utili al calcolo della soluzione sono ancora meno, ed utilizzando la versione memoizzata dell'algoritmo \emph{D\&C}, solo i sottoproblemi necessari vengono calcolati, al prezzo di utilizzare un algoritmo ricorsivo, con il suo \emph{overhead} per le chiamate (e.g. \textit{call stack}).
+
+Una volta che si ha a disposizione $B$, stampare la sottosequenza comune è semplice:
+\begin{algorithm}[H]
+\caption{Stampa della \emph{Longest Common Subsequence}}\label{alg:lcsprint}
+\begin{algorithmic}[1]
+    \Procedure{PRINT\_LCS}{$B,i,j,X$}
+        \If{$\left( i=0 \right) \vee \left( j=0 \right)$}
+            \State return
+        \EndIf
+        \If {$B[i,j] = ` \nwarrow \textrm{'}$ }
+            \State \Call{PRINT\_LCS}{$B,i-1,j-1,X$}
+            \State print$\left( x_i \right)$ 
+        \Else
+            \If {$B[i,j] = ` \leftarrow \textrm{'}$ }
+                \State \Call{PRINT\_LCS}{$B,i,j-1,X$}
+            \Else
+                \State \Call{PRINT\_LCS}{$B,i-1,j,X$}
+            \EndIf
+        \EndIf
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Implementazione dell'algoritmo \emph{LCS} memoizzto}
+\begin{algorithm}[H]
+\caption{\emph{Longest Common Subsequence}}\label{alg:lcsmem}
+\begin{algorithmic}[1]
+    \Procedure{INIT\_LCS}{$X,Y$}
+        \State $m \gets |X|$
+        \State $n \gets |Y|$
+        \If{$\left( m=0 \right) \vee \left( n=0 \right)$}
+            \State return $0$
+        \EndIf
+        \For{$i \gets 0 $ to $ m $ }
+            \State $L[i,0] \gets 0$
+        \EndFor
+        \For{$j \gets 1 $ to $ n $ }
+            \State $L[0,j] \gets 0$
+        \EndFor
+        \For{$i \gets 1 $ to $ m $ }
+            \For{$j \gets 1 $ to $ n $ }
+                \State $L[i,j] \gets -1$
+            \EndFor
+        \EndFor
+        \State return \Call{REC\_LCS}{$X,Y,m,n$}
+    \EndProcedure
+    \Procedure{REC\_LCS}{$X,Y, i,j$}
+        \If{$L[i,j]=-1$}
+            \If{$x_i = y_j$}
+                \State $L[i,j] \gets 1 + \Call{REC\_LCS}{X,Y,i-1,j-1}$
+            \Else
+                \If{$\Call{REC\_LCS}{X,Y,i,j-1} \geq \Call{REC\_LCS}{X,Y,i-1,j}$}
+                \label{alg:lcsmem:c1}
+                    \State $L[i,j] \gets L[i-1,j]$
+                \Else
+                    \State $L[i,j] \gets L[i,j-1]$
+                \EndIf
+            \EndIf
+        \EndIf
+        \State return $L[i,j]$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Notiamo che dopo la riga \ref{alg:lcsmem:c1} gli elementi $L[i-1,j]$ e $L[i,j-1]$ sono inizializzati, e possono essere assegnati senza problemi.
+
+Nel caso peggiore l'algoritmo fa un confronto per ogni coppia di prefissi, quando trova il default. La complessità migliora quando le stringhe sono simili. Se una delle due è, sottostringa dell'altra, la complessità è lineare.
 
 \subsection{autocomplete}
 Una bella scatola:
