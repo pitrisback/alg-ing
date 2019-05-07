@@ -41,7 +41,7 @@ che risulta limitata inferiormente da un esponenziale, infatti per $n>1$
     & \geq \, 2 T_{RF}(n-2) + 1 \\
     & \geq \, 2^2 T_{RF}(n-2-2) + 2 + 1 \\
     & \geq \, 2^i T_{RF}(n-2i) + \sum_{j=0}^{i-1} 2^j \\
-    \intertext{che raggiunge il caso base quando $n-2i=0$ o $n-2i=1$ per $i= \left\lfloor n/2 \right\rfloor $ sia nel caso di $n$ pari sia nel caso di $n$ dispari}
+    \intertext{che raggiunge il caso base quando $n-2i=0$ o $n-2i=1$, ossia per $i= \left\lfloor n/2 \right\rfloor $ sia nel caso di $n$ pari sia nel caso di $n$ dispari}
     & \geq \, 2^{\left\lfloor n/2 \right\rfloor} \cancel{ T_{RF}(0 \text{ o } 1)}
     + \sum_{j=0}^{\left\lfloor n/2 \right\rfloor -1} 2^j \\
     &= 2^{\left\lfloor n/2 \right\rfloor} -1 \\
@@ -70,6 +70,8 @@ Il sugo della storia è che viene calcolata un numero molto elevato di volte la 
 \noindent
 dove le soluzioni intermedie sono salvate in $F$. In realtà sarebbe sufficiente memorizzare solo gli ultimi due valori della sequenza.
 
+La complessità di questo algoritmo è lineare: $T_{IF}(n) = \Theta \left( n \right)$.
+
 Si può quindi introdurre il paradigma del \emph{Dynamic Programming}, basandosi su queste osservazioni.
 
 \subsection{Paradigma del \emph{Dynamic Programming}}
@@ -91,7 +93,7 @@ Il vantaggi sono una maggiore velocità dovuta al non replicare la computazione,
 
 Un algoritmo memoizzato è costituito da due subroutine:
 \begin{enumerate}
-    \item \textbf{Routine di inizializzazione} INIT\_\{AlgName\}
+    \item \textbf{Routine di inizializzazione} INIT\_\{NomeAlg\}
         \begin{itemize}
             \item risolve i casi di base direttamente
             \item inizializza una struttura tabellare \emph{globale} con
@@ -101,7 +103,7 @@ Un algoritmo memoizzato è costituito da due subroutine:
                 \end{itemize}
             \item invoca la seconda procedura (ricorsiva) \\ % FORMATTA
         \end{itemize}
-    \item \textbf{Routine ricorsiva} REC\_\{AlgName\}($i$)
+    \item \textbf{Routine ricorsiva} REC\_\{NomeAlg\}($i$)
         \begin{itemize}
             \item controlla sulla tabella per vedere se l'istanza $i$ è già stata risolta
                 \begin{itemize}
@@ -687,9 +689,340 @@ Una volta che si ha a disposizione $B$, stampare la sottosequenza comune è semp
 
 Notiamo che dopo la riga \ref{alg:lcsmem:c1} gli elementi $L[i-1,j]$ e $L[i,j-1]$ sono inizializzati, e possono essere assegnati senza problemi.
 
-Nel caso peggiore l'algoritmo fa un confronto per ogni coppia di prefissi, quando trova il default. La complessità migliora quando le stringhe sono simili. Se una delle due è, sottostringa dell'altra, la complessità è lineare.
+Nel caso peggiore l'algoritmo fa un confronto per ogni coppia di prefissi, quando trova il default. La complessità migliora quando le stringhe sono simili. Se una delle due è sottostringa dell'altra, la complessità è lineare.
 
-\subsection{autocomplete}
+
+\section{\emph{Matrix Chain Multiplication}}
+
+\subsection{Definizione del problema}
+
+La moltiplicazione tra matrici è definita anche fra matrici rettangolari, a patto che il numero di colonne della matrice sinistra sia pari al numero di righe della matrice destra.
+\begin{equation*}
+\begingroup
+\setlength{\arraycolsep}{2pt} % horizontal
+\renewcommand{\arraystretch}{0.5} % vertical spacing
+    \begin{array}[h]{ccccccccccc}
+          & A &   & \times &   & B &   & = &   & C & \\%[-4pt]
+        m &   & n &        & n &   & p &   & m &   & p
+    \end{array}
+\endgroup
+\end{equation*}
+
+L'algoritmo per moltiplicare matrici quadrate viene modificato lievemente:
+\begin{algorithm}[H]
+\caption{Prodotto di matrici rettangolari}\label{alg:mulret}
+\begin{algorithmic}[1]
+\Procedure{RECT\_MUL}{$A,B$}
+    \State $m \gets A.rows$
+    \State $n \gets A.cols$
+    \State $p \gets B.rows$
+    \For{$i \gets 1 $ to $ m $ }
+        \For{$j \gets 1 $ to $ p $ }
+            \State $c_{i,j} \gets 0$
+            \For{$k \gets 1 $ to $ n $ }
+                \State $c_{i,j} \gets c_{i,j} + a_{i,k} \cdot b_{k,j} $
+            \EndFor
+        \EndFor
+    \EndFor
+    \State return $C$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+La complessità risulta una funzione di tre parametri
+\begin{equation*}
+    T\left( m,n,p \right) = mnp
+\end{equation*}
+
+La moltiplicazione si generalizza a catene di matrici, sempre mantendo la compatibilità tra le dimensioni
+\begin{equation*}
+\begingroup
+\setlength{\arraycolsep}{2pt} % horizontal
+\renewcommand{\arraystretch}{0.5} % vertical spacing
+    \begin{array}[h]{ccccccccccccc}
+            & A_1 &     & A_2 &     & \cdots &         & A_i &     & \cdots &         & A_n &   \\%[-4pt]
+        p_0 &     & p_1 &     & p_2 &        & p_{i-1} &     & p_i &        & p_{n-1} &     & p_n
+    \end{array}
+\endgroup
+\end{equation*}
+La catena di moltiplicazioni può quindi essere rappresentata da un array di $n+1$ dimensioni (massime) distinte
+\begin{equation*}
+    \vec{p} \in \left( \mathbb{N}^+ \right)^{n+1}
+\end{equation*}
+La moltiplicazione \emph{non} è commutativa, ma è associativa. Questo comporta una certa libertà nell'ordine con cui si effettuano le moltiplicazioni, che influisce molto sul numero totale di prodotti tra elementi da eseguire. Per esempio
+\begin{equation*}
+\begingroup
+\setlength{\arraycolsep}{2pt} % horizontal
+\renewcommand{\arraystretch}{0.5} % vertical spacing
+    \begin{array}[h]{ccccccc}
+           & A_1 &     & A_2 &   & A_3 &   \\  
+        10 &     & 100 &     & 5 &     & 50
+    \end{array}
+\endgroup
+\end{equation*}
+può essere svolta nei seguenti modi 
+\begin{equation*}
+\left( \left( A_1 A_2 \right) A_3 \right)
+\quad
+\text{o}
+\quad
+\left( A_1 \left( A_2 A_3 \right) \right)
+\end{equation*}
+che risultano nei seguenti passi intermedi
+\begin{equation*}
+\begingroup
+\setlength{\arraycolsep}{2pt} % horizontal
+\renewcommand{\arraystretch}{0.5} % vertical spacing
+    \begin{array}[h]{ccccccc}
+           & A_{1,2} &   & A_3 &   \\  
+        10 &         & 5 &     & 50
+    \end{array}
+\quad
+\text{o}
+\quad
+    \begin{array}[h]{ccccccc}
+           & A_{1} &     & A_{2,3} &   \\  
+        10 &       & 100 &         & 50
+    \end{array}
+\endgroup
+\end{equation*}
+Nel primo caso però il numero di operazioni richieste è $10 * 100 * 5 + 10 * 5 * 50 = 7500$
+mentre nel secondo è $100 * 5 * 50 + 10 * 100 * 50 = 75000$. Una buona parentesizzazione permette quindi di risparmiare un gran numero di operazioni.
+
+\subsection{Proprietà di sottostruttura ottima}
+
+Ad ogni parentesizzazione è associato un albero binario pieno, con $n$ foglie e $n-1$ nodi interni. Il numero di parentesizzazioni è quindi pari al numero di possibili alberi, ossia $\Theta \left( 4^n / n^{3/2} \right)$.
+Risolvere il problema per enumerazione è chiaramente impraticabile.
+
+TODO albero parentesizzazione esempio, pag 70
+
+Il problema della \emph{Matrix Chain Multiplication} può essere quindi riscritto come:
+\\
+\textbf{Ingresso:} $ \vec{p} \in \left( \mathbb{N}^+ \right)^{n+1} $
+\\
+\textbf{Uscita:} $T^*$ parentesizzazione ottima
+
+TODO albero parentesizzazione binaria, pag 70.5
+
+Si nota che la parentesizzazione $T^*$ è composta da un nodo radice (che rappresenta una moltiplicazione) e due sottoalberi, anch'essi alberi binari pieni, che sono parentesizzazioni di catene più corte di matrici contigue. Si può quindi intuire la presenza di una proprietà di sottostruttura, di cui si dimostra la correttezza e l'ottimalità.
+
+Si supponga di stare analizzando il sottoproblema generico $A_{i..j}$, con associata la parentesizzazione $T_{i..j}^{*}$, ossia la moltiplicazione ottima di $A_i, A_{i+1},\ldots, A_j$ per $1 \leq i \leq j \leq n$.
+\\
+Nel caso base $i=j$ la catena ha una sola matrice, $A_{i..j} = A_i$ e l'albero è composto dal solo nodo radice.
+\\
+Per il caso non di base $i<j$, si supponga di conoscere la parentesizzazione ottima
+$T_{i..j}^*$
+e ne si analizzi la struttura. L'albero è composto dal nodo radice e da due sottoalberi, 
+$T_{i.. \bar{k}}$
+e
+$T_{\bar{k}+1..j}$
+, con $i \leq \bar{k} < j$. Va dimostrata l'ottimalità delle sottoistanze, ossia
+$T_{i.. \bar{k}} = T_{i.. \bar{k}}^*$ e 
+$T_{\bar{k}+1..j} = T_{\bar{k}+1..j}^*$.
+Mettendo in relazione il costo di $T_{i..j}^*$ con i costi di $T_{i.. \bar{k}}$ e $T_{\bar{k}+1..j}$, si ottiene:
+\begin{equation*}
+    c \left( 
+T_{i..j}^*
+    \right)
+    =
+    c \left( 
+T_{i.. \bar{k}}
+    \right)
+    +
+    c \left( 
+T_{\bar{k}+1..j}
+    \right)
+    + p_{i-1} \: p_{\bar{k}} \: p_j
+\end{equation*}
+L'ottimalità dei sottoproblemi si dimostra per \emph{cut and paste}: se per assurdo $ T_{i.. \bar{k}} $ non fosse la parentesizzazione ottima di $A_{i..\bar{k}}$, si potrebbe sostituire il sottoalbero con quello ottimo. Ma in questo modo il costo di $ T_{i..j}^* $ diminuirebbe, che è un assurdo perché è la soluzione ottima di $A_{i..j}$.
+\\
+Il valore di $\bar{k}$ che minimizza il costo si ricava come
+\begin{equation*}
+    \bar{k}
+    =
+    \argmin_{1 \leq \bar{k} < j}
+    \left\{ 
+    c \left( 
+    T_{i.. \bar{k}}^*
+    \right)
+    +
+    c \left( 
+    T_{\bar{k}+1..j}^*
+    \right)
+    + p_{i-1} \: p_{\bar{k}} \: p_j
+    \right\}
+\end{equation*}
+Scrivendo il costo della soluzione come $m(i,j) = c\left( T_{i..j}^* \right)$ si ottiene:
+\begin{equation*}
+    m(i,j)
+    =
+    \begin{cases}
+    0 & i=j \\    
+    \displaystyle\min_{1 \leq \bar{k} < j}
+    \left\{ 
+    m(i, \bar{k})
+    +
+    m(\bar{k}+1,j)
+    + p_{i-1} \: p_{\bar{k}} \: p_j
+    \right\}
+    & i \neq j
+    \end{cases}
+\end{equation*}
+mentre per l'informazione addizionale per ricostruire la soluzione è sufficiente memorizzare il punto dove si spezza l'albero:
+\begin{equation*}
+    S(i,j)
+    =
+    \bar{k} =
+    \displaystyle\argmin_{1 \leq \bar{k} < j}
+    \left\{ 
+    m(i, \bar{k})
+    +
+    m(\bar{k}+1,j)
+    + p_{i-1} \: p_{\bar{k}} \: p_j
+    \right\}
+\end{equation*}
+La presenza di problemi ripetuti si verifica facilmente: l'istanza $(1,4)$ genera, nel momento dell'accumulazione del massimo:
+per $k=1$ i problemi $(1,1)$ e $(2,4)$,
+per $k=2$ i problemi $(1,2)$ e $(3,4)$,
+per $k=3$ i problemi $(1,3)$ e $(4,4)$.
+Il sottoproblema $(2,4)$ a sua volta genera le coppie di sottoproblemi 
+$(2,2)$ e $(3,4)$,
+$(2,3)$ e $(4,4)$,
+per cui si nota già la ripetizione dell'istanza $(3,4)$.
+L'approccio con la programmazione dinamica al problema può quindi migliorare l'efficienza rispetto al \emph{D\&C}.
+
+\subsection{Implementazione dell'algoritmo \emph{MCM} iterativo}
+
+L'ultimo problema da risolvere per poter implementare l'algoritmo in maniera \emph{bottom-up} è stabilire l'ordine di risoluzione delle sottoistanze.
+Osservando la matrice dei costi $m[1..n, 1..n]$ \ref{eq:mcmmatcosti}, si nota che i casi base $i=j$ sono lungo la diagonale principale, e i casi non di base $i<j$ sono nella parte superiore della matrice.
+Supponendo di star calcolando $m(i,j)$, i sottoproblemi che è necessario avere a disposizione sono: per la parte $m(i,k)$, quando $k=i$, il problema è sulla diagonale principale, e per valori crescenti di $k$, i problemi sono sulla riga $i$. Per l'addendo $m(k+1,j)$, quando $k=i$ è necessario il problema subito sotto, ossia $m(i+1,j)$, e per i successivi valori di $k$ devono essere a disposizione i valori sulla colonna $j$, fino ad arrivare alla diagonale principale. Le frecce indicano valori crescenti di $k$.
+\begin{equation}
+    \left[ 
+        \begin{array}[H]{ccccccc}
+            0 & & & & & & \\
+            & 0 & & & & & \\
+            & & i,i & i+1,i & \rightarrow & i,j & \\
+            & & & 0 & & i+1,j & \\
+            & & & & 0 & \downarrow & \\
+            & & & & & j,j & \\
+            & & & & & & 0\\
+        \end{array}
+    \right]
+    \label{eq:mcmmatcosti}
+\end{equation}
+Procedendo per diagonali parallele alla principale, e riducendone la dimensione fino ad arrivare all'angolo, si possono calcolare gli elementi in un ordine coerente.
+L'equazione di una generica diagonale è $l'=j'-i'+1$, che per $l'=1$ risulta la diagonale principale: $1=j'-i'+1 \rightarrow i'=j'$.
+Il primo indice di iterazione sarà quindi $l$ crescente da $1$ a $n$. Fissato un generico $l$, gli indici della diagonale generica risultano
+$(1,l)$, $(2,l+1)$ e così via, in generale: $(\bar{i}, \bar{i}+l-1)$. L'ultimo elemento viene raggiunto per $\bar{i}+l-1=n \rightarrow \bar{i}=n-l+1$.
+Il valore di $\bar{j}$ discende da $l$ ed $\bar{i}$.
+
+L'algoritmo per calcolare la parentesizzazione ottima di una catena di matrici risulta
+\begin{algorithm}[H]
+\caption{\emph{Matrix Chain Multiplication}}\label{alg:mcmit}
+\begin{algorithmic}[1]
+\Procedure{MCM}{$\vec{p}$}
+    \State $n \gets \vec{p}.len$
+    \For{$i \gets 1 $ to $ n $ }
+        \State $m[i,i] \gets 0$
+    \EndFor
+    \For{$l \gets 2 $ to $ n $ }
+        \For{$i \gets 2 $ to $ n-l+1 $ }
+            \State $m[i,j] \gets +\infty$
+            \label{alg:mcmit:initmij}
+            \State $j \gets i+l-1$
+            \For{$k \gets i $ to $ j-1 $ }
+                \State $q \gets m[i,k]+m[k+1,j]+ p_{i-1} \, p_k \, p_j$
+                \If{$q < m[i,j]$}
+                    \State $m[i,j] \gets q$
+                    \State $S[i,j] \gets k$
+                \EndIf
+            \EndFor
+        \EndFor
+    \EndFor
+    \State return $m[1,n]$, $\vec{S}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Anche scorrendo la matrice secondo il \emph{reversed column major} gli elemento vengono visitati in ordine corretto:
+\begin{algorithmic}[1]
+    \For{$i \gets 1 $ to $ n $ }
+        \For{$j \gets i $ down to $ 1 $ }
+        \EndFor
+    \EndFor
+\end{algorithmic}
+
+La complessità dell'algoritmo risulta:
+\begin{align*}
+    T_{MCM}(n) 
+    &= \sum_{l=2}^{n} \sum_{i=1}^{n-l+1} \sum_{k=i}^{i+l-2} 2
+    & i+l-2-i+1 = l-1 &\\
+    &= \sum_{l=2}^{n} \sum_{i=1}^{n-l+1} 2 (l-1)
+    & n-l+1-1+1 = n-l+1 &\\
+    &= 2 \sum_{l=2}^{n} (l-1) (n-l+1)
+    & l'=l-1 &\\
+    &= 2 \sum_{l'=1}^{n-1} l' (n-l')
+    \\
+    &= 2 \left[ n \sum_{l'=1}^{n-1} l' - \sum_{l'=1}^{n-1} (l')^2\right]
+    \labeq{A}
+    \\
+    &= 2 \left[ n \frac{n(n-1)}{2} - \frac{(n-1)n(2n-1)}{6}\right]
+    \\
+    &= n(n-1) \left[ n - \frac{2n-1}{3}\right]
+    \\
+    &= \frac{n(n-1)(n+1)}{3}
+    \\
+    &= \Theta \left( n^3 \right)
+\end{align*}
+Dove in $\labeq{A}$ è stata usata, istanziandola per $n-1$,
+\begin{equation*}
+    \sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}
+\end{equation*}
+
+Avendo a disposizione $S$, scrivere la parentesizzazione è semplice, osservando che
+\begin{equation*}
+    str\left( T_{i..j}^* \right) = < `(\textrm{'} , 
+    str\left( T_{i..k}^* \right) ,
+    str\left( T_{k+1..j}^* \right)
+    , `)\textrm{'} > 
+\end{equation*}
+con $str\left( T_{i..i}^* \right) = `A_i\textrm{'} $ 
+\begin{algorithm}[H]
+\caption{\emph{Stampa della parentesizzazione}}\label{alg:mcmprint}
+\begin{algorithmic}[1]
+\Procedure{PRINT\_P}{$i,j,\vec{S}$}
+    \If{$i = j$}
+        \State \Call{print}{$`A_i\textrm{'}$}
+        \State return
+    \EndIf
+    \State \Call{print}{`(\textrm{'}}
+    \State \Call{PRINT\_P}{$i, S[i,j], \vec{S}$}
+    \State \Call{PRINT\_P}{$S[i,j]+1, j, \vec{S}$}
+    \State \Call{print}{`)\textrm{'}}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+Il costo della stampa si misura nel numero di caratteri che vengono stampati: essendo la parentesizzazione un albero pieno con $n$ foglie e $n-1$ nodi interni, contando due parentesi per nodo, verranno stampati $n+2(n-1) = \Theta(n)$ caratteri.
+
+L'algoritmo \ref{alg:mcmit} viene utilizzato nel calcolo effettivo di una catena di moltiplicazioni tra matrici compatibili $\vec{A}=\left( A_1, \dots, A_n \right)$, descritta da $\vec{p}$, nel seguente modo, strutturato in maniera simile al PRINT\_P, utilizzando anche RECT\_MUL (\ref{alg:mulret}):
+\begin{algorithm}[H]
+\caption{\emph{Moltiplicazione ottima di matrici rettangolari}}\label{alg:mcmmul}
+\begin{algorithmic}[1]
+    \State $m, \vec{S} \gets \Call{MCM}{\vec{p}}$
+    \Procedure{MCM\_MUL}{$\vec{A},\vec{S},i,j$}
+    \If{$i = j$}
+        \State return $A_i$
+    \EndIf
+    \State \Call{MCM\_MUL}{$\vec{A},\vec{S},i, S[i,j]$}
+    \State \Call{MCM\_MUL}{$\vec{A},\vec{S},S[i,j]+1,j$}
+    \State return \Call{RECT\_MUL}{$X,Y$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+Il costo sarà proprio $m$, calcolato in MCM.
+
+% \subsection{autocomplete}
+Snippet di \LaTeX{} che tornano spesso utili
+
 Una bella scatola:
 \begin{equation}
     \boxed{x^2+y^2 = z^2}
@@ -707,20 +1040,27 @@ Sotto numeri
     2^4 
 \end{subnumcases}
 
+Liste compatte
 \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
     \item qualcosa
     \item[+] qualcosa
     \item[*] qualcosa
     \item[--] qualcosa
 \end{itemize}
-àg
-èg
-ìg
-òg
-ùg
-perché
 
-delirio di vim se scrivi \verb|<C-k>`e| o \verb|<C-k>e`| in insert mode mette una è
+Parole in libertà per l'autocomplete: 
+à
+è
+ì
+ò
+ù
+perché
+così
+sì
+può
+più
+
+Viva vim se scrivi \verb|<C-k>`e| o \verb|<C-k>e`| in insert mode mette una è
 
 % delirio doppio di vim se scrivi \verb|<C-k>da| in insert mode mette ``Hiragana letter DA'' che purtroppo non posso mostrarvi %だ
 % insomma i digraph sono tanti e belli

@@ -51,14 +51,14 @@ La moltiplicazione tra matrici è definita secondo il prodotto righe per colonne
 \begin{algorithmic}[1]
 \Procedure{MUL}{$A,B$}
     \State $n \gets A.rows$
-        \For{$i \gets 1 $ to $ n $ }
-            \For{$j \gets 1 $ to $ n $ }
-                \State $c_{i,j} \gets a_{i,j} \cdot b_{i,j} $
-                \For{$k \gets 2 $ to $ n $ }
-                \State $c_{i,j} \gets c_{i,j} + a_{i,j} \cdot b_{i,j} $
-                \EndFor
+    \For{$i \gets 1 $ to $ n $ }
+        \For{$j \gets 1 $ to $ n $ }
+            \State $c_{i,j} \gets a_{i,1} \cdot b_{1,j} $
+            \For{$k \gets 2 $ to $ n $ }
+                \State $c_{i,j} \gets c_{i,j} + a_{i,k} \cdot b_{k,j} $
             \EndFor
         \EndFor
+    \EndFor
     \State return $C$
 \EndProcedure
 \end{algorithmic}
