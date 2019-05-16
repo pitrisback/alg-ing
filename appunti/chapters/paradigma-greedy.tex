@@ -1,0 +1,90 @@
+\section{Paradigma \emph{Greedy}}
+
+\subsection{Introduzione}
+
+Il problema del memorylessness del paradigma \emph{Divide and Conquer} è stato risolto utilizzando il paradigma del \emph{Dynamic Programming}. Risolvendo un problema con la programmazione dinamica, però, la soluzione viene costruita componendo le soluzioni di sottoistanze, scegliendo di volta in volta la sottosoluzione migliore. Questa scelta può avvenire solo dopo aver calcolato \emph{tutte} le soluzioni alle sottoistanze.
+
+Il paradigma \emph{Greedy} seleziona ad ogni iterazione la scelta più promettente, e calcola la soluzione alla sottoistanza relativa \emph{solo} a quella scelta.
+
+Occorre dimostrare che la scelta non comprometta l'ottimalità della soluzione.
+
+\subsection{Definizione}
+
+Il paradigma \emph{Greedy} agisce in tre passi:
+\begin{enumerate}
+    \item Scelta \emph{Greedy}: compie una scelta che sembra essere quella più promettente, localmente ottima, che non comprometta la soluzione: la soluzione ottima conterrà quella scelta.
+    \item \emph{Clean up}: l'istanza viene ripulita, in accordo con la scelta effettuata.
+    \item \emph{Tail recursion}: viene risolta l'\emph{unica} istanza generata, come ultimo comando della funzione. Questo tipo di ricorsione può sempre essere scritto in maniera iterativa.
+\end{enumerate}
+
+\subsection{autocomplete}
+Snippet di \LaTeX{} che tornano spesso utili
+
+Una bella scatola:
+\begin{equation}
+    \boxed{x^2+y^2 = z^2}
+\end{equation}
+
+Numeri nei casi
+\begin{numcases}{T(n)=}
+    2^3 \label{escaso1} \\
+    2^4 \label{escaso2} 
+\end{numcases}
+
+Sotto numeri
+\begin{subnumcases}{T(n)=}
+    2^3 \label{escaso3} \\
+    2^4 
+\end{subnumcases}
+
+Liste compatte
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item qualcosa
+    \item[+] qualcosa
+    \item[*] qualcosa
+    \item[--] qualcosa
+\end{itemize}
+
+Parole in libertà per l'autocomplete: 
+à
+è
+ì
+ò
+ù
+perché
+così
+sì
+può
+più
+
+Viva vim se scrivi \verb|<C-k>`e| o \verb|<C-k>e`| in insert mode mette una è
+
+% delirio doppio di vim se scrivi \verb|<C-k>da| in insert mode mette ``Hiragana letter DA'' che purtroppo non posso mostrarvi %だ
+% insomma i digraph sono tanti e belli
+
+Spazietti fra equazioni
+\begin{equation*}
+    A^{[0]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j}x^j
+    \quad \text{ e } \quad
+    A^{[1]}(x) = \sum_{j=0}^{\frac{n}{2}-1} a_{2j+1}x^j
+\end{equation*}
+
+Un gustoso algoritmo
+\begin{algorithm}[H]
+\caption{Divide and Conquer}\label{alg:dncmock}
+\begin{algorithmic}[1]
+    \Procedure{D\&C}{$i$}
+        \If{$|i| \leq n_0$}                             \Comment{BASE}
+            \State *risolvo direttamente*
+        \EndIf
+        \State $<i_1, i_2, \dots, i_k> \gets A_D(i)$    \Comment{DIVIDE}
+        \For{$j \gets 1 $ to $ k $ }                    \Comment{RECURSE}
+            \State $s_j \gets $ \Call{D\&C}{$i_j$}
+        \EndFor
+        \State $s \gets A_C(<s_1, s_2, \dots, s_k>)$    \Comment{CONQUER}
+        \State return $s$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
