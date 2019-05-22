@@ -17,6 +17,25 @@ Il paradigma \emph{Greedy} agisce in tre passi:
     \item \emph{Tail recursion}: viene risolta l'\emph{unica} istanza generata, come ultimo comando della funzione. Questo tipo di ricorsione può sempre essere scritto in maniera iterativa.
 \end{enumerate}
 
+TODO pag 75.8 due prop da dimostrare
+
+\section{Selezione di attività}
+Un problema che si presta ad essere risolto con il paradigma \emph{Greedy} è la selezione di attività. Data una risorsa condivisa e un insieme di attività che la utilizzano, come si può selezionare il massimo numero di attività compatibili? Formalmente si definiscono:
+\begin{itemize}
+    \item[--] Risorsa condivisa
+    \item[--] Insieme di attività $S = \left\{ a_1, \cdots, a_n \right\}$ con $a_i = [s_i, f_i)$
+    \item[--] Attività compatibili: $a_i$ è compatibile con $a_j$ se
+        $[s_i, f_i) \cap [s_j, f_j) = \emptyset$
+        o
+        $(f_i \leq s_j ) \vee (f_j \leq s_i)$
+\end{itemize}
+L'obiettivo è determinare il sottoinsieme $S^* \subseteq S$ di attività mutualmente compatibili (intervalli a coppie disgiunti) di cardinalità massima.
+
+Senza perdita di generalità, si può assumere che le attività siano ordinate per tempo di fine non decrescente:
+$f_1 \leq f_2 \leq \cdots \leq f_n$
+
+L'intuizione è di selezionare di volta in volta l'istanza che finisce prima, in modo da lasciare il più tempo possibile \emph{compatto} per selezionare le altre. Nella fase di \emph{clean-up}, si scorrono le attività in ordine, eliminando quelle non compatibili. È sufficiente fermarsi alla prima istanza compatibile che si trova: 
+
 \subsection{autocomplete}
 Snippet di \LaTeX{} che tornano spesso utili
 
