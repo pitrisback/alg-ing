@@ -17,7 +17,12 @@ Il paradigma \emph{Greedy} agisce in tre passi:
     \item \emph{Tail recursion}: viene risolta l'\emph{unica} istanza generata, come ultimo comando della funzione. Questo tipo di ricorsione può sempre essere scritto in maniera iterativa.
 \end{enumerate}
 
-TODO pag 75.8 due prop da dimostrare
+Vanno quindi dimostrate due proprietà:
+\begin{enumerate}
+    \item la scelta \emph{Greedy} (SG) non compromette l'ottimalità della soluzione locale: \\
+        $\exists S^*$ che contiene la scelta \emph{Greedy}
+    \item $\exists S^*$ che, oltre alla scelta \emph{Greedy}, contiene la soluzione della sottoistanza ottenuta dal \emph{clean up}, detta sottoistanza residua
+\end{enumerate}
 
 \section{Selezione di attività}
 Un problema che si presta ad essere risolto con il paradigma \emph{Greedy} è la selezione di attività. Data una risorsa condivisa e un insieme di attività che la utilizzano, come si può selezionare il massimo numero di attività compatibili? Formalmente si definiscono:
