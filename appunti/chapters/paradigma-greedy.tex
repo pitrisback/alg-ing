@@ -39,7 +39,51 @@ L'obiettivo è determinare il sottoinsieme $S^* \subseteq S$ di attività mutual
 Senza perdita di generalità, si può assumere che le attività siano ordinate per tempo di fine non decrescente:
 $f_1 \leq f_2 \leq \cdots \leq f_n$
 
-L'intuizione è di selezionare di volta in volta l'istanza che finisce prima, in modo da lasciare il più tempo possibile \emph{compatto} per selezionare le altre. Nella fase di \emph{clean-up}, si scorrono le attività in ordine, eliminando quelle non compatibili. È sufficiente fermarsi alla prima istanza compatibile che si trova: 
+L'intuizione è di selezionare di volta in volta l'istanza che finisce prima, in modo da lasciare il più tempo possibile \emph{compatto} per selezionare le altre. Nella fase di \emph{clean-up}, si scorrono le attività in ordine, eliminando quelle non compatibili. È sufficiente fermarsi alla prima istanza compatibile che si trova: successive istanze che non sono compatibili con quella selezionata, non saranno compatibili neppure con quella trovata per prima, e saranno eliminate successivamente.
+
+\begin{algorithm}[H]
+\caption{Selezione di attività, implementazione ricorsiva}\label{alg:asrec}
+\begin{algorithmic}[1]
+    \Procedure{REC\_AS}{$\vec{s}, \vec{f}, g$}
+        \State $n \gets \vec{s}.len$
+        \If{$g > n$}
+        \Comment{Problema vuoto}
+            \State return
+        \EndIf
+        \State $SG \gets \left\{ a_g \right\}$
+        \Comment{Prima attività, scelta \emph{Greedy}}
+        \State $i \gets g+1$
+        \While{ $\left( s_i < f_g \right) \wedge \left( i \leq n \right)$}
+            \State $i \gets i+1$
+            \Comment{\emph{Clean-up}}
+        \EndWhile
+        \State return $SG \cup \Call{REC\_AS}{\vec{s}, \vec{f}, i}$
+        \Comment{\emph{Tail recursion}}
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Selezione di attività, implementazione iterativa}\label{alg:asiter}
+\begin{algorithmic}[1]
+    \Procedure{GREEDY\_AS}{$\vec{s}, \vec{f}$}
+        \State $n \gets \vec{s}.len$
+        \State $g \gets 1$
+        \State $A \gets \left\{ a_g \right\}$
+        \Comment{Insieme di attività scelte $A$}
+        \For{$i \gets 2 $ to $ n $ }
+        \Comment{Alterna selezione e \emph{clean-up}}
+            \If{$ s_i \geq f_g $}
+                \State $g \gets i$
+                \State return $A \cup \left\{ a_g \right\}$
+            \EndIf
+        \EndFor
+        \State return $A$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
 
 \subsection{autocomplete}
 Snippet di \LaTeX{} che tornano spesso utili
