@@ -25,6 +25,9 @@ Vanno quindi dimostrate due proprietà:
 \end{enumerate}
 
 \section{Selezione di attività}
+
+\subsection{Definizione del problema}
+
 Un problema che si presta ad essere risolto con il paradigma \emph{Greedy} è la selezione di attività. Data una risorsa condivisa e un insieme di attività che la utilizzano, come si può selezionare il massimo numero di attività compatibili? Formalmente si definiscono:
 \begin{itemize}
     \item[--] Risorsa condivisa
@@ -35,6 +38,8 @@ Un problema che si presta ad essere risolto con il paradigma \emph{Greedy} è la
         $(f_i \leq s_j ) \vee (f_j \leq s_i)$
 \end{itemize}
 L'obiettivo è determinare il sottoinsieme $S^* \subseteq S$ di attività mutualmente compatibili (intervalli a coppie disgiunti) di cardinalità massima.
+
+\subsection{Soluzione \emph{Greedy}}
 
 Senza perdita di generalità, si può assumere che le attività siano ordinate per tempo di fine non decrescente:
 $f_1 \leq f_2 \leq \cdots \leq f_n$
@@ -82,6 +87,55 @@ L'intuizione è di selezionare di volta in volta l'istanza che finisce prima, in
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
+
+\subsection{Dimostrazione della correttezza}
+
+\subsubsection{Proprietà di scelta \emph{Greedy}}
+
+Occorre dimostrare che esiste una soluzione ottima $A^*$ che contiene la scelta \emph{Greedy} ${a_1}$. Si procede per \emph{cut and paste}: Sia $\hat{A}$ una soluzione ottima. Se ${a_1} \in \hat{A}$ si conclude, se no si sostituisce un'attività in $\hat{A}$ con la scelta \emph{Greedy} e si dimostra che l'insieme ottenuto è ancora ottimo e contiene la scelta \emph{Greedy}.
+Sia $\hat{i} =  \argmin\limits_i \{ a_i \in \hat{A} \} $, e sia
+\[
+A^* = \hat{A} 
+\;
+\underbracket[1pt]{
+\setminus \left\{ a_{\hat{i}} \right\} 
+}_{\text{\emph{cut}}}
+\;
+\underbracket[1pt]{
+\vphantom{ \setminus \left\{ a_{\hat{i}} \right\} }
+\cup \left\{ a_1 \right\}
+}_{\text{\emph{paste}}}
+\]
+
+Va dimostrato che $a_1$ è compatibile con ogni $a_j$, ossia 
+$\forall a_j \in \hat{A} \setminus \left\{ a_{\hat{i}} \right\} \Rightarrow f_1 \leq s_j$
+\\
+Vale $f_1 \leq f_{\hat{i}}$ perché $a_1$ è la scelta \emph{Greedy}, e $f_{\hat{i}} \leq s_j$ perché $\hat{A}$ contiene attività compatibili, per cui $f_1 \leq s_j$, e $A^*$ è ammissibile. Inoltre $|A^*| = |\hat{A}|$, quindi è anche soluzione ottima. Per costruzione $A^*$ contiene la scelta \emph{Greedy}, e si conclude.
+
+\subsubsection{Proprietà di sottostruttura ottima}
+
+Va dimostrato che esiste una soluzione ottima $A^*$ che, oltre ad $a_1$, contiene una soluzione ottima al sottoproblema residuo $S_r$
+Il sottoproblema residuo si ottiene effettuando il \emph{clean-up}, eliminando le attività $a_j$, $j>1 : s_j < t_1$, fermandosi o per $g : f_1 \leq s_g$, o quando tutte le attività sono state eliminate. $S_r$ è quindi un suffisso di attività che parte da $g$.
+
+Si possono verificare due casi:
+
+$S_r = \emptyset $: tutte le attività sono in conflitto con $a_1 \Rightarrow A^*=\left\{ a_1 \right\}$
+e la soluzione al $S_r$ è $sol( A^* \setminus \left\{ a_1 \right\} ) = sol ( \emptyset ) = \emptyset$.
+La soluzione al $S_r$ è, vuota, e $A^*$ oltre alla scelta \emph{Greedy} non contiene nulla.
+
+$S_r = \left\{ a_g, a_{g+1}, \cdots, a_n \right\}, g>1$: almeno un'attività è compatibile con $a_1$, la soluzione ottima dovrà contenere almeno due attività. Si deve dimostrare che $A^* \setminus \left\{ a_1 \right\}$ è ammissibile e ottima per $S_r$.
+
+Per dimostrare l'ammissibilità vanno mostrate due proprietà: le attività in $A^* \setminus \left\{ a_1 \right\}$ devono essere mutualmente compatibili, e lo sono perché questo è un sottoinsieme di attività compatibili; $A^* \setminus \left\{ a_1 \right\} \subseteq S_r$, devono essere attività contenute in $S_r$, e lo sono, perché $S_r$ è stato ottenuto proprio eliminando $a_1$ e tutte le attività non compatibili con questa, ossia $a_2, \cdots, a_{g-1}$.
+
+Per dimostrare l'ottimalità di $A^* \setminus \left\{ a_1 \right\}$ per $S_r$ si procede per assurdo, supponendo che $A^* \setminus \left\{ a_1 \right\}$ \emph{non} sia ottima per $S_r$. Deve quindi esistere un sottoinsieme $\hat{A} \subseteq S_r$ di attività compatibili con $|\hat{A}| > |A^*|-1$, e se questo fosse vero si troverebbe una soluzione a $S$ migliore di $A^*$, che era ottima.
+
+ammissibilita data da due cose
+compatibili e lo sono perche sottoinsieme di compatibili
+e siano in sr, e vasle perche sr ottenuto eliminando a1 e tutte le attivita a seguire che non sono compatibili con a1
+nessuna delle attivita eliminate per ottenere sr potrebbe convivere con a1
+tutte queste attivita devono per forza comingiare dalla ag in poi, da a2 a ag-1 non sono compatibilie
+insieme di attivita mutualmente compatibili contenuto nel sottoproblema residuo
+
 
 
 
