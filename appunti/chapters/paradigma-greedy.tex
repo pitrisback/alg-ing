@@ -114,27 +114,33 @@ Vale $f_1 \leq f_{\hat{i}}$ perché $a_1$ è la scelta \emph{Greedy}, e $f_{\hat
 
 \subsubsection{Proprietà di sottostruttura ottima}
 
-Va dimostrato che esiste una soluzione ottima $A^*$ che, oltre ad $a_1$, contiene una soluzione ottima al sottoproblema residuo $S_r$
-Il sottoproblema residuo si ottiene effettuando il \emph{clean-up}, eliminando le attività $a_j$, $j>1 : s_j < t_1$, fermandosi o per $g : f_1 \leq s_g$, o quando tutte le attività sono state eliminate. $S_r$ è quindi un suffisso di attività che parte da $g$.
+Va dimostrata l'esistenza di una soluzione ottima $A^*$ che, oltre ad $a_1$, contiene una soluzione ottima al sottoproblema residuo $S_r$. 
+Il sottoproblema residuo si ottiene effettuando il \emph{clean-up}, eliminando tutte le attività $a_j$, con $j>1$, per cui $s_j < t_1$, fermandosi o per $g : f_1 \leq s_g$, o quando tutte le attività sono state eliminate. $S_r$ è quindi un suffisso di attività che parte da $g$.
 
 Si possono verificare due casi:
 
 $S_r = \emptyset $: tutte le attività sono in conflitto con $a_1 \Rightarrow A^*=\left\{ a_1 \right\}$
 e la soluzione al $S_r$ è $sol( A^* \setminus \left\{ a_1 \right\} ) = sol ( \emptyset ) = \emptyset$.
-La soluzione al $S_r$ è, vuota, e $A^*$ oltre alla scelta \emph{Greedy} non contiene nulla.
+La soluzione al $S_r$ è vuota, e $A^*$ oltre alla scelta \emph{Greedy} non contiene nulla.
 
-$S_r = \left\{ a_g, a_{g+1}, \cdots, a_n \right\}, g>1$: almeno un'attività è compatibile con $a_1$, la soluzione ottima dovrà contenere almeno due attività. Si deve dimostrare che $A^* \setminus \left\{ a_1 \right\}$ è ammissibile e ottima per $S_r$.
+$S_r = \left\{ a_g, a_{g+1}, \cdots, a_n \right\}, g>1$: almeno un'attività è compatibile con $a_1$, la soluzione ottima dovrà contenere almeno due attività. Si deve dimostrare che $A^* \setminus \left\{ a_1 \right\}$ è soluzione ammissibile e ottima per $S_r$.
 
-Per dimostrare l'ammissibilità vanno mostrate due proprietà: le attività in $A^* \setminus \left\{ a_1 \right\}$ devono essere mutualmente compatibili, e lo sono perché questo è un sottoinsieme di attività compatibili; $A^* \setminus \left\{ a_1 \right\} \subseteq S_r$, devono essere attività contenute in $S_r$, e lo sono, perché $S_r$ è stato ottenuto proprio eliminando $a_1$ e tutte le attività non compatibili con questa, ossia $a_2, \cdots, a_{g-1}$.
+Per dimostrare l'ammissibilità vanno mostrate due proprietà: le attività in $A^* \setminus \left\{ a_1 \right\}$ devono essere mutualmente compatibili, e lo sono perché questo è un sottoinsieme di attività compatibili; $A^* \setminus \left\{ a_1 \right\} \subseteq S_r$, devono essere attività contenute in $S_r$, e lo sono, perché $S_r$ è stato ottenuto proprio eliminando $a_1$ e tutte le attività non compatibili con questa, ossia $a_2, \cdots, a_{g-1}$, e nessuna delle attività eliminate per ottenere $S_r$ potrebbe convivere con $a_1$.
 
-Per dimostrare l'ottimalità di $A^* \setminus \left\{ a_1 \right\}$ per $S_r$ si procede per assurdo, supponendo che $A^* \setminus \left\{ a_1 \right\}$ \emph{non} sia ottima per $S_r$. Deve quindi esistere un sottoinsieme $\hat{A} \subseteq S_r$ di attività compatibili con $|\hat{A}| > |A^*|-1$, e se questo fosse vero si troverebbe una soluzione a $S$ migliore di $A^*$, che era ottima.
+Per dimostrare l'ottimalità di $A^* \setminus \left\{ a_1 \right\}$ per $S_r$ si procede per assurdo, supponendo che $A^* \setminus \left\{ a_1 \right\}$ \emph{non} sia ottima per $S_r$. Deve quindi esistere un sottoinsieme $\hat{A} \subseteq S_r$ di attività compatibili
+contenente $a_g$, la scelta \emph{Greedy} per $S_r$,
+con $|\hat{A}| > |A^*|-1$, e se questo fosse vero si troverebbe una soluzione a $S$ migliore di $A^*$, che era ottima.
+Si può aggiungere a questo insieme $a_1$ che di sicuro non è già presente, non essendo in $S_r$, ottenendo $|\hat{A} \cup \left\{ a_1 \right\} | > |A^*|$. 
+Tutte le attività in $\hat{A}$ sono compatibili con $a_1$, infatti $f_1 < s_g$ per costruzione del problema residuo, $s_g < f_g$ per ogni attività e $f_g < s_i$ per ogni attività in $\hat{A}$, per la compatibilità di $a_g$.
+Questo conduce ad un assurdo, perché $A^*$ era la soluzione ottima.
 
-ammissibilita data da due cose
-compatibili e lo sono perche sottoinsieme di compatibili
-e siano in sr, e vasle perche sr ottenuto eliminando a1 e tutte le attivita a seguire che non sono compatibili con a1
-nessuna delle attivita eliminate per ottenere sr potrebbe convivere con a1
-tutte queste attivita devono per forza comingiare dalla ag in poi, da a2 a ag-1 non sono compatibilie
-insieme di attivita mutualmente compatibili contenuto nel sottoproblema residuo
+% ammissibilita data da due cose
+% compatibili e lo sono perche sottoinsieme di compatibili
+% e siano in sr, e vasle perche sr ottenuto eliminando a1 e tutte le attivita a seguire che non sono compatibili con a1
+
+
+% tutte queste attivita devono per forza comingiare dalla ag in poi, da a2 a ag-1 non sono compatibilie
+% insieme di attivita mutualmente compatibili contenuto nel sottoproblema residuo
 
 
 
