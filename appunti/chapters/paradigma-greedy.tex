@@ -134,16 +134,145 @@ Si può aggiungere a questo insieme $a_1$ che di sicuro non è già presente, no
 Tutte le attività in $\hat{A}$ sono compatibili con $a_1$, infatti $f_1 < s_g$ per costruzione del problema residuo, $s_g < f_g$ per ogni attività e $f_g < s_i$ per ogni attività in $\hat{A}$, per la compatibilità di $a_g$.
 Questo conduce ad un assurdo, perché $A^*$ era la soluzione ottima.
 
-% ammissibilita data da due cose
-% compatibili e lo sono perche sottoinsieme di compatibili
-% e siano in sr, e vasle perche sr ottenuto eliminando a1 e tutte le attivita a seguire che non sono compatibili con a1
+\section{Compressione di un file}
 
+\subsection{Definizione del problema}
 
-% tutte queste attivita devono per forza comingiare dalla ag in poi, da a2 a ag-1 non sono compatibilie
-% insieme di attivita mutualmente compatibili contenuto nel sottoproblema residuo
+Un file può essere visto come stringa di caratteri di un alfabeto, $F \in \Sigma^*$. A ciascun carattere è associata una frequenza: $\forall c \in \Sigma : f(c) \in [0,1]$. Il file usa solo un sottoalfabeto $C \subseteq \Sigma : c \in C \Rightarrow f(c) > 0$.
 
+La compressione è una mappa che associa ad ogni carattere una stringa di bit:
+\[
+    % l_F : \Sigma \rightarrow \left\{ 0,1 \right\}^* \\
+    e : C \rightarrow \left\{ 0,1 \right\}^*
+\]
 
+Le $e(c)$ sono dette parole di codice, o \emph{codeword}.
+Le mappe di codifica sono memorizzate in una struttura detta \emph{trie}, un albero binario etichettato.
+Per ricostruire il file originale, è sufficiente mantenere due puntatori, uno sul trie e uno sul file codificato, scorrendo il file e scendendo l'albero, tornando alla radice ogni volta che si arriva ad una foglia.
 
+Un esempio di file, codificato con caratteri ASCII a 8 bit, è caratterizzato dalle frequenze dei caratteri che compaiono nel file:
+\begin{equation*}
+    \begin{array}[H]{rcccccc}
+        \texttt{C:} & a & b & c & d & e & f \\
+        \texttt{freq rel:} & 0.45 & 0.13 & 0.12 & 0.16 & 0.09 & 0.05
+    \end{array}
+\end{equation*}
+Se $|F| = 100M$ caratteri, per memorizzarlo senza compressione sono necessari $800 Mbit$. Il file usa solo 6 dei 256 caratteri possibili, sono quindi sufficienti meno bit per memorizzarli. In generale, per memorizzare $k$ caratteri sono necessari $\left\lceil \log_2 k \right\rceil$ bit. In questo caso, 3 bit sono sufficienti, e il file si può quindi memorizzare con $300 Mbit$ utilizzando una codifica a lunghezza costante (\emph{fixed-length encoding}).
+\begin{equation*}
+    \begin{array}[H]{rcccccc}
+        \texttt{C:} & a & b & c & d & e & f \\
+        \texttt{codifica:} & 000 & 001 & 010 & 011 & 100 & 101
+    \end{array}
+\end{equation*}
+Oltre al file compresso occorre memorizzare anche la mappa di codifica, ma la sua dimensione è generalmente irrisoria rispetto a quella del file.
+In \rfig{tree:lungcost} è mostrato il \emph{trie} della codifica a lunghezza costante.
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[
+        level/.style={sibling distance=60mm/#1},
+        redge/.style={right,draw=none},
+        ledge/.style={left,draw=none},
+        inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=-1pt},
+        leaf/.style={circle,draw,minimum width=20pt},
+        ]
+    \node (z) [inner] {}
+    child {
+        node [inner] (a) {}
+        child {
+            node [inner] (b) {}
+                child {
+                    node [leaf] (b1) {a}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (b2) {b}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[ledge] {0}
+        }
+        child {
+            node [inner] (e) {}
+                child {
+                    node [leaf] (e2) {c}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (e2) {d}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[redge] {1}
+        }
+        edge from parent node[ledge] {0$\;\;$} % edge da (a)
+    }
+    child {
+        node [inner] (c) {}
+        child {
+            node [inner] (d) {}
+                child {
+                    node [leaf] (d1) {e}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (d2) {f}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[ledge] {0}
+        }
+        child {
+            node [inner] (c2) {}
+            edge from parent node[redge] {1}
+        }
+        edge from parent node[redge] {$\;\;$1}
+    }
+    ; % end of the node
+\end{tikzpicture}
+\end{center}
+\caption{\emph{Trie} della codifica a lunghezza costante}
+\label{tree:lungcost}
+\end{figure}
+Questo \emph{trie} è chiaramente non ottimo: una delle foglie non è utilizzata.
+Assegnare ancora meno bit ad alcune lettere può condurre ad una compressione ancora maggiore, ma bisogna assicurarsi che la codifica risultante sia libera da prefissi (\emph{prefix code}). Per esempio la seguente codifica
+\begin{equation*}
+    \begin{array}[H]{rcccccc}
+        \texttt{C:} & a & b & c & d & e & f \\
+        \texttt{codifica:} & 0 & 00 & 01 & 1 & 10 & 11
+    \end{array}
+\end{equation*}
+non permette di distinguere $e(`ad \textit{'})$ e $e(`c \textit{'})$.
+Questa codifica però fornisce il limite inferiore alla grandezza possibile del file compresso:
+\begin{equation*}
+    |F| \left( 0.45*1 + 0.13*2 + \dots \right) = 153M
+\end{equation*}
+Per assicurare la decodificabilità deve valere
+\begin{equation*}
+    \nexists \, c_1, c_2 : e(c_1) \text{ è prefisso di } e(c_2)
+\end{equation*}
+Si definisce profondità di un carattere $c$ in un \emph{trie} la quantità $d_T(c) = |e(c)|$.
+\\
+Il costo di una codifica è
+\begin{equation*}
+    \sum_{c \in C}\left( |F| f(c) \right) d_T(c) = 
+    |F| \sum_{c \in C} f(c) d_T(c) = 
+    |F| B(T)
+\end{equation*}
+dove $B(T)$ è la somma della profondità delle foglie del \emph{trie} pesata con le frequenze del carattere.
+\\
+L'obiettivo è minimizzare $B(T)$ su tutti i possibili \emph{trie} per l'insieme di caratteri $C$.
+
+\subsection{Soluzione \emph{Greedy}}
+
+Si è quindi definito un problema di ottimizzazione molto chiaro: va determinato 
+\begin{equation*}
+    T^* = \argmin \left\{ B(T) : T \right\}
+\end{equation*}
+
+\subsection{Dimostrazione della correttezza}
+
+\subsubsection{Proprietà di scelta \emph{Greedy}}
+
+\subsubsection{Proprietà di sottostruttura ottima}
 
 \subsection{autocomplete}
 Snippet di \LaTeX{} che tornano spesso utili
@@ -215,4 +344,74 @@ Un gustoso algoritmo
 \end{algorithmic}
 \end{algorithm}
 
-
+Un alberello
+\begin{center}
+\begin{tikzpicture}[
+        level/.style={sibling distance=60mm/#1},
+        redge/.style={right,draw=none},
+        ledge/.style={left,draw=none},
+        inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=-1pt},
+        leaf/.style={circle,draw},
+        ]
+    \node (z) [inner] {}
+    child {
+        node [inner] (a) {}
+        child {
+            node [inner] (b) {}
+                child {
+                    node [leaf] (b1) {left}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (b2) {righ}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[ledge] {0}
+        }
+        child {
+            node [inner] (e) {}
+                child {
+                    node [leaf] (e2) {left}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (e2) {righ}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[redge] {1}
+        }
+        edge from parent node[ledge] {0} % edge da (a)
+    }
+    child {
+        node [inner] (c) {}
+        child {
+            node [inner] (d) {}
+                child {
+                    node [leaf] (d1) {left}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (d2) {righ}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[ledge] {0}
+        }
+        child {
+            node [inner] (f) {}
+                child {
+                    node [leaf] (f1) {left}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (f2) {righ}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[redge] {1}
+        }
+        edge from parent node[redge] {1}
+    }
+  ; % end of the node
+\end{tikzpicture}
+\end{center}
