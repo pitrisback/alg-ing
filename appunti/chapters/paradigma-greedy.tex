@@ -475,7 +475,104 @@ Si può quindi procedere alla scrittura dell'algoritmo di \emph{Huffman}.
 
 \subsubsection{Proprietà di scelta \emph{Greedy}}
 
+Va dimostrato che, se $x,y$ sono i due caratteri di frequenza minima ($f(x) \leq f(y) \leq \dots$), esiste un \emph{trie} ottimo $T^*$ in cui le foglie di $x$ ed $y$ sono sorelle.
+
+Si consideri una generica soluzione ottima $\widehat{T}$ e si individuino le due foglie sorelle $w,z$ di massima profondità ($f(w) \leq f(z) \leq \dots$) (devono esistere perché è un albero pieno \emph{finito}). Si dimostra che sostituendo al loro posto $x,y$ non si peggiora la soluzione.
+
+Possono capitare due casi: se $w=x \vee z=y$, si conclude. Se $w \neq x \wedge z \neq y$ vanno analizzati tre casi. Nel caso più generale, entrambi sono diversi e $x,y$ sono foglie nell'albero con profondità non massima. Si possono quindi scambiare di posto $x \leftrightarrow w$ e $y \leftrightarrow z$, sostituendo la parole di codice di $x$ con quella di $w$ e rispettivamente per $y$ e $z$. Se si dimostra che quest'albero è ancora ottimo, si conclude, avendo esibito un albero che è ottimo e contiene la scelta \emph{Greedy} ($x,y$ sorelle).
+
+Si analizzi la differenza tra $B(\widehat{T})$ e $B(T^*)$, notando che per tutte le foglie che non sono $x,y,w,z$, la profondità non cambia.
+\begin{align*}
+    B(\widehat{T}) - B(T^*)
+    &= \sum_{c \in C} f(c) d_{\widehat{T}} (c) - \sum_{c \in C} f(c) d_{T^*} (c) \\
+    &=
+      f(w) d_{\widehat{T}} (w)
+    + f(x) d_{\widehat{T}} (x)
+    + f(z) d_{\widehat{T}} (z)
+    + f(y) d_{\widehat{T}} (y) 
+    \\ &
+    - f(x) d_{T^*} (x)
+    - f(w) d_{T^*} (w)
+    - f(y) d_{T^*} (y)
+    - f(z) d_{T^*} (z) 
+    \intertext{scambiando $d_{T^*} (x) \leftrightarrow d_{\widehat{T}} (w)$ e così via si ottiene}
+    &=
+      f(w) d_{\widehat{T}} (w)
+    + f(x) d_{\widehat{T}} (x)
+    + f(z) d_{\widehat{T}} (z)
+    + f(y) d_{\widehat{T}} (y) 
+    \\ &
+    - f(x) d_{\widehat{T}} (w)
+    - f(w) d_{\widehat{T}} (x)
+    - f(y) d_{\widehat{T}} (z)
+    - f(z) d_{\widehat{T}} (y) 
+    \intertext{raccogliendo poi i $d_{\widehat{T}} (w)$ si ottiene}
+    &=
+      d_{\widehat{T}} (w) \left( f(w) - f(x) \right)
+    - d_{\widehat{T}} (x) \left( f(w) - f(x) \right)
+    \\ &+
+      d_{\widehat{T}} (z) \left( f(z) - f(y) \right)
+    - d_{\widehat{T}} (y) \left( f(z) - f(y) \right)
+    \intertext{e raccogliendo ancora si ricava}
+    &=
+    \left( d_{\widehat{T}} (w) - d_{\widehat{T}} (x) \right)
+    \left( f(w) - f(x) \right)
+    \\ &+
+    \left( d_{\widehat{T}} (z) - d_{\widehat{T}} (y) \right)
+    \left( f(z) - f(y) \right)
+    \intertext{i quattro fattori sono positivi: le profondità di $w,z$ sono maggiori di quelle di $x,y$, essendo stati scelti come nodi di profondità massima; le frequenze di $x,y$ sono minori di quelle di $w,z$, essendo i nodi con frequenza minima. Quindi}
+    B(\widehat{T}) - B(T^*) &\geq 0
+    \\
+    B(T^*) &\leq B(\widehat{T})
+    \intertext{ma $\widehat{T}$ è una generica soluzione ottima, non la si può migliorare, per cui}
+    B(T^*) &= B(\widehat{T})
+\end{align*}
+Anche $T^*$ è quindi una soluzione ottima, e contiene la scelta \emph{Greedy}.
+
 \subsubsection{Proprietà di sottostruttura ottima}
+
+Va ora di mostrato che, dato $T^*$ che contiene la scelta \emph{Greedy}, quest'albero contiene anche un \emph{trie} $T'$, ottimo per il sottoproblema residuo. Il residuo è caratterizzato da
+\begin{align*}
+    \text{alfabeto} \quad &
+    C \setminus \left\{ x,y \right\} \cup \left\{ z \right\} \\
+    \text{frequenze} \quad & 
+    f(c) = 
+    \begin{cases}
+        f(c) & c \in C \setminus \left\{ x,y \right\} \\
+        f(x) + f(y) & c=z
+    \end{cases}
+\end{align*}
+E $T'$ si ricava da $T^*$ potando le due foglie $x,y$ e sostituendole con $z$. Si consideri la relazione tra i costi dei due alberi:
+\begin{align*}
+    B(T^*) 
+    &= \sum_{c \in C} f(c) d_{T^*} (c) \\
+    &= \sum_{c \in C \setminus \left\{ x,y \right\}} f(c) d_{T^*} (c)
+    + f(x) d_{T^*} (x)
+    + f(y) d_{T^*} (y)
+    \intertext{essendo alla stessa profondità si può raccogliere $d_{T^*} (x)$}
+    &= \sum_{c \in C \setminus \left\{ x,y \right\}} f(c) d_{T^*} (c)
+    + d_{T^*} (x) \left( f(x) + f(y) \right)
+    \intertext{applicando la distributiva, sommando e sottraendo $1$}
+    &= \sum_{c \in C \setminus \left\{ x,y \right\}} f(c) d_{T^*} (c)
+    + \left( d_{T^*} (x) -1 \right)
+    \left( f(x) + f(y) \right)
+    + \left( f(x) + f(y) \right)
+    \intertext{tutti i nodi che non sono $x,y,z$ non variano di profondità, e vale
+        $d_{T^*} (x) -1 = d_{T'} (z)$
+    }
+    &= \sum_{c \in C \setminus \left\{ x,y \right\}} f(c) d_{T'} (c)
+    + d_{T'} (z) f(z) + f(z)
+    \\
+    &= \sum_{c \in C \setminus \left\{ x,y \right\} \cup \left\{ z \right\}} f(c) d_{T'} (c)
+    + f(z)
+    \intertext{la frequenza è positiva e costante, per cui si ricava una relazione lineare tra i costi}
+    B(T^*) &= B(T') + cost.
+\end{align*}
+Si dimostra che la relazione lineare comporta l'ottimalità di $T'$, procedendo per \emph{cut and paste}: se $T'$ non fosse ottimo, lo si potrebbe sostituire con $T'' : B(T'') < B(T')$. Da $T''$ si ricava $\widehat{T}$ sostituendo a $z$ le foglie $x,y$, ottenendo una soluzione per il problema originale.
+\begin{equation*}
+    B(\widehat{T}) = B(T'') + f(z) < B(T') + f(z) = B(T^*)
+\end{equation*}
+Ma $T^*$ era ottimo, e la supposizione che $T'$ non lo fosse ha condotto ad un assurdo.
 
 \subsection{autocomplete}
 Snippet di \LaTeX{} che tornano spesso utili
