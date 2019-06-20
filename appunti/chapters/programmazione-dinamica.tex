@@ -370,7 +370,7 @@ Soffermiamoci sull'ultimo elemento delle due stringhe:
 \]
 Si possono presentare due casi.
 \begin{enumerate}
-    \item $a=b$: di sicuro $z_k=a=b$ e $ Z^* = < Z_{k-1}^*, a > $: intuitivamente se $Z^*$ non terminasse con $a$, esisterebbe $\hat{Z}$ di lunghezza massima che termina con $\hat{z}_k \neq a$ ed è sottosequenza di $X_{m-1}^*$ e $Y_{n-1}^*$ (non terminando con $a$), ma appendendo $a$ a $\hat{Z}$ si otterrebbe una sottosequenza più lunga, che è assurdo.
+    \item $a=b$: di sicuro $z_k=a=b$ e $ Z^* = < Z_{k-1}^*, a > $: intuitivamente se $Z^*$ non terminasse con $a$, esisterebbe $\widehat{Z}$ di lunghezza massima che termina con $\widehat{z}_k \neq a$ ed è sottosequenza di $X_{m-1}^*$ e $Y_{n-1}^*$ (non terminando con $a$), ma appendendo $a$ a $\widehat{Z}$ si otterrebbe una sottosequenza più lunga, che è assurdo.
         \\
         Inoltre $Z_{k-1}^*$ sta in $X_{m-1}^*$ e $Y_{n-1}^*$, avendo già considerato l'ultimo elemento di entrambe.
         \\
@@ -447,7 +447,7 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
         (j_k<j \text{ o } j_k \leq j-1)
     \]
     per cui $Z^*$ è sottosequenza comune di $X_{i-1}$ e $Y_{j=i}$.
-    Si consideri $\hat{Z} = < Z^* , x_i >$, $\hat{Z}$ è sottosequenza sia di $X_i$ sia di $Y_j$
+    Si consideri $\widehat{Z} = < Z^* , x_i >$, $\widehat{Z}$ è sottosequenza sia di $X_i$ sia di $Y_j$
     e le successioni di indici da esibire sono quelle di $Z^*$ con appesi $i_k < i_{k+1} = i$ e $j_k < j_{k+1} = j$.
     Quindi si trova una sottosequenza comune più lunga di $Z^*$, ma $Z^*$ era supposta come soluzione ottima, quindi è stato raggiunto un assurdo.
 \end{proof}
@@ -476,9 +476,9 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
     | \bar{Z} | > | Z_{k-1}^* | = k-1
     % \]
     $.
-    Considerando $\hat{Z} = < \bar{Z} , x_i > $, $\hat{Z}$ è sottosequenza comune di $X_i$ e $Y_j$ di lunghezza
+    Considerando $\widehat{Z} = < \bar{Z} , x_i > $, $\widehat{Z}$ è sottosequenza comune di $X_i$ e $Y_j$ di lunghezza
     \[
-        | \hat{Z} | = | \bar{Z} | + 1 > k -1 +1 = k = | Z^* |
+        | \widehat{Z} | = | \bar{Z} | + 1 > k -1 +1 = k = | Z^* |
     \]
     Il che conduce ad un assurdo, essendo $Z^*$ la soluzione ottima.
 \end{proof}
@@ -497,7 +497,7 @@ Formalizzando la proprietà di sottostruttura ottima risulta:
     Nel primo caso
     $ z_k \neq x_i \Rightarrow i_k<i$
     e $i_k \leq i-1$
-    quindi $Z^*$ è in questo caso sottosequenza del prefisso più corto $X_{i-1}$ e come in precedenza è sottosequenza di $Y_j$. È quindi una sottosequenza comune a $X_{i-1}$ e $Y_j$ e deve essere $Z^* = LCS(X_{i-1}, Y_{j})$. Se per assurdo non lo fosse, esisterebbe $\hat{Z}^* = LCS(X_{i-1}, Y_{j})$ con $|\hat{Z}| > |Z^*|$, ma $\hat{Z}$ è anche comune a $X_{i}$ e $Y_j$ che è un assurdo perché $Z^*$ è ottima.
+    quindi $Z^*$ è in questo caso sottosequenza del prefisso più corto $X_{i-1}$ e come in precedenza è sottosequenza di $Y_j$. È quindi una sottosequenza comune a $X_{i-1}$ e $Y_j$ e deve essere $Z^* = LCS(X_{i-1}, Y_{j})$. Se per assurdo non lo fosse, esisterebbe $\widehat{Z}^* = LCS(X_{i-1}, Y_{j})$ con $|\widehat{Z}| > |Z^*|$, ma $\widehat{Z}$ è anche comune a $X_{i}$ e $Y_j$ che è un assurdo perché $Z^*$ è ottima.
     \\
     Nel secondo caso $Z^* = LCS(X_{i}, Y_{j-1})$, dimostrato analogamente.
     \\
