@@ -16,7 +16,8 @@
 	colorlinks=true,
 	linkcolor=cyan,
 	citecolor=cyan,
-	linkcolor=cyan
+	linkcolor=cyan,
+    urlcolor=blue
 }
 \usepackage{subcaption} % for subcaption, duh
 \usepackage{enumitem} % more control over lists: stackoverflow.com/a/4974583
@@ -109,7 +110,11 @@
 
 \cleardoublepage
 
-\frontmatter % non esiste perche` e` un articolo e non un libro
+\frontmatter
+
+\chapter*{Note}
+\addcontentsline{toc}{chapter}{Note}
+\input{chapters/note}
 
 \chapter*{Ringraziamenti}
 \addcontentsline{toc}{chapter}{Ringraziamenti}
