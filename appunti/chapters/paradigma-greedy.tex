@@ -92,25 +92,25 @@ L'intuizione è di selezionare di volta in volta l'istanza che finisce prima, in
 
 \subsubsection{Proprietà di scelta \emph{Greedy}}
 
-Occorre dimostrare che esiste una soluzione ottima $A^*$ che contiene la scelta \emph{Greedy} ${a_1}$. Si procede per \emph{cut and paste}: Sia $\hat{A}$ una soluzione ottima. Se ${a_1} \in \hat{A}$ si conclude, se no si sostituisce un'attività in $\hat{A}$ con la scelta \emph{Greedy} e si dimostra che l'insieme ottenuto è ancora ottimo e contiene la scelta \emph{Greedy}.
-Sia $\hat{i} =  \argmin\limits_i \{ a_i \in \hat{A} \} $, e sia
+Occorre dimostrare che esiste una soluzione ottima $A^*$ che contiene la scelta \emph{Greedy} ${a_1}$. Si procede per \emph{cut and paste}: Sia $\widehat{A}$ una soluzione ottima. Se ${a_1} \in \widehat{A}$ si conclude, se no si sostituisce un'attività in $\widehat{A}$ con la scelta \emph{Greedy} e si dimostra che l'insieme ottenuto è ancora ottimo e contiene la scelta \emph{Greedy}.
+Sia $\widehat{i} =  \argmin\limits_i \{ a_i \in \widehat{A} \} $, e sia
 \[
-A^* = \hat{A} 
+A^* = \widehat{A} 
 \;
 \underbracket[1pt]{
-\setminus \left\{ a_{\hat{i}} \right\} 
+\setminus \left\{ a_{\widehat{i}} \right\} 
 }_{\text{\emph{cut}}}
 \;
 \underbracket[1pt]{
-\vphantom{ \setminus \left\{ a_{\hat{i}} \right\} }
+\vphantom{ \setminus \left\{ a_{\widehat{i}} \right\} }
 \cup \left\{ a_1 \right\}
 }_{\text{\emph{paste}}}
 \]
 
 Va dimostrato che $a_1$ è compatibile con ogni $a_j$, ossia 
-$\forall a_j \in \hat{A} \setminus \left\{ a_{\hat{i}} \right\} \Rightarrow f_1 \leq s_j$
+$\forall a_j \in \widehat{A} \setminus \left\{ a_{\widehat{i}} \right\} \Rightarrow f_1 \leq s_j$
 \\
-Vale $f_1 \leq f_{\hat{i}}$ perché $a_1$ è la scelta \emph{Greedy}, e $f_{\hat{i}} \leq s_j$ perché $\hat{A}$ contiene attività compatibili, per cui $f_1 \leq s_j$, e $A^*$ è ammissibile. Inoltre $|A^*| = |\hat{A}|$, quindi è anche soluzione ottima. Per costruzione $A^*$ contiene la scelta \emph{Greedy}, e si conclude.
+Vale $f_1 \leq f_{\widehat{i}}$ perché $a_1$ è la scelta \emph{Greedy}, e $f_{\widehat{i}} \leq s_j$ perché $\widehat{A}$ contiene attività compatibili, per cui $f_1 \leq s_j$, e $A^*$ è ammissibile. Inoltre $|A^*| = |\widehat{A}|$, quindi è anche soluzione ottima. Per costruzione $A^*$ contiene la scelta \emph{Greedy}, e si conclude.
 
 \subsubsection{Proprietà di sottostruttura ottima}
 
@@ -127,11 +127,11 @@ $S_r = \left\{ a_g, a_{g+1}, \cdots, a_n \right\}, g>1$: almeno un'attività è 
 
 Per dimostrare l'ammissibilità vanno mostrate due proprietà: le attività in $A^* \setminus \left\{ a_1 \right\}$ devono essere mutualmente compatibili, e lo sono perché questo è un sottoinsieme di attività compatibili; $A^* \setminus \left\{ a_1 \right\} \subseteq S_r$, devono essere attività contenute in $S_r$, e lo sono, perché $S_r$ è stato ottenuto proprio eliminando $a_1$ e tutte le attività non compatibili con questa, ossia $a_2, \cdots, a_{g-1}$, e nessuna delle attività eliminate per ottenere $S_r$ potrebbe convivere con $a_1$.
 
-Per dimostrare l'ottimalità di $A^* \setminus \left\{ a_1 \right\}$ per $S_r$ si procede per assurdo, supponendo che $A^* \setminus \left\{ a_1 \right\}$ \emph{non} sia ottima per $S_r$. Deve quindi esistere un sottoinsieme $\hat{A} \subseteq S_r$ di attività compatibili
+Per dimostrare l'ottimalità di $A^* \setminus \left\{ a_1 \right\}$ per $S_r$ si procede per assurdo, supponendo che $A^* \setminus \left\{ a_1 \right\}$ \emph{non} sia ottima per $S_r$. Deve quindi esistere un sottoinsieme $\widehat{A} \subseteq S_r$ di attività compatibili
 contenente $a_g$, la scelta \emph{Greedy} per $S_r$,
-con $|\hat{A}| > |A^*|-1$, e se questo fosse vero si troverebbe una soluzione a $S$ migliore di $A^*$, che era ottima.
-Si può aggiungere a questo insieme $a_1$ che di sicuro non è già presente, non essendo in $S_r$, ottenendo $|\hat{A} \cup \left\{ a_1 \right\} | > |A^*|$. 
-Tutte le attività in $\hat{A}$ sono compatibili con $a_1$, infatti $f_1 < s_g$ per costruzione del problema residuo, $s_g < f_g$ per ogni attività e $f_g < s_i$ per ogni attività in $\hat{A}$, per la compatibilità di $a_g$.
+con $|\widehat{A}| > |A^*|-1$, e se questo fosse vero si troverebbe una soluzione a $S$ migliore di $A^*$, che era ottima.
+Si può aggiungere a questo insieme $a_1$ che di sicuro non è già presente, non essendo in $S_r$, ottenendo $|\widehat{A} \cup \left\{ a_1 \right\} | > |A^*|$. 
+Tutte le attività in $\widehat{A}$ sono compatibili con $a_1$, infatti $f_1 < s_g$ per costruzione del problema residuo, $s_g < f_g$ per ogni attività e $f_g < s_i$ per ogni attività in $\widehat{A}$, per la compatibilità di $a_g$.
 Questo conduce ad un assurdo, perché $A^*$ era la soluzione ottima.
 
 \section{Compressione di un file}
@@ -257,7 +257,7 @@ Il costo di una codifica è
     |F| \sum_{c \in C} f(c) d_T(c) = 
     |F| B(T)
 \end{equation*}
-dove $B(T)$ è la somma della profondità delle foglie del \emph{trie} pesata con le frequenze del carattere.
+dove $B(T)$ è la somma della profondità delle foglie del \emph{trie} pesata con le frequenze del carattere. $B(T)$ è anche la lunghezza di \emph{codeword} media.
 \\
 L'obiettivo è minimizzare $B(T)$ su tutti i possibili \emph{trie} per l'insieme di caratteri $C$.
 
@@ -269,24 +269,194 @@ Prima di poter arrivare alla soluzione, si deve dimostrare la seguente propriet�
 
 La dimostrazione si svolge per assurdo, ipotizzando che esista un albero ottimo \emph{non} pieno. In questo caso deve esistere un nodo $u$ con un solo figlio $v$. Questo nodo è radice di un sottoalbero, che ha come foglia $c'$ (se fosse composto solo da $v$, $c'$ è scelto coincidente con $v$).
 \\
-Si possono unire i due nodi $u$ e $v$ in un singolo nodo, ottenendo l'albero $\hat{T}$. Questo è un albero ammissibile per $\{C,f\}$, infatti non scompaiono foglie, e vale
+Si possono unire i due nodi $u$ e $v$ in un singolo nodo, ottenendo l'albero $\widehat{T}$. Questo è un albero ammissibile per $\{C,f\}$, infatti non scompaiono foglie, e vale
 \begin{equation*}
-    \forall c \in C : d_{T^*} (c) \geq d_{\hat{T}} (c)
+    \forall c \in C : d_{T^*} (c) \geq d_{\widehat{T}} (c)
 \end{equation*}
-Infatti al di fuori del sottoalbero resta tutto inalterato, mentre per le foglie del sottoalbero la profondità scende di 1, e questo succede per \emph{almeno} una foglia $c'$: $d_{\hat{T}} (c') = d_{T^*} (c') -1$
+Infatti al di fuori del sottoalbero resta tutto inalterato, mentre per le foglie del sottoalbero la profondità scende di 1, e questo succede per \emph{almeno} una foglia $c'$: $d_{\widehat{T}} (c') = d_{T^*} (c') -1$
 \begin{align*}
-    B \left( \hat{T} \right)
-    &= \sum_{c \in C} d_{\hat{T}} (c) f(c) \\
-    % &= \sum_{c \in C} d_{\widehat{T}} (c) f(c) \\
-    &= \sum_{c \in C \setminus \left\{ c' \right\}} d_{\hat{T}} (c) f(c) + d_{\hat{T}} (c') f(c')
+    B \left( \widehat{T} \right)
+    &= \sum_{c \in C} d_{\widehat{T}} (c) f(c) \\
+    &= \sum_{c \in C \setminus \left\{ c' \right\}} d_{\widehat{T}} (c) f(c) + d_{\widehat{T}} (c') f(c') \\
+    &\leq \sum_{c \in C \setminus \left\{ c' \right\}} d_{T^*} (c) f(c) 
+    + d_{T^*} (c') f(c') - f(c') \\
+    &= \sum_{c \in C} d_{T^*} (c) f(c) - f(c') \\
+    &= B \left( T^* \right) - f(c')
 \end{align*}
+Ma questo è assurdo perché $f(c')>0$, avendo scartato i caratteri a costo nullo, e $T^*$ era l'albero ottimo.
+
+Si può quindi riscrivere l'albero a lunghezza fissa come
+
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[
+        level/.style={sibling distance=60mm/#1},
+        redge/.style={right,draw=none},
+        ledge/.style={left,draw=none},
+        inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=-1pt},
+        leaf/.style={circle,draw,minimum width=20pt},
+        ]
+    \node (z) [inner] {}
+    child {
+        node [inner] (a) {}
+        child {
+            node [inner] (b) {}
+                child {
+                    node [leaf] (b1) {a}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (b2) {b}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[ledge] {0}
+        }
+        child {
+            node [inner] (e) {}
+                child {
+                    node [leaf] (e2) {c}
+                    edge from parent node[ledge] {0}
+                }
+                child {
+                    node [leaf] (e2) {d}
+                    edge from parent node[redge] {1}
+                }
+            edge from parent node[redge] {1}
+        }
+        edge from parent node[ledge] {0$\;\;$} % edge da (a)
+    }
+    child {
+        node [inner] (c) {}
+            child {
+                node [leaf] (d1) {e}
+                edge from parent node[ledge] {0}
+            }
+            child {
+                node [leaf] (d2) {f}
+                edge from parent node[redge] {1}
+            }
+        edge from parent node[redge] {$\;\;$1}
+    }
+    ; % end of the node
+\end{tikzpicture}
+\end{center}
+\caption{\emph{Trie} subottimo ricavato dalla codifica a lunghezza costante}
+\label{tree:lungcostimproved}
+\end{figure}
 
 \subsubsection{Soluzione \emph{Greedy}}
-Si è quindi definito un problema di ottimizzazione molto chiaro: va determinato 
+Si è quindi definito un problema di ottimizzazione molto chiaro: va determinato un albero pieno ottimo che minimizzi $B(T)$:
 \begin{equation*}
     T^* = \argmin \left\{ B(T) : T \right\}
 \end{equation*}
+L'albero ottimo viene generato compiendo successive operazioni di \emph{merge} tra sottoalberi, creando di volta in volta un nuovo nodo interno.
+Si inizia con $k=n=|C|$ alberi, e ad ogni iterazione si passa da $k$ a $k-1$ alberi. Dopo $n-1$ iterazioni si conclude, avendo ottenuto un singolo albero con $n$ foglie.
 
+L'intuizione su cui si basa la scelta degli alberi da unire si basa sul fatto che quando si compie un \emph{merge} la profondità delle foglie dei sottoalberi coinvolti viene incrementata di 1: ha quindi probabilmente senso scegliere ogni volta le due con frequenza minore.
+\\
+Se $x$ e $y$ sono le due foglie con frequenza minore ($f(x)<f(y)<\dots$), dopo l'unione condividono tutto il prefisso e sono differenziate dall'ultimo carattere. Si può quindi considerare un unico pseudocarattere $z$ associato al prefisso, con $f(z) = f(x)+f(y)$. In questo modo si hanno $n-2$ caratteri non modificati e un carattere nuovo, generando un problema di taglia $n-1$.
+\\
+Per convenzione, si associa l'etichetta $0$ alla foglia con frequenza minore, e si chiama quel ramo \emph{sinistro}, indipendentemente dalla rappresentazione grafica.
+
+Memorizzando le frequenze in una coda di priorità l'operazione di ricerca del minimo viene eseguita in $O(1)$ mentre l'inserimento di un nuovo nodo si compie in $O(\log n)$.
+
+La classe nodo ha i seguenti attributi: $left$ e $right$ per memorizzare i nodi figli; per le foglie, viene memorizzato il valore speciale $nil$. $f$ indica la frequenza combinata del nodo; $char$, per le foglie, memorizza il carattere.
+
+Si può quindi procedere alla scrittura dell'algoritmo di \emph{Huffman}.
+
+\begin{algorithm}[H]
+\caption{Algoritmo di \emph{Huffman}}\label{alg:huff}
+\begin{algorithmic}[1]
+    \Procedure{HUFFMAN}{$C, f$}
+        \State $n \gets |C|$
+        \State $Q \gets \emptyset$
+        \ForAll{$c \in C$}
+            \State $z \gets \Call{newnode}{ }$
+            \State $z.f \gets f(c)$
+            \State $z.char \gets c$
+            \State $z.left \gets z.right \gets nil$
+            \State $Q.insert(z)$
+            \Comment{Le priorità in $Q$ sono le frequenze}
+        \EndFor
+        \For{$i \gets 1$ to $n-1$}
+            \State $x \gets Q.\Call{extractmin}{ }$
+            \State $y \gets Q.\Call{extractmin}{ }$
+            \State $z \gets \Call{newnode}{ }$
+            \State $z.left \gets x$
+            \State $z.right \gets y$
+            \State $z.f \gets x.f + y.f$
+            \State $Q.\Call{insert}{z}$
+        \EndFor
+        \State return $Q.\Call{extractmin}{ }$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[
+        level/.style={sibling distance=60mm/#1},
+        redge/.style={right,draw=none},
+        ledge/.style={left,draw=none},
+        inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        subtree/.style={draw,circle},
+        % inner/.style={inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=-1pt},
+        leaf/.style={circle,draw,minimum width=20pt},
+        ]
+    \node (a) [circle, draw] {a}
+    child {
+        node (b) [grow=right] {b}
+    }
+    ; % end of the node
+    % child {
+        % node [inner] (a) {}
+        % child {
+            % node [inner] (b) {}
+                % child {
+                    % node [leaf] (b1) {a}
+                    % edge from parent node[ledge] {0}
+                % }
+                % child {
+                    % node [leaf] (b2) {b}
+                    % edge from parent node[redge] {1}
+                % }
+            % edge from parent node[ledge] {0}
+        % }
+        % child {
+            % node [inner] (e) {}
+                % child {
+                    % node [leaf] (e2) {c}
+                    % edge from parent node[ledge] {0}
+                % }
+                % child {
+                    % node [leaf] (e2) {d}
+                    % edge from parent node[redge] {1}
+                % }
+            % edge from parent node[redge] {1}
+        % }
+        % edge from parent node[ledge] {0$\;\;$} % edge da (a)
+    % }
+    % child {
+        % node [inner] (c) {}
+            % child {
+                % node [leaf] (d1) {e}
+                % edge from parent node[ledge] {0}
+            % }
+            % child {
+                % node [leaf] (d2) {f}
+                % edge from parent node[redge] {1}
+            % }
+        % edge from parent node[redge] {$\;\;$1}
+    % }
+    % ; % end of the node
+\end{tikzpicture}
+\end{center}
+\caption{Alberi di Huffman}
+\label{tree:treehuff}
+\end{figure}
 \subsection{Dimostrazione della correttezza}
 
 \subsubsection{Proprietà di scelta \emph{Greedy}}
