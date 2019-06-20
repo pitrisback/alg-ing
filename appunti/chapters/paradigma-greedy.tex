@@ -222,7 +222,7 @@ In \rfig{tree:lungcost} è mostrato il \emph{trie} della codifica a lunghezza co
         }
         child {
             node [inner] (c2) {}
-            edge from parent node[redge] {1}
+            % edge from parent node[redge] {1}
         }
         edge from parent node[redge] {$\;\;$1}
     }
@@ -263,6 +263,25 @@ L'obiettivo è minimizzare $B(T)$ su tutti i possibili \emph{trie} per l'insieme
 
 \subsection{Soluzione \emph{Greedy}}
 
+\subsubsection{Proprietà di un \emph{trie} ottimo}
+
+Prima di poter arrivare alla soluzione, si deve dimostrare la seguente proprietà: un \emph{trie} ottimo $T^*$ per $\{C,f\}$ è sempre un albero binario pieno.
+
+La dimostrazione si svolge per assurdo, ipotizzando che esista un albero ottimo \emph{non} pieno. In questo caso deve esistere un nodo $u$ con un solo figlio $v$. Questo nodo è radice di un sottoalbero, che ha come foglia $c'$ (se fosse composto solo da $v$, $c'$ è scelto coincidente con $v$).
+\\
+Si possono unire i due nodi $u$ e $v$ in un singolo nodo, ottenendo l'albero $\hat{T}$. Questo è un albero ammissibile per $\{C,f\}$, infatti non scompaiono foglie, e vale
+\begin{equation*}
+    \forall c \in C : d_{T^*} (c) \geq d_{\hat{T}} (c)
+\end{equation*}
+Infatti al di fuori del sottoalbero resta tutto inalterato, mentre per le foglie del sottoalbero la profondità scende di 1, e questo succede per \emph{almeno} una foglia $c'$: $d_{\hat{T}} (c') = d_{T^*} (c') -1$
+\begin{align*}
+    B \left( \hat{T} \right)
+    &= \sum_{c \in C} d_{\hat{T}} (c) f(c) \\
+    % &= \sum_{c \in C} d_{\widehat{T}} (c) f(c) \\
+    &= \sum_{c \in C \setminus \left\{ c' \right\}} d_{\hat{T}} (c) f(c) + d_{\hat{T}} (c') f(c')
+\end{align*}
+
+\subsubsection{Soluzione \emph{Greedy}}
 Si è quindi definito un problema di ottimizzazione molto chiaro: va determinato 
 \begin{equation*}
     T^* = \argmin \left\{ B(T) : T \right\}
