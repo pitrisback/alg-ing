@@ -395,65 +395,96 @@ Si può quindi procedere alla scrittura dell'algoritmo di \emph{Huffman}.
 \end{algorithm}
 
 \begin{figure}[h]
-\begin{center}
+\centering % to center the subfigures
+% \begin{center}
+\begin{subfigure}[b]{0.9\textwidth}
+\centering % to center the tikzpicture
 \begin{tikzpicture}[
         level/.style={sibling distance=60mm/#1},
         redge/.style={right,draw=none},
         ledge/.style={left,draw=none},
         inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
-        subtree/.style={draw,circle},
+        subtree/.style={draw,circle,minimum width=20pt},
         % inner/.style={inner sep=0pt,minimum width=0pt},
         % inner/.style={inner sep=0pt,minimum width=-1pt},
         leaf/.style={circle,draw,minimum width=20pt},
         ]
-    \node (a) [circle, draw] {a}
-    child {
-        node (b) [grow=right] {b}
-    }
-    ; % end of the node
-    % child {
-        % node [inner] (a) {}
-        % child {
-            % node [inner] (b) {}
-                % child {
-                    % node [leaf] (b1) {a}
-                    % edge from parent node[ledge] {0}
-                % }
-                % child {
-                    % node [leaf] (b2) {b}
-                    % edge from parent node[redge] {1}
-                % }
-            % edge from parent node[ledge] {0}
-        % }
-        % child {
-            % node [inner] (e) {}
-                % child {
-                    % node [leaf] (e2) {c}
-                    % edge from parent node[ledge] {0}
-                % }
-                % child {
-                    % node [leaf] (e2) {d}
-                    % edge from parent node[redge] {1}
-                % }
-            % edge from parent node[redge] {1}
-        % }
-        % edge from parent node[ledge] {0$\;\;$} % edge da (a)
-    % }
-    % child {
-        % node [inner] (c) {}
-            % child {
-                % node [leaf] (d1) {e}
-                % edge from parent node[ledge] {0}
-            % }
-            % child {
-                % node [leaf] (d2) {f}
-                % edge from parent node[redge] {1}
-            % }
-        % edge from parent node[redge] {$\;\;$1}
-    % }
-    % ; % end of the node
+    \node (a) [subtree, label=below right:{$0.45$}] at (0,0) {a};
+    \node (b) [subtree, label=below right:{$0.15$}] at (2,0) {b};
+    \node (c) [subtree, label=below right:{$0.40$}] at (4,0) {c};
+    % \node (d) [subtree, label=below right:{$0.16$}] at (6,0) {d};
+    % \node (e) [subtree, label=below right:{$0.09$}] at (8,0) {e};
+    % \node (f) [subtree, label=below right:{$0.05$}] at (10,0) {f};
 \end{tikzpicture}
-\end{center}
+\caption{Iterazione 0}
+\label{fig:huffit0}
+\end{subfigure}
+\\
+\begin{subfigure}[b]{0.9\textwidth}
+\centering % to center the tikzpicture
+\begin{tikzpicture}[
+        % level/.style={sibling distance=60mm/#1},
+        % redge/.style={right,draw=none},
+        % ledge/.style={left,draw=none},
+        % inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        subtree/.style={draw,circle,minimum width=20pt},
+        % inner/.style={inner sep=0pt,minimum width=0pt},
+        % inner/.style={inner sep=0pt,minimum width=-1pt},
+        % leaf/.style={circle,draw,minimum width=20pt},
+        ]
+    \node (a) [subtree, label=below right:{$0.45$}] at (0,0) {a};
+    \node (b) [subtree, label=below right:{$0.13$}] at (2,0) {b};
+    \node (c) [subtree, label=below right:{$0.12$}] at (4,0) {c};
+    \node (d) [subtree, label=below right:{$0.16$}] at (6,0) {d};
+    \node (ef) [subtree] at (8,0) {$0.15$}
+        child {
+            node (e) [subtree, label=below right:{$0.09$}] {e}
+        }
+        child {
+            node (e) [subtree, label=below right:{$0.05$}] {f}
+        }
+    ; % end of ef
+\end{tikzpicture}
+\caption{Iterazione 1}
+\label{fig:huffit1}
+\end{subfigure}
+\\
+\begin{subfigure}[b]{0.9\textwidth}
+\centering % to center the tikzpicture
+\begin{tikzpicture}[
+        % level/.style={sibling distance=60mm/#1},
+        % redge/.style={right,draw=none},
+        % ledge/.style={left,draw=none},
+        % inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        subtree/.style={draw,circle,minimum width=20pt},
+        % inner/.style={inner sep=0pt,minimum width=0pt},
+        inner/.style={inner sep=0pt,minimum width=9pt},
+        % leaf/.style={circle,draw,minimum width=20pt},
+        ]
+    \node (a) [subtree, label=below right:{$0.45$}] at (0,0) {a};
+    \node (bc) [subtree] at (2,0) {$0.25$}
+    % \node (bc) [inner, label=right:{$0.25$}] at (2,0) { }
+        child {
+            node (b) [subtree, label=below right:{$0.13$}] {b}
+        }
+        child {
+            node (c) [subtree, label=below right:{$0.12$}] {c}
+        }
+    ; % end of bc
+    \node (d) [subtree, label=below right:{$0.16$}] at (6,0) {d};
+    \node (ef) [subtree] at (8,0) {$0.15$}
+        child {
+            node (e) [subtree, label=below right:{$0.09$}] {e}
+        }
+        child {
+            node (e) [subtree, label=below right:{$0.05$}] {f}
+        }
+    ; % end of ef
+\end{tikzpicture}
+\caption{Iterazione 2}
+\label{fig:huffit2}
+\end{subfigure}
+% \end{center}
 \caption{Alberi di Huffman}
 \label{tree:treehuff}
 \end{figure}
