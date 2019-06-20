@@ -398,52 +398,38 @@ Si può quindi procedere alla scrittura dell'algoritmo di \emph{Huffman}.
 \centering % to center the subfigures
 % \begin{center}
 \begin{subfigure}[b]{0.9\textwidth}
+% \begin{center}
 \centering % to center the tikzpicture
 \begin{tikzpicture}[
-        level/.style={sibling distance=60mm/#1},
-        redge/.style={right,draw=none},
-        ledge/.style={left,draw=none},
-        inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
         subtree/.style={draw,circle,minimum width=20pt},
-        % inner/.style={inner sep=0pt,minimum width=0pt},
-        % inner/.style={inner sep=0pt,minimum width=-1pt},
-        leaf/.style={circle,draw,minimum width=20pt},
         ]
     \node (a) [subtree, label=below right:{$0.45$}] at (0,0) {a};
-    \node (b) [subtree, label=below right:{$0.15$}] at (2,0) {b};
-    \node (c) [subtree, label=below right:{$0.40$}] at (4,0) {c};
-    % \node (d) [subtree, label=below right:{$0.16$}] at (6,0) {d};
-    % \node (e) [subtree, label=below right:{$0.09$}] at (8,0) {e};
-    % \node (f) [subtree, label=below right:{$0.05$}] at (10,0) {f};
+    \node (b) [subtree, label=below right:{$0.35$}] at (2,0) {b};
+    \node (c) [subtree, label=below right:{$0.20$}] at (4,0) {c};
 \end{tikzpicture}
 \caption{Iterazione 0}
 \label{fig:huffit0}
+% \end{center}
 \end{subfigure}
 \\
 \begin{subfigure}[b]{0.9\textwidth}
 \centering % to center the tikzpicture
 \begin{tikzpicture}[
-        % level/.style={sibling distance=60mm/#1},
-        % redge/.style={right,draw=none},
-        % ledge/.style={left,draw=none},
-        % inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        redge/.style={right,draw=none},
+        ledge/.style={left,draw=none},
         subtree/.style={draw,circle,minimum width=20pt},
-        % inner/.style={inner sep=0pt,minimum width=0pt},
-        % inner/.style={inner sep=0pt,minimum width=-1pt},
-        % leaf/.style={circle,draw,minimum width=20pt},
         ]
     \node (a) [subtree, label=below right:{$0.45$}] at (0,0) {a};
-    \node (b) [subtree, label=below right:{$0.13$}] at (2,0) {b};
-    \node (c) [subtree, label=below right:{$0.12$}] at (4,0) {c};
-    \node (d) [subtree, label=below right:{$0.16$}] at (6,0) {d};
-    \node (ef) [subtree] at (8,0) {$0.15$}
+    \node (bc) [subtree] at (3,0) {$0.55$}
         child {
-            node (e) [subtree, label=below right:{$0.09$}] {e}
+            node (b) [subtree, label=below right:{$0.35$}] {b}
+            edge from parent node[ledge] {1}
         }
         child {
-            node (e) [subtree, label=below right:{$0.05$}] {f}
+            node (c) [subtree, label=below right:{$0.20$}] {c}
+            edge from parent node[redge] {0}
         }
-    ; % end of ef
+    ; % end of bc
 \end{tikzpicture}
 \caption{Iterazione 1}
 \label{fig:huffit1}
@@ -452,42 +438,39 @@ Si può quindi procedere alla scrittura dell'algoritmo di \emph{Huffman}.
 \begin{subfigure}[b]{0.9\textwidth}
 \centering % to center the tikzpicture
 \begin{tikzpicture}[
-        % level/.style={sibling distance=60mm/#1},
-        % redge/.style={right,draw=none},
-        % ledge/.style={left,draw=none},
-        % inner/.style={draw,circle,fill=black,inner sep=0pt,minimum width=0pt},
+        level/.style={sibling distance=30mm/#1},
+        % level/.style={sibling distance=20mm},
+        redge/.style={right,draw=none},
+        ledge/.style={left,draw=none},
         subtree/.style={draw,circle,minimum width=20pt},
-        % inner/.style={inner sep=0pt,minimum width=0pt},
         inner/.style={inner sep=0pt,minimum width=9pt},
-        % leaf/.style={circle,draw,minimum width=20pt},
         ]
-    \node (a) [subtree, label=below right:{$0.45$}] at (0,0) {a};
-    \node (bc) [subtree] at (2,0) {$0.25$}
-    % \node (bc) [inner, label=right:{$0.25$}] at (2,0) { }
+    \node (abc) [subtree] at (0,0) {$1$}
         child {
-            node (b) [subtree, label=below right:{$0.13$}] {b}
+            node (a) [subtree, label=below right:{$0.45$}] {a}
+            edge from parent node[ledge] {$0\;$}
         }
         child {
-            node (c) [subtree, label=below right:{$0.12$}] {c}
+            node (bc) [subtree] {$0.55$}
+            child {
+                node (b) [subtree, label=below right:{$0.15$}] {b}
+                edge from parent node[ledge] {1}
+            }
+            child {
+                node (c) [subtree, label=below right:{$0.40$}] {c}
+                edge from parent node[redge] {0}
+            }
+            edge from parent node[redge] {$\;1$}
         }
-    ; % end of bc
-    \node (d) [subtree, label=below right:{$0.16$}] at (6,0) {d};
-    \node (ef) [subtree] at (8,0) {$0.15$}
-        child {
-            node (e) [subtree, label=below right:{$0.09$}] {e}
-        }
-        child {
-            node (e) [subtree, label=below right:{$0.05$}] {f}
-        }
-    ; % end of ef
+    ; % end of abc
 \end{tikzpicture}
 \caption{Iterazione 2}
 \label{fig:huffit2}
 \end{subfigure}
-% \end{center}
-\caption{Alberi di Huffman}
+\caption{Iterazioni dell'algoritmo di Huffman}
 \label{tree:treehuff}
 \end{figure}
+
 \subsection{Dimostrazione della correttezza}
 
 \subsubsection{Proprietà di scelta \emph{Greedy}}
