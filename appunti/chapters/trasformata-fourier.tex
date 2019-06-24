@@ -121,7 +121,7 @@ ossia
 \begin{definition}[Convoluzione lineare]
     La convoluzione lineare è un operatore vettoriale definito come
     \begin{equation*}
-        \vec{c}=\vec{a} * \vec{b} \rightarrow 0\leq j \leq 2n : c_j = \sum_{\max\left\{ 0, j-n+1 \right\}}^{\min \left\{ n-1, j \right\}} a_k b_{j-k}
+        \vec{c}=\vec{a} * \vec{b} \rightarrow 0\leq j \leq 2n : c_j = \sum_{k = \max\left\{ 0, j-n+1 \right\}}^{\min \left\{ n-1, j \right\}} a_k b_{j-k}
         % ho dubbi su quel \leq 2n, cioè per j=2n k va da n+1 a n-1 quindi la somma è vuota, ed è corretto, ma comunque si è allungato senza dire niente a nessuno e mi da fastidio
     \end{equation*}
     \label{def:convlin}
@@ -402,12 +402,14 @@ infatti è come aggiungere o sottrarre multipli di $2\pi$. Questo vale anche in 
 \end{proof}
 In più vale il seguente corollario
 \begin{lemma}
-    Se $n$ è pari, $ \omega_{n}^{n/2} =1 $
+    Se $n$ è pari, $ \omega_{n}^{n/2} =-1 $
 \end{lemma}
 \begin{proof}
     $ \omega_{n}^{n/2} =
     \omega_{2 \cdot n/2}^{1 \cdot n/2} =
-    \omega_{2} = 1 $
+    \omega_{2} =
+    e^{i \frac{2 \pi}{2}} = -1
+    $
 \end{proof}
 Nota: la radice principale quadrata dell'unità è $-1$
 
@@ -761,11 +763,11 @@ Introducendo l'operatore vettoriale $\cdot^{rev}$ definito come
 \begin{equation*}
     \vec{a} = \left( a_0, a_1, \cdots, a_{n-1} \right)
     \quad \rightarrow \quad
-    \vec{a}^{rev} = \left( a_0, a_{n-1}, \cdots, a_1 \right)
+    \vec{a}^{\, rev} = \left( a_0, a_{n-1}, \cdots, a_1 \right)
 \end{equation*}
 si può riscrivere la trasformata inversa come
 \begin{equation*}
-    DFT_{n}^{-1} \left( \vec{y} \, \right) = \frac{1}{n} \left( DFT_{n} \left( \vec{y} \, \right) \right)
+    DFT_{n}^{-1} \left( \vec{y} \, \right) = \frac{1}{n} \left( DFT_{n} \left( \vec{y} \, \right) \right)^{rev}
 \end{equation*}
 
 \section{Convoluzione lineare}
@@ -859,7 +861,7 @@ Calcoliamo il valore di $DFT_n \left( a, a, \cdots, a \right) = F_n \vec{a}$, co
         \end{array}
     \right)
 \end{equation*}
-Dove in $\circola{1}$ il vettore contiene in ogni componente la somma di tutti gli elemeti sulla stessa riga della matrice di \textit{Fourier} e in $\circola{2}$ si applica il lemma di somma \ref{teo:somma}.
+Dove in $\circola{1}$ il vettore contiene in ogni componente la somma di tutti gli elementi sulla stessa riga della matrice di \textit{Fourier} e in $\circola{2}$ si applica il lemma di somma \ref{teo:somma}.
 
 \subsection{Vettore impulsivo}
 \label{sss:vetimp}
@@ -938,13 +940,13 @@ Per un vettore $\vec{x}$ $(n,k)$-sparso, con $1 \leq k \leq n$ e $n,k$ potenze d
 \begin{algorithmic}[1]
     \Procedure{SPARSE\_FFT}{$\vec{x}, k$}
         \State $n \gets \vec{x}.length$
-        \If{$n=1$}
+        \If{$k=1$}
         \Comment{BASE}
-            \State return $\Call{SPARSE\_FFT}{\vec{x}}$
+            \State return $\Call{FFT}{\vec{x}}$
         \EndIf
         \State $\vec{x}^{[0]}=\left( x_0, x_2,\cdots, x _{n-2} \right)$
         \Comment{DIVIDE}
-        \State $\vec{y}^{[0]} \gets \Call{SPARSE\_FFT}{\vec{x}^{[0]}}$
+        \State $\vec{y}^{[0]} \gets \Call{SPARSE\_FFT}{\vec{x}^{[0]}, k/2}$
         \Comment{RECURSE}
         \For{$i \gets 0 $ to $ n/2-1 $ }                   
         \Comment{CONQUER}
