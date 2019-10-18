@@ -80,7 +80,7 @@ L'intuizione è di selezionare di volta in volta l'istanza che finisce prima, in
         \Comment{Alterna selezione e \emph{clean-up}}
             \If{$ s_i \geq f_g $}
                 \State $g \gets i$
-                \State return $A \cup \left\{ a_g \right\}$
+                \State $A \gets A \cup \left\{ a_g \right\}$
             \EndIf
         \EndFor
         \State return $A$
