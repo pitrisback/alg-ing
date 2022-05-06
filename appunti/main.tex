@@ -35,6 +35,9 @@
 
 \usepackage{verbatim} % for comments
 
+% to have precise relative import with \import{chapters/}{intro.tex}
+\usepackage{import}
+
 %%   CUSTOM THEOREM/DEF  %%
 
 \theoremstyle{definition}
@@ -49,10 +52,12 @@
 
 %%         END           %%
 
-\title{Appunti di Algoritmi per l'Ingengeria}
-\author{lezioni tenute da\\ Geppino Pucci \\ trascritte da \\ Pietro}
-% a sto punto se fai un libro crea una pagina di titolo decente
-\date{\today}
+% \title{Appunti di Algoritmi per l'Ingengeria}
+% \author{Lezioni tenute da\\ Geppino Pucci
+%         \vspace*{0.5cm}
+% \\ e trascritte da \\ Pietro}
+% % a sto punto se fai un libro crea una pagina di titolo decente
+% \date{\today}
 
 % magia
 % \fancyhead{}
@@ -105,26 +110,30 @@
 \pagenumbering{gobble}
 
 % \input{titlepage}
-\maketitle
+% \maketitle
+\import{./}{title.tex}
 % titolo più serio in thesis-example
 
-\cleardoublepage
+% \cleardoublepage
 
 \frontmatter
-
-\chapter*{Note}
-\addcontentsline{toc}{chapter}{Note}
-\input{chapters/note}
-
-\chapter*{Ringraziamenti}
-\addcontentsline{toc}{chapter}{Ringraziamenti}
-\input{chapters/ringraziamenti}
 
 \tableofcontents
 
 \mainmatter
 
 \pagestyle{fancy}
+
+\chapter*{Introduzione al corso}
+\addcontentsline{toc}{chapter}{Syllabus}
+\import{chapters/}{introduzione.tex}
+
+% \chapter*{Ringraziamenti}
+% \addcontentsline{toc}{chapter}{Ringraziamenti}
+\input{chapters/ringraziamenti}
+
+% \addcontentsline{toc}{chapter}{Note}
+\input{chapters/note}
 
 \chapter{Introduzione agli algoritmi}
 \input{chapters/intro-alg}
